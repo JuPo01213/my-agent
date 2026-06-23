@@ -1,0 +1,18 @@
+{
+  "name": "autoresearch",
+  "installedAt": 1782231752762,
+  "source": "marketplace",
+  "version": "1.0.1",
+  "skillId": "skill_2053081361722249216",
+  "examples_zh": [
+    "帮我优化这个落地页的文案",
+    "对这封营销邮件做 A/B 测试优化",
+    "用专家评分给这段广告文案打分"
+  ],
+  "examples_en": [
+    "Optimize the copy on this landing page",
+    "A/B test these email variants with expert scoring",
+    "Score and evolve this ad copy"
+  ],
+  "iconSource": "letter:auto"
+}
