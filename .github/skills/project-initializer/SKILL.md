@@ -1,21 +1,21 @@
 ---
-name: session-manager
-description: "管理项目规则、目录结构整理、对话总结与知识沉淀。Use when the user asks for organize project, cleanup structure, archive conversation, 整理项目, 整理结构, 保存对话, 总结规则, 对话归档, 或需要把规则和过程固化成技能时。"
-display_name: "session-manager"
-display_name_en: "session-manager"
-description_zh: "管理项目规则、目录结构整理、对话总结与知识沉淀"
-description_en: "Manage project rules, structure cleanup, conversation summaries, and knowledge capture"
+name: project-initializer
+description: "初始化项目规则、整理目录结构、对话归档与知识沉淀。Use when the user asks for organize project, cleanup structure, archive conversation, init project rules, 整理项目, 整理结构, 保存对话, 总结规则, 对话归档, 初始化项目, 自定义规则, 或需要把规则和过程固化成技能时。"
+display_name: "project-initializer"
+display_name_en: "project-initializer"
+description_zh: "初始化项目规则、整理目录结构、对话归档与知识沉淀"
+description_en: "Initialize project rules, organize structure, archive conversations, and capture knowledge"
 version: 1.0.0
 visibility: "public"
 ---
 
-# Session Manager
+# Project Initializer
 
 This skill manages project conventions, directory cleanup, conversation archiving, and turning established rules/processes into reusable skills.
 
 ## Capabilities
 
-- **规则整理**：把对话中确立的规则固化为项目规范
+- **规则初始化**：定义并固化项目规则
 - **结构整理**：删除冗余目录/文件，建立清晰的目录结构
 - **对话归档**：按日期+轮次保存对话摘要到 `memories/session/`
 - **技能化**：把重复出现的工作流封装成技能
@@ -45,8 +45,7 @@ my-agent/
 │   ├── autoresearch/
 │   ├── deep-research/
 │   ├── market-researcher/
-│   ├── session-summarizer/        # 对话总结技能
-│   ├── session-manager/           # 本技能
+│   ├── project-initializer/       # 本技能
 │   ├── tavily/
 │   ├── web-search-exa/
 │   └── xurl/
@@ -130,10 +129,10 @@ When turning a workflow into a skill:
 - "总结一下刚才的对话"
 - "把这次的对话内容保存一下"
 - "创建一个技能来总结对话"
+- "初始化项目规则"
 
 ## Resources
 
 - `AGENTS.md`: 项目规则与约定
 - `docs/structure.md`: 文件结构索引
 - `memory` tool: 读取/写入记忆文件
-- `session-summarizer` skill: 对话总结技能
