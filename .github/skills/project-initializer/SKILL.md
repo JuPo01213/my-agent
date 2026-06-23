@@ -11,74 +11,123 @@ visibility: "public"
 
 # Project Initializer
 
-This skill manages project conventions, directory cleanup, conversation archiving, and turning established rules/processes into reusable skills.
+This skill provides a methodology for initializing project conventions, organizing directory structure, archiving conversations, and turning established rules/processes into reusable skills. It is project-agnostic and adapts to any codebase.
 
 ## Capabilities
 
 - **规则初始化**：定义并固化项目规则
 - **结构整理**：删除冗余目录/文件，建立清晰的目录结构
-- **对话归档**：按日期+轮次保存对话摘要到 `memories/session/`
+- **对话归档**：按日期+轮次保存对话摘要
 - **技能化**：把重复出现的工作流封装成技能
 
-## Project Rules
+## How to Use
 
-These rules are established from prior conversations and must be followed:
+1. 明确项目类型与技术栈
+2. 定义项目规则（语言、提交规范、工作流偏好等）
+3. 整理目录结构，删除冗余，建立索引
+4. 建立对话归档机制
+5. 将重复工作流封装为技能
 
-1. **中文最高优先级**：对话内容均须使用中文
-2. **Python 限定**：本项目仅使用 Python
-3. **子代理优先**：适合子代理处理的任务应优先并行执行
-4. **Python 命令**：模型执行工作时仅使用 Python 命令
-5. **先提交**：代码变更前须先提交
-6. **中文说明**：提交时必须附上中文说明
-7. **详细注释**：编写代码必须包含详细注释
-8. **结构文档同步**：文件发生实际变更时，必须同步更新 `docs/structure.md`
-9. **渐进式披露**：文件结构文档采用"主参考 + 分文件夹渐进式披露"
-10. **对话总结**：每次对话结束后，总结用户问题与回答，保存到 `memories/session/` 目录
+---
 
-## Directory Structure
+## 1. Project Rules Definition
 
+### Steps
+
+1. **识别约束**：确定项目的技术栈、语言、框架、平台
+2. **定义工作流规则**：
+   - 代码变更前是否需要提交
+   - 提交信息格式
+   - 代码注释要求
+   - 是否允许使用特定工具/命令
+3. **定义沟通规则**：
+   - 对话语言
+   - 回答风格
+   - 是否需要定期总结
+4. **写入 always-on 指令文件**：
+   - VS Code 项目：写入 `AGENTS.md`
+   - 其他环境：写入项目根目录的 always-on 配置文件
+5. **验证生效**：在新会话中测试规则是否被正确加载
+
+### Template
+
+```markdown
+## 项目规则
+
+- **对话语言**：中文 / English（选择一项作为主要语言）
+- **技术栈**：Python / JavaScript / Go / 其他
+- **子代理**：适合子代理处理的任务应优先并行执行
+- **工作流**：代码变更前须先提交；提交时必须附上说明
+- **注释**：编写代码必须包含详细注释
+- **结构文档**：文件发生实际变更时，必须同步更新结构索引文档
+- **对话归档**：每次对话结束后，总结用户问题与回答，保存到指定目录
 ```
-my-agent/
-├── AGENTS.md                      # always-on 指令，第一入口
-├── .github/skills/                # 全部技能资产
-│   ├── arxiv-watcher/
-│   ├── autoresearch/
-│   ├── deep-research/
-│   ├── market-researcher/
-│   ├── project-initializer/       # 本技能
-│   ├── tavily/
-│   ├── web-search-exa/
-│   └── xurl/
-├── docs/
-│   ├── structure.md               # 文件结构索引（按文件+行号索引）
-│   └── report/
-│       ├── 写一个自己的智能体_完整调研与最佳实践报告.md
-│       └── reports/               # 分技能调研报告
-└── memories/
-    └── session/                   # 对话总结存储目录
+
+---
+
+## 2. Directory Structure Cleanup
+
+### Principles
+
+- **单一职责**：每个目录/文件只承担一个明确职责
+- **避免过深嵌套**：目录深度建议不超过 3-4 层
+- **扁平化优先**：同级文件尽量放在同一目录，不要为单个文件建目录
+- **命名一致性**：目录和文件命名遵循同一规范（kebab-case / snake_case / PascalCase）
+- **索引先行**：先建立结构索引文档，再整理具体文件
+
+### Steps
+
+1. **盘点现有结构**：列出所有文件和目录
+2. **识别冗余**：
+   - 重复文件：用哈希校验，保留一份
+   - 空目录：清理
+   - 散落文件：移动到规范位置
+3. **建立规范位置**：
+   - 报告类：`docs/report/` 或 `reports/`
+   - 技能类：`.github/skills/` 或 `.agents/skills/`
+   - 配置类：项目根目录或 `.config/`
+4. **更新索引**：建立或更新结构索引文档
+
+### Structure Index Template
+
+创建 `docs/structure.md`（或项目约定的其他路径），内容应包含：
+
+```markdown
+# 项目文件结构索引
+
+本文档用于快速定位具体文件的内容行号。
+
+## 核心文件
+
+| 文件 | 路径 | 总行数 | 用途 |
+|------|------|--------|------|
+| always-on 指令 | `AGENTS.md` | N 行 | 项目规则与约定 |
+| 结构索引 | `docs/structure.md` | N 行 | 文件行号索引 |
+
+## 内容文件索引
+
+| 文件 | 路径 | 段落 | 行号 | 内容 |
+|------|------|------|------|------|
+| 主要报告 | `docs/report/main.md` | 摘要 | 1-30 | 项目概述 |
+| | | 架构 | 31-100 | 架构设计 |
 ```
 
-## Cleanup Workflow
+---
 
-When organizing project structure:
+## 3. Conversation Archival
 
-1. 识别重复/冗余文件（用哈希校验）
-2. 删除重复文件
-3. 扁平化目录结构（避免过深嵌套）
-4. 移动散落文件到规范位置
-5. 清理空目录
-6. 更新 `docs/structure.md`
+### Steps
 
-## Conversation Archival
+1. **确定存储位置**：建议 `memories/session/` 或项目约定的其他目录
+2. **确定命名规则**：建议 `YYYY-MM-DD-NN.md`
+3. **提取摘要**：
+   - 用户的核心问题
+   - 模型的主要回答
+   - 关键决策和结论
+4. **写入文件**
 
-After each conversation:
+### Output Format
 
-1. 提取用户核心问题
-2. 提取模型主要回答
-3. 生成中文摘要
-4. 保存到 `memories/session/YYYY-MM-DD-NN.md`
-
-Format:
 ```markdown
 # 对话摘要
 
@@ -98,41 +147,103 @@ Format:
 - 结论2
 ```
 
-## Skill Creation Workflow
+---
 
-When turning a workflow into a skill:
+## 4. Skill Creation
 
-1. 提取对话中的工作流模式
-2. 明确触发条件（中文 + 英文）
-3. 定义输入/输出格式
-4. 编写 SKILL.md 包含：
-   - frontmatter（name、description、description_zh、description_en、version、visibility）
-   - Capabilities
-   - Workflow（步骤化）
-   - Output Format（示例）
-   - Examples（触发词）
-   - Resources（相关工具/文档）
+### When to Create a Skill
 
-## Indexing Guidelines
+- 某个工作流在对话中重复出现 3 次以上
+- 规则需要固化并在多个会话中复用
+- 团队协作需要标准化流程
 
-`docs/structure.md` 是文件结构索引，用于快速定位具体文件的内容行号。
+### Skill Structure
 
-- 不索引 `AGENTS.md`（它是第一入口）
-- 技能文件（`.github/skills/*/SKILL.md`）已按渐进式披露组织，不在此重复索引
-- 只索引需要按行号精确定位的核心文件
-- 使用表格形式：段落 | 行号 | 内容
+```
+.github/skills/
+└── <skill-name>/
+    ├── SKILL.md       # 必需：技能定义
+    ├── scripts/       # 可选：辅助脚本
+    ├── templates/     # 可选：输出模板
+    └── references/    # 可选：参考资料
+```
+
+### SKILL.md Template
+
+```yaml
+---
+name: <skill-name>
+description: "<技能描述>。Use when <触发条件英文>。"
+display_name: "<显示名称>"
+description_zh: "<中文描述>"
+description_en: "<英文描述>"
+version: 1.0.0
+visibility: "public"
+---
+
+# <技能标题>
+
+## Capabilities
+
+- **能力1**：说明
+- **能力2**：说明
+
+## Workflow
+
+1. 步骤一
+2. 步骤二
+3. 步骤三
+
+## Output Format
+
+```markdown
+# 输出示例
+```
 
 ## Examples
 
-- "整理项目结构"
-- "把报告文件按 docs/report 结构存放"
-- "总结一下刚才的对话"
-- "把这次的对话内容保存一下"
-- "创建一个技能来总结对话"
-- "初始化项目规则"
+- "触发词1"
+- "触发词2"
 
 ## Resources
 
-- `AGENTS.md`: 项目规则与约定
-- `docs/structure.md`: 文件结构索引
-- `memory` tool: 读取/写入记忆文件
+- 相关工具/文档/链接
+```
+
+### Skill Naming Convention
+
+- 使用 kebab-case：`project-initializer`、`session-summarizer`
+- 名称应反映技能的核心能力
+- 避免通用名称：`helper`、`utils`、`tools`
+
+---
+
+## 5. Validation Checklist
+
+完成项目初始化后，验证以下项目：
+
+- [ ] always-on 指令文件已创建并生效
+- [ ] 项目规则已明确写入指令文件
+- [ ] 目录结构已清理，无冗余文件
+- [ ] 结构索引文档已建立
+- [ ] 对话归档机制已建立
+- [ ] 重复工作流已封装为技能
+- [ ] 所有变更已提交并附带说明
+
+---
+
+## Examples
+
+- "初始化项目规则"
+- "整理项目结构"
+- "把报告文件按 docs/report 结构存放"
+- "总结一下刚才的对话并保存"
+- "把这次的工作流封装成一个技能"
+- "创建项目结构索引文档"
+
+## Resources
+
+- `AGENTS.md` / always-on 指令：项目规则与约定
+- `docs/structure.md` / 结构索引：文件行号索引
+- `memory` tool：读取/写入记忆文件
+- `git`：版本控制与提交
