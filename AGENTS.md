@@ -25,10 +25,12 @@ description: "Use when: working in my-agent workspace, building or extending AI 
 
 ## 项目规则
 
-- 本项目使用 Python 语言。
-- 对话时，包括推理、思考、回答内容，都必须使用中文沟通。
-- 模型在工作过程中也只能使用 Python 命令。
+- 本项目仅使用 Python。
+- 对话内容均须使用中文。
+- 模型执行工作时仅使用 Python 命令。
 - 代码变更前须先提交。
+- 提交时必须附上中文说明。
+- 编写代码必须包含详细注释。
 
 ## 开发建议
 
