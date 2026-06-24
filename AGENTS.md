@@ -53,6 +53,12 @@ description: "Use when: working in my-agent workspace, building or extending AI 
 - **诚实记录原则**：禁止伪造执行结果与运行数据。必须真跑、真记录、真贴输出。汇报"完成"前必须用 Read / Glob 验证文件真的存在、用 RunCommand 验证命令真的执行过。无法验证时必须明确说"未验证"或"未执行"，不得编造数字、耗时、日志内容。
 - **实验日志规范**：所有真实实验（调用 LLM、跑测试、跑 benchmark）必须把 stdout/stderr 全部重定向到日志文件，路径在 `experiments/<日期>-<实验名>.log`。汇报时必须把文件绝对路径给到用户，让用户可自行 `cat` 验证。日志中出现的输出视为可信源，模型回答不得脱离日志虚构补充。
 - **冒充实跑禁令**：模型不得在仅完成"读代码"或"写脚本"后声称"已真实跑过"。脚本写好不算跑过；必须真的执行命令、收到返回、写入文件，三者齐备才算"真实跑过"。临时受网络/凭据限制无法真跑时，必须明确告知"当前仅完成脚本，未真跑"。
+- **文件编码规范（最高优先级）**：所有文本文件写入必须显式声明 UTF-8 编码，绝不允许用 PowerShell 5.1 的 GBK 默认值写文件。具体规则：
+  1. Python 文件操作必须带 `encoding="utf-8"`：`open(path, "w", encoding="utf-8")`、`Path.write_text(s, encoding="utf-8")`、日志的 `FileHandler(filename, mode, encoding="utf-8")`。
+  2. PowerShell 写入文件必须用 `.NET` 显式指定 UTF-8（避免 BOM）：`[System.IO.File]::WriteAllText($path, $text, [System.Text.UTF8Encoding]::new($false))`；或 `Set-Content -Path $path -Value $text -Encoding utf8NoBOM`。
+  3. 禁止使用 PowerShell 原生 `>` / `Out-File` / `Tee-Object` 直接把含中文的管道结果写入文件（这些会按系统区域设置使用 GBK，导致文件"乱码"）。
+  4. 推荐做法：把输出先在 Python 内 `print(..., flush=True)`，再用 `python script.py > file.log 2>&1` 重定向；或把管道用 `iconv -t utf-8` 转一次。
+  5. 在 PR / 提交说明里若提到"乱码"必须明确区分"是显示问题"（终端区域设置）还是"是文件问题"（写入时编码错）。修文件问题用 rule 1/2 修；修显示问题用 `chcp 65001` 切换代码页。
 
 ## 开发建议
 

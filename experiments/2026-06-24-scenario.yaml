@@ -12,7 +12,7 @@ advisor:
     你的输出风格：先给框架、再给细节、最后给可量化的判断标准。
   # 不显式设 tools: 默认为 None = LLM 看到所有已注册工具（calculator / search / get_time）
   # LLM 会自主决定是否调用
-  max_iter: 3
+  max_iter: 8
   preconditions: "True"
 
 strategist:
@@ -22,7 +22,7 @@ strategist:
     你是组织发展专家，擅长把战略目标拆解为可执行步骤。
     你熟悉研发团队组建、跨部门协作、KPI 设计、风险登记册管理。
     你的输出风格：阶段清晰、数字具体、风险显式化。
-  max_iter: 3
+  max_iter: 8
   preconditions: "facts.has('result::advisor')"
 
 writer:
@@ -31,5 +31,5 @@ writer:
   backstory: |
     你是麦肯锡背景的技术作家，擅长把复杂战略讲清楚。
     你的输出风格：执行摘要先行、表格与列表并用、结论与下一步行动明确。
-  max_iter: 3
+  max_iter: 8
   preconditions: "facts.has('result::strategist')"

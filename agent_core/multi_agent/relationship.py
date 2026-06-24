@@ -18,9 +18,20 @@ agent_core.multi_agent.relationship - 关系驱动多 Agent 协作引擎
 """
 from __future__ import annotations
 
+import logging
+import re
 import time
 from dataclasses import dataclass, field
 from typing import Any, Callable
+
+# 模块级 logger：业务方可按需配置 handler/level
+# 默认输出到 stderr，避免在 Jupyter / server 等场景里被吞掉
+logger = logging.getLogger(__name__)
+if not logger.handlers:
+    handler = logging.StreamHandler()
+    handler.setFormatter(logging.Formatter("[%(levelname)s] %(name)s: %(message)s"))
+    logger.addHandler(handler)
+    logger.setLevel(logging.INFO)
 
 
 # ============================================================
@@ -518,10 +529,21 @@ class RelationshipEngine:
 
         # 3. 构造 KnowledgeSource 实例
         sources: list[KnowledgeSource] = []
+        # 记录缺省 tools 字段的 Agent（详见 ADR-008）
+        # YAML 不显式列 tools 时，cfg.get("tools", []) 默认为空列表
+        # 后果：LLM 看不到任何工具，工具调用次数为 0
+        # 解决：检测到缺省时打 WARNING 日志（不阻断运行，保留显式优于隐式的工程风格）
+        agents_without_tools: list[str] = []
         for name, cfg in agents_cfg.items():
             # 解析 preconditions 表达式（安全子集）
             precond_str = cfg.get("preconditions", "True")
             precond = _parse_precondition(precond_str)
+
+            # 显式检测 tools 字段是否缺省（cfg 里没有该 key 视为缺省）
+            has_tools_key = "tools" in cfg
+            tools_value = cfg.get("tools", [])
+            if not has_tools_key:
+                agents_without_tools.append(name)
 
             sources.append(
                 KnowledgeSource(
@@ -530,11 +552,21 @@ class RelationshipEngine:
                     goal=cfg.get("goal", ""),
                     backstory=cfg.get("backstory", ""),
                     preconditions=precond,
-                    tools=cfg.get("tools", []),
+                    tools=tools_value,
                     system_prompt=cfg.get("system_prompt"),
                     max_iter=cfg.get("max_iter", 10),
                     allow_delegation=cfg.get("allow_delegation", False),
                 )
+            )
+
+        # 输出 ADR-008 的 warning 日志（用户可在 logging 配置里选择忽略/捕获）
+        if agents_without_tools:
+            logger.warning(
+                "以下 Agent 的 YAML 缺省 `tools` 字段：%s。"
+                "LLM 将看不到任何工具（如 calculator / search / get_time），"
+                "工具调用次数为 0。如需工具，请在 YAML 显式声明 `tools: [...]`。"
+                "（详见 ADR-008）",
+                agents_without_tools,
             )
 
         # 4. 构造 engine 并保存关系配置
@@ -579,7 +611,16 @@ def _parse_precondition(expr: str) -> Callable[[dict], bool]:
             return e.split('"')[1]
         return None
 
-    # facts.has('xxx') 模式
+    # 简单的 and 组合：facts.has('a') and facts.has('b') [and facts.has('c') ...]
+    # 必须**先于**单个 facts.has 分支判断，否则 "facts.has('a') and facts.has('b')"
+    # 会被 _extract_str 误吃第一个 key 而丢掉 b 之后的条件。
+    # 修复见 tests/test_parse_precondition.py::test_and_three_keys
+    if " and " in expr and "facts.has(" in expr:
+        keys = re.findall(r"facts\.has\(['\"]([^'\"]+)['\"]\)", expr)
+        if keys:
+            return lambda snap, ks=keys: all(k in snap.get("facts", {}) for k in ks)
+
+    # facts.has('xxx') 模式（单 key）
     if "facts.has(" in expr and ")" in expr:
         key = _extract_str(expr)
         if key:
@@ -590,14 +631,6 @@ def _parse_precondition(expr: str) -> Callable[[dict], bool]:
         target = _extract_str(expr)
         if target:
             return lambda snap, t=target: t in snap.get("open_questions", [])
-
-    # 简单的 and 组合：facts.has('a') and facts.has('b')
-    if " and " in expr and "facts.has(" in expr:
-        # 提取所有 facts.has('xxx') 中的 key
-        import re
-        keys = re.findall(r"facts\.has\(['\"]([^'\"]+)['\"]\)", expr)
-        if keys:
-            return lambda snap, ks=keys: all(k in snap.get("facts", {}) for k in ks)
 
     # 默认放行
     return lambda snap: True

@@ -113,12 +113,21 @@
 
 ### repo/架构决策记录.md
 
-- **总行数**：约 60 行
+- **总行数**：约 450 行（含 12 个 ADR）
 - **作用**：记录关键架构决策（ADR），包含选型背景、决策内容、多维度对比、选型依据和演进路线。
-- **关键行号**：
-  - 1-7：ADR-001（Function Calling 替代正则解析）
-  - 9-53：ADR-002（核心 Agent 内核自主实现），含与 LangGraph/AutoGen 等框架的 5 维度详细对比
-  - 55-60：ADR-003（无安全护栏设计）
+- **关键 ADR 索引**：
+  - ADR-001：Function Calling 替代正则解析
+  - ADR-002：核心 Agent 内核自主实现（与 LangGraph 5 维度对比）
+  - ADR-003：无安全护栏设计
+  - ADR-004：路由决策使用搜索而非记忆
+  - ADR-005：后端核心分层重构（core/ 与 multi_agent/ 分离）
+  - ADR-006：关系驱动多 Agent 协作引擎
+  - ADR-007：ReAct 兼容推理模型（reasoning_content fallback）
+  - ADR-008：YAML 缺省 tools 字段陷阱
+  - ADR-009：_parse_precondition 三 key and 修复
+  - ADR-010：引入单元测试体系
+  - ADR-011：max_steps 触发条件
+  - ADR-012：测试用例设计原则（风险点优先，不追覆盖率）— **本轮新增**
 
 ### repo/项目约定.md
 
@@ -137,6 +146,27 @@
   - 09：工具调用场景 + 完整日志机制 + ADR-008 + 文档结构优化
 
 ---
+
+## tests/
+
+- **路径**：tests/
+- **作用**：单元测试目录，**标准库 unittest，零外部依赖**。
+  - 命名约定：`test_<模块名>.py`
+  - 设计原则（参见 ADR-012）：**风险点优先，不是覆盖率优先**。每个测试都对应一个明确的"风险 N"注释。
+  - 当前覆盖范围（2026-06-24 第 12 轮精简后）：
+    - `test_parse_precondition.py`：1 个表驱动测试方法覆盖 4 类真风险（未知表达式放行 / 三 key and 真"全部满足" / malformed 不崩 / snapshot 缺字段不崩）
+    - `test_run_loop.py`：3 个测试（推理模型 fallback / 未知工具不崩 / max_steps 占位符）
+    - `test_control_shell.py`：4 个测试（priority 排序 / 3 Agent 串行链 / 异常 failed / max_steps timeout 设计语义）
+  - **删除**：`test_command.py`（整体）+ `test_blackboard.py`（整体），原因参见 ADR-012
+  - 关联 ADR：
+    - ADR-007（推理模型 fallback）由 `test_reasoning_model_fallback_works` 守护
+    - ADR-009（_parse_precondition 三 key and 修复）由 `test_risk_table` 守护
+    - ADR-011（max_steps 触发条件）由 `test_max_steps_timeout_design_semantics` 守护
+  - 运行方式（在项目根目录）：
+    ```bash
+    python -m unittest discover -s tests -v
+    ```
+  - 当前测试统计：**8 个测试**，0.002s 全过，**不追求覆盖率**
 
 ## agent_core/
 
@@ -221,6 +251,25 @@
 
 ---
 
+## tests/
+
+- **路径**：tests/
+- **作用**：单元测试目录，**标准库 unittest，零外部依赖**。
+  - 命名约定：`test_<模块名>.py`
+  - 覆盖范围（截至 2026-06-24 E2 任务完成时）：
+    - `test_parse_precondition.py`：20 个测试，覆盖 `_parse_precondition` 安全子集解析（True/False / facts.has / and 组合 / open_questions / 默认放行 / snapshot 兼容）
+    - `test_run_loop.py`：12 个测试，覆盖 `core/run_loop` 行为（基础 / 推理模型 fallback / 工具调用 / max_steps / 工具错误处理）
+  - 运行方式（在项目根目录）：
+    ```bash
+    python -m unittest discover -s tests -v
+    # 或单文件：
+    python -m unittest tests.test_parse_precondition -v
+    ```
+  - 关联 ADR：
+    - ADR-007（推理模型 fallback）有专门测试覆盖
+    - ADR-008（YAML 缺省 tools）通过 `_parse_precondition` 间接验证 + `relationship.py:from_yaml` 内置 warning 日志
+    - ADR-009（_parse_precondition 三 key and 修复）由 `test_and_three_keys` 守护
+
 ## experiments/
 
 - **路径**：experiments/
@@ -241,6 +290,10 @@
   - `2026-06-24-tool-scenario-relationships.yaml`：工具调用场景关系配置（priority analyst=1, writer=2）
   - `2026-06-24-tool-scenario.py`：工具调用场景主脚本（包装 OpenAI client + TOOLS，35.03s 跑出 8 LLM + 10 工具）
   - `2026-06-24-tool-scenario.log`：工具调用场景完整日志（**65515 字符，含每次 LLM 调用的完整 request/response JSON**）
+  - `2026-06-24-test-parse-precondition.log`：A2 任务单元测试日志（20/20 OK）
+  - `2026-06-24-test-run-loop.log`：A3 任务单元测试日志（12/12 OK）
+  - `2026-06-24-test-all.log`：全量测试日志（32/32 OK，A1-A4 完成后）
+  - `2026-06-24-sync-checkpoint.log`：sync_checkpoint.py 执行日志（结构索引 + 主报告 + session 三项检查全过）
 - **outputs/**（子目录）：
   - **作用**：所有实验的"干净交付物"——完整原文 + 代码 + 配置 + 索引，按需打开可独立验证
   - `README.md`：双场景完整索引（含流程图、KPI、再跑命令） + **三场演进对比表**（ADR × KPI × 踩坑 一图速查，导航索引）

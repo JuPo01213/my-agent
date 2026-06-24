@@ -80,7 +80,7 @@ def get_git_changed_files() -> list[Path]:
 def check_structure_index(changed_files: list[Path]) -> list[str]:
     """检查 docs/structure.md 是否包含所有需要索引的变更文件。"""
     if not STRUCTURE_DOC.exists():
-        return [f"❌ 结构索引不存在: {STRUCTURE_DOC}"]
+        return [f"[错误] 结构索引不存在: {STRUCTURE_DOC}"]
     
     content = STRUCTURE_DOC.read_text(encoding="utf-8")
     issues = []
@@ -101,10 +101,10 @@ def check_structure_index(changed_files: list[Path]) -> list[str]:
         
         # 检查文件名是否出现在结构文档中
         if filename not in content:
-            issues.append(f"❌ 结构索引缺失: {rel}")
+            issues.append(f"[错误] 结构索引缺失: {rel}")
     
     if not issues:
-        return [f"✅ 结构索引检查通过 ({checked_count} 个核心文件)"]
+        return [f"[通过] 结构索引检查通过 ({checked_count} 个核心文件)"]
     return issues
 
 
@@ -119,17 +119,17 @@ def check_main_report_reference(changed_files: list[Path]) -> list[str]:
     ]
     
     if not report_related:
-        return ["⏭️ 主报告引用检查跳过（无报告类文件变更）"]
+        return ["[跳过] 主报告引用检查跳过（无报告类文件变更）"]
     
     if not MAIN_REPORT.exists():
-        return [f"❌ 主报告不存在: {MAIN_REPORT}"]
+        return [f"[错误] 主报告不存在: {MAIN_REPORT}"]
     
     content = MAIN_REPORT.read_text(encoding="utf-8")
     issues = []
     
     # 检查参考来源章节是否存在
     if "## 参考来源" not in content:
-        issues.append("❌ 主报告缺少'参考来源'章节")
+        issues.append("[错误] 主报告缺少'参考来源'章节")
     
     for file_path in report_related:
         rel = file_path.relative_to(WORKSPACE)
@@ -137,17 +137,17 @@ def check_main_report_reference(changed_files: list[Path]) -> list[str]:
         
         # 检查参考来源中是否引用了该文件
         if filename not in content:
-            issues.append(f"⚠️  主报告未引用: {rel}")
+            issues.append(f"[警告] 主报告未引用: {rel}")
     
     if not issues:
-        return [f"✅ 主报告引用检查通过 ({len(report_related)} 个报告文件)"]
+        return [f"[通过] 主报告引用检查通过 ({len(report_related)} 个报告文件)"]
     return issues
 
 
 def check_session_archive() -> list[str]:
     """检查当前对话是否已创建 session 归档。"""
     if not SESSION_DIR.exists():
-        return [f"❌ session 目录不存在: {SESSION_DIR}"]
+        return [f"[错误] session 目录不存在: {SESSION_DIR}"]
     
     # 检查今天或最近1天内是否有归档文件
     today = datetime.now().strftime("%Y-%m-%d")
@@ -158,8 +158,8 @@ def check_session_archive() -> list[str]:
             recent_files.append(f)
     
     if recent_files:
-        return [f"✅ session 归档检查通过 ({len(recent_files)} 个最近归档)"]
-    return [f"⚠️  未检测到今天的 session 归档 ({SESSION_DIR})"]
+        return [f"[通过] session 归档检查通过 ({len(recent_files)} 个最近归档)"]
+    return [f"[警告] 未检测到今天的 session 归档 ({SESSION_DIR})"]
 
 
 def main():
@@ -173,11 +173,11 @@ def main():
     else:
         changed_files = get_git_changed_files()
         if not changed_files:
-            print("⚠️  未检测到任何变更文件，可通过 --changed 参数手动指定")
+            print("[警告] 未检测到任何变更文件，可通过 --changed 参数手动指定")
             sys.exit(0)
     
     print("=" * 60)
-    print("🔄 同步更新检查点")
+    print("[同步] 同步更新检查点")
     print("=" * 60)
     print(f"检查时间: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print(f"变更文件: {len(changed_files)} 个")
@@ -188,38 +188,38 @@ def main():
     all_issues = []
     
     # 检查 1: 结构索引
-    print("📋 检查 1/3: 结构索引同步")
+    print("[检查 1/3] 结构索引同步")
     issues = check_structure_index(changed_files)
     for msg in issues:
         print(f"  {msg}")
-    all_issues.extend([i for i in issues if i.startswith("❌")])
+    all_issues.extend([i for i in issues if i.startswith("[错误]")])
     print()
     
     # 检查 2: 主报告引用
-    print("📋 检查 2/3: 主报告引用同步")
+    print("[检查 2/3] 主报告引用同步")
     issues = check_main_report_reference(changed_files)
     for msg in issues:
         print(f"  {msg}")
-    all_issues.extend([i for i in issues if i.startswith("❌")])
+    all_issues.extend([i for i in issues if i.startswith("[错误]")])
     print()
     
     # 检查 3: session 归档
-    print("📋 检查 3/3: session 归档")
+    print("[检查 3/3] session 归档")
     issues = check_session_archive()
     for msg in issues:
         print(f"  {msg}")
-    all_issues.extend([i for i in issues if i.startswith("❌")])
+    all_issues.extend([i for i in issues if i.startswith("[错误]")])
     print()
     
     # 总结
     print("=" * 60)
     if all_issues:
-        print(f"❌ 检查失败：发现 {len(all_issues)} 个错误")
+        print(f"[错误] 检查失败：发现 {len(all_issues)} 个错误")
         for issue in all_issues:
             print(f"  {issue}")
         sys.exit(1)
     else:
-        print("✅ 所有检查通过，同步更新完整")
+        print("[通过] 所有检查通过，同步更新完整")
         sys.exit(0)
 
 

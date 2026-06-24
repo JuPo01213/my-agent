@@ -1,3 +1,5 @@
+C:\Users\Administrator\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\openai\_compat.py:48: UserWarning: Core Pydantic V1 functionality isn't compatible with Python 3.14 or greater.
+  from pydantic.v1.typing import (
 
 ======================================================================
 场景实验 — 纯 LLM 协作：6 个月 AI 转型路线图（默认 ReAct 循环）
@@ -9,6 +11,7 @@ log file : C:\Users\Administrator\Desktop\my-agent\experiments\2026-06-24-scenar
 已注册工具 : ['calculator', 'search', 'get_time']  （不显式限制，让 LLM 自主决定）
 agents_yaml        : C:\Users\Administrator\Desktop\my-agent\experiments\2026-06-24-scenario.yaml
 relationships_yaml : C:\Users\Administrator\Desktop\my-agent\experiments\2026-06-24-scenario-relationships.yaml
+[WARNING] agent_core.multi_agent.relationship: 以下 Agent 的 YAML 缺省 `tools` 字段：['advisor', 'strategist', 'writer']。LLM 将看不到任何工具（如 calculator / search / get_time），工具调用次数为 0。如需工具，请在 YAML 显式声明 `tools: [...]`。（详见 ADR-008）
 
 加载的 Agent：
   agent advisor: tools=[]  max_iter=8  action=KnowledgeSource._default_action
