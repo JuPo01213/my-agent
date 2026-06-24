@@ -8,6 +8,25 @@
 
 - **路径**：docs/report/
 
+### GCMP_400_input_invalid_排查与修复报告.md
+
+- **总行数**：约 200 行
+- **作用**：记录 2026-06-24 GCMP 扩展 400 input_invalid 问题的排查与修复过程，包含根因分析、补丁内容和后续建议。
+- **关键内容**：
+  - 1-30：问题背景与报错现象
+  - 31-60：排查过程（日志读取、代码定位）
+  - 61-100：根因分析（reasoningEffort 数组未归一化）
+  - 101-140：修复方案（补丁内容与验证）
+  - 141-180：后续建议与关联问题
+  - 181-末：技术细节补充与参考链接
+
+### GCMP_400_input_invalid_原始日志_2026-06-24T173409.log
+
+- **总行数**：约 1378 行
+- **作用**：本次问题的原始参考资料，保留完整日志以便后续复现比对或继续排查。
+- **来源**：`C:\Users\Administrator\AppData\Roaming\Code\logs\20260624T173409\window1\exthost\vicanent.gcmp\GitHub Copilot Models Provider (GCMP).log`
+- **注意**：原始路径在 VS Code 日志目录中，属于易失文件；如需长期保留，可手动复制到本仓库 docs 或 experiments 目录。
+
 ### 写一个自己的智能体_完整调研与最佳实践报告.md
 
 - **总行数**：778 行
@@ -221,6 +240,16 @@
   - `adapter.py`：`wrap_trace_to_events()` 将核心中性 trace 翻译为前端事件；`aggregate_run_events()` 聚合 Agent 级 trace
   - `__init__.py`：导出 `EventBus`、事件工厂、适配器
 - **关联 ADR**：ADR-013（异步事件流 / 前端解耦）
+- **说明**：部分静态页面（例如 `bubble.html`）已与后端服务联通用于演示。
+
+### server/
+
+- **路径**：agent_core/server/
+- **作用**：FastAPI 服务层，提供静态页面访问、配置 API、运行接口和 SSE 事件流。
+- **关键文件**：
+  - `run.py`：入口脚本，通过 `uvicorn` 启动 `agent_core.server.server:app`。
+  - `server.py`：FastAPI 应用，实现 `/api/config/*`、`/api/run`、`/api/runs/{run_id}/events` 和首页渲染。
+- **说明**：`bubble.html` 已与 `/api/run` 和 SSE 事件流联动，支持多 Agent 协作实时可视化。
 
 ### config.py
 
@@ -236,7 +265,12 @@
 ### static/
 
 - **路径**：agent_core/static/
-- **作用**：前端样式探索期静态文件（index.html / vue.html / bubble.html），**当前不与后端联通**，纯静态预览。
+- **作用**：前端样式探索期静态文件，部分页面已与后端服务联通用于演示，仍可双击静态打开预览。
+- **关键文件**：
+  - `index.html`：早期静态演示页
+  - `vue.html`：Vue 版本演示页
+  - `bubble.html`：气泡对话界面，已对接 `/api/run` 与 SSE 事件流
+  - `bubble-adapter.js`：将后端标准事件映射为气泡组件所需的数据结构
 
 ### demos/
 

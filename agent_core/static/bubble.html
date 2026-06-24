@@ -2,17 +2,13 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8" />
-<!-- 移动端视口设置 -->
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>沉浸式气泡对话 · 前端示例</title>
-<!-- 引入 Vue 3 CDN 版本，无需构建步骤 -->
+<title>My Agent · 多智能体协作</title>
 <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
 <style>
-  /* ------------------------------------------------------------------ */
-  /* 设计令牌                                                          */
-  /* ------------------------------------------------------------------ */
   :root{
     --bg:#0a0c10;
+    --panel:rgba(15,18,25,.88);
     --bubble-user:rgba(244,114,182,.15);
     --bubble-agent:rgba(0,212,170,.12);
     --bubble-tool:rgba(96,165,250,.12);
@@ -22,22 +18,18 @@
     --text:#e2e8f0;
     --muted:#94a3b8;
     --accent:#00d4aa;
-    --glow-user:rgba(244,114,182,.4);
-    --glow-agent:rgba(0,212,170,.4);
+    --accent-2:#0d9488;
+    --danger:#ef4444;
+    --border:rgba(255,255,255,.08);
   }
 
-  /* ------------------------------------------------------------------ */
-  /* 基础重置                                                          */
-  /* ------------------------------------------------------------------ */
   *{ margin:0; padding:0; box-sizing:border-box; }
   html,body{ height:100%; overflow:hidden; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif; }
 
-  /* ------------------------------------------------------------------ */
-  /* 背景层：流体渐变 + 浮动粒子 + 中心 AI 脉动                       */
-  /* ------------------------------------------------------------------ */
+  /* ========== 背景 ========== */
   .bg-fluid{ position:fixed; inset:0; z-index:0; background:radial-gradient(ellipse at 20% 80%,rgba(244,114,182,.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(0,212,170,.08) 0%,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(96,165,250,.05) 0%,transparent 60%); pointer-events:none; }
   .bg-particles{ position:fixed; inset:0; z-index:0; pointer-events:none; }
-  .particle{ position:absolute; border-radius:50%; opacity:.3; animation:float 20s infinite ease-in-out; }
+  .particle{ position:absolute; border-radius:50%; opacity:.25; animation:float 20s infinite ease-in-out; }
   @keyframes float{ 0%,100%{ transform:translate(0,0) scale(1); } 25%{ transform:translate(30px,-40px) scale(1.1); } 50%{ transform:translate(-20px,-80px) scale(.9); } 75%{ transform:translate(40px,-30px) scale(1.05); } }
 
   .ai-core{ position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:5; pointer-events:none; }
@@ -47,63 +39,354 @@
   @keyframes ringPulse{ 0%{ transform:translate(-50%,-50%) scale(1); opacity:1; } 100%{ transform:translate(-50%,-50%) scale(1.5); opacity:0; } }
   .ai-core-dot{ width:16px; height:16px; border-radius:50%; background:var(--accent); box-shadow:0 0 30px rgba(0,212,170,.5); position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
 
-  /* ------------------------------------------------------------------ */
-  /* 提示条                                                            */
-  /* ------------------------------------------------------------------ */
-  .hint{ position:fixed; top:24px; left:50%; transform:translateX(-50%); font-size:12px; color:var(--muted); background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); padding:8px 20px; border-radius:20px; z-index:200; pointer-events:none; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+  /* ========== 主布局 ========== */
+  #app{ display:flex; height:100vh; width:100vw; }
 
-  /* ------------------------------------------------------------------ */
-  /* 顶部工具栏：示例控制                                              */
-  /* ------------------------------------------------------------------ */
-  .topbar{ position:fixed; top:24px; right:24px; z-index:200; display:flex; gap:8px; align-items:center; }
-  .topbar button{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); color:var(--text); border-radius:20px; padding:6px 14px; font-size:12px; cursor:pointer; outline:none; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); transition:border-color .2s,box-shadow .2s; }
-  .topbar .play-btn{ background:linear-gradient(135deg,#00d4aa,#0d9488); border-color:transparent; color:#fff; font-weight:600; box-shadow:0 4px 16px rgba(0,212,170,.3); }
-  .topbar .play-btn:hover{ box-shadow:0 6px 20px rgba(0,212,170,.4); }
-  .topbar .reset-btn{ background:linear-gradient(135deg,#ef4444,#dc2626); border-color:transparent; color:#fff; font-weight:600; }
+  /* ========== 左侧控制面板 ========== */
+  .sidebar{
+    width: 380px;
+    min-width: 380px;
+    height: 100vh;
+    overflow-y: auto;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+  }
+  .sidebar-header{
+    padding: 24px 20px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .sidebar-header h1{
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: .5px;
+  }
+  .sidebar-header p{
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+  .sidebar-body{
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px;
+  }
+  .sidebar-footer{
+    padding: 16px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+  }
 
-  /* ------------------------------------------------------------------ */
-  /* 气泡场景：全屏容器                                                */
-  /* ------------------------------------------------------------------ */
-  .bubble-scene{ position:fixed; inset:0; z-index:10; overflow:hidden; }
+  /* 区块 */
+  .section{ margin-bottom: 20px; }
+  .section-title{
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .section-title::before{
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 12px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
 
-  /* 消息气泡 */
-  .bubble{ position:absolute; padding:16px 24px; border-radius:32px; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); font-size:14px; line-height:1.6; max-width:360px; word-break:break-word; cursor:default; animation:popIn .6s cubic-bezier(.34,1.56,.64,1) forwards; opacity:0; transform:scale(.8); box-shadow:0 4px 24px rgba(0,0,0,.3); transition:transform .2s,box-shadow .2s; }
-  .bubble:hover{ transform:scale(1.02); box-shadow:0 8px 32px rgba(0,0,0,.4); z-index:100; }
+  /* 表单控件 */
+  .field{ margin-bottom: 12px; }
+  .field label{
+    display: block;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .field input, .field textarea, .field select{
+    width: 100%;
+    background: rgba(255,255,255,.04);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 13px;
+    outline: none;
+    transition: border-color .2s, box-shadow .2s;
+    font-family: inherit;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus{
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(0,212,170,.15);
+  }
+  .field textarea{
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.5;
+  }
+  .field .hint{
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+    opacity: .8;
+  }
+
+  /* Agent 卡片 */
+  .agent-card{
+    background: rgba(255,255,255,.03);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 10px;
+    transition: border-color .2s;
+  }
+  .agent-card:hover{ border-color: rgba(255,255,255,.15); }
+  .agent-card-header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .agent-name{
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .agent-badge{
+    font-size: 10px;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(0,212,170,.12);
+    color: var(--accent);
+    border: 1px solid rgba(0,212,170,.2);
+  }
+
+  /* 按钮 */
+  .btn{
+    flex: 1;
+    padding: 10px 16px;
+    border-radius: 12px;
+    border: none;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    outline: none;
+    transition: transform .1s, box-shadow .2s;
+  }
+  .btn:active{ transform: scale(.98); }
+  .btn-run{
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #fff;
+    box-shadow: 0 4px 16px rgba(0,212,170,.3);
+  }
+  .btn-run:hover{ box-shadow: 0 6px 20px rgba(0,212,170,.4); }
+  .btn-run:disabled{ opacity: .5; cursor: not-allowed; }
+  .btn-reset{
+    background: rgba(239,68,68,.12);
+    color: var(--danger);
+    border: 1px solid rgba(239,68,68,.2);
+  }
+  .btn-reset:hover{ background: rgba(239,68,68,.2); }
+
+  /* 状态栏 */
+  .status-bar{
+    font-size: 12px;
+    color: var(--muted);
+    padding: 6px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .status-dot{
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--muted);
+  }
+  .status-dot.running{ background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 1.5s infinite; }
+  .status-dot.done{ background: var(--accent); }
+  .status-dot.error{ background: var(--danger); }
+  @keyframes pulse{ 0%,100%{ opacity:1; } 50%{ opacity:.4; } }
+
+  /* ========== 气泡场景 ========== */
+  .bubble-scene{ flex:1; position:relative; overflow:hidden; z-index:10; }
+  .bubble{ position:absolute; padding:10px 16px; border-radius:28px; backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); font-size:12px; line-height:1.5; max-width:280px; word-break:break-word; cursor:default; animation:popIn .6s cubic-bezier(.34,1.56,.64,1) forwards; opacity:0; transform:scale(.8); box-shadow:0 2px 12px rgba(0,0,0,.25); transition:transform .2s,box-shadow .2s; }
+  .bubble:hover{ transform:scale(1.02); box-shadow:0 6px 24px rgba(0,0,0,.35); z-index:100; }
   @keyframes popIn{ to{ opacity:1; transform:scale(1); } }
-
-  .bubble::before{ content:""; position:absolute; width:8px; height:8px; border-radius:50%; }
+  .bubble::before{ content:""; position:absolute; width:6px; height:6px; border-radius:50%; }
   .bubble.user{ background:var(--bubble-user); border:1px solid rgba(244,114,182,.2); color:#fce7f3; }
-  .bubble.user::before{ background:var(--glow-user); box-shadow:0 0 12px var(--glow-user); }
+  .bubble.user::before{ background:var(--glow-user); box-shadow:0 0 10px var(--glow-user); }
   .bubble.agent{ background:var(--bubble-agent); border:1px solid rgba(0,212,170,.2); color:#ccfbf1; }
-  .bubble.agent::before{ background:var(--glow-agent); box-shadow:0 0 12px var(--glow-agent); }
-  .bubble.tool{ background:var(--bubble-tool); border:1px solid rgba(96,165,250,.2); color:#dbeafe; font-size:12px; font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; }
-  .bubble.thinking{ background:var(--bubble-think); border:1px solid rgba(156,163,175,.2); color:#e5e7eb; font-size:12px; font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; }
+  .bubble.agent::before{ background:var(--glow-agent); box-shadow:0 0 10px var(--glow-agent); }
+  .bubble.tool{ background:var(--bubble-tool); border:1px solid rgba(96,165,250,.2); color:#dbeafe; font-size:11px; font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; }
+  .bubble.thinking{ background:var(--bubble-think); border:1px solid rgba(156,163,175,.2); color:#e5e7eb; font-size:11px; font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; }
   .bubble.final{ background:var(--bubble-final); border:1px solid rgba(245,158,11,.2); color:#fde68a; }
   .bubble.error{ background:var(--bubble-error); border:1px solid rgba(239,68,68,.2); color:#fecaca; }
-  .bubble.system{ background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); color:var(--muted); font-size:12px; }
-
-  .bubble-meta{ font-size:10px; color:var(--muted); margin-top:8px; opacity:.7; }
-  .bubble pre{ background:rgba(0,0,0,.2); padding:10px; border-radius:12px; font-size:11px; overflow-x:auto; margin:8px 0; }
-  .bubble code{ background:rgba(0,0,0,.2); padding:2px 6px; border-radius:4px; font-size:11px; }
+  .bubble.system{ background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); color:var(--muted); font-size:11px; }
+  .bubble-meta{ font-size:9px; color:var(--muted); margin-top:6px; opacity:.7; }
+  .bubble pre{ background:rgba(0,0,0,.2); padding:8px; border-radius:10px; font-size:10px; overflow-x:auto; margin:6px 0; }
+  .bubble code{ background:rgba(0,0,0,.2); padding:2px 6px; border-radius:4px; font-size:10px; }
   .bubble strong{ color:#fff; }
 
+  /* 右侧：纯过程时间线，给人看 */
+  .bubble-scene{ flex:1; position:relative; overflow:hidden; z-index:10; background: transparent; }
+  .bubble{ display:none; }
+  .timeline{
+    position:absolute;
+    top:0; left:0; right:0; bottom:0;
+    overflow-y:auto;
+    padding:18px 24px 110px;
+    z-index:12;
+  }
+  .t-card{
+    background:var(--panel);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:14px 16px;
+    margin-bottom:12px;
+    backdrop-filter:blur(12px);
+    animation:slideIn .45s ease forwards;
+    opacity:0;
+    transform:translateY(6px);
+  }
+  .t-header{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:6px;
+    font-size:13px;
+    color:var(--muted);
+  }
+  .t-dot{
+    width:10px; height:10px; border-radius:50%;
+    flex:none;
+  }
+  .t-dot.user{ background:#f472b6; box-shadow:0 0 8px rgba(244,114,182,.35); }
+  .t-dot.thinking{ background:#9ca3af; }
+  .t-dot.tool{ background:#60a5fa; }
+  .t-dot.final{ background:#f59e0b; box-shadow:0 0 8px rgba(245,158,11,.25); }
+  .t-dot.error{ background:#ef4444; }
+  .t-dot.system{ background:#94a3b8; }
+  .t-body{
+    font-size:14px;
+    line-height:1.85;
+    color:var(--text);
+    white-space:pre-wrap;
+    word-break:break-word;
+  }
+  .t-body code{
+    background:rgba(0,0,0,.22);
+    padding:2px 6px;
+    border-radius:4px;
+    font-size:12px;
+    font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+  }
+  .t-body strong{ color:#fff; }
+  .t-tool-call{
+    font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;
+    font-size:13px;
+    color:#dbeafe;
+    margin-bottom:4px;
+  }
+  .t-tool-obs{
+    margin-top:10px;
+    padding:10px;
+    border-radius:12px;
+    background:rgba(0,0,0,.22);
+    font-size:12px;
+    color:#e5e7eb;
+    max-height:260px;
+    overflow-y:auto;
+    line-height:1.7;
+  }
+  .t-final{
+    margin-top:8px;
+    padding:10px;
+    border-radius:12px;
+    background:rgba(245,158,11,.08);
+    border:1px solid rgba(245,158,11,.18);
+  }
+  .t-user{
+    margin-top:4px;
+    padding:10px;
+    border-radius:12px;
+    background:rgba(244,114,182,.08);
+    border:1px solid rgba(244,114,182,.18);
+  }
+  .t-error{
+    margin-top:6px;
+    color:#fecaca;
+  }
+
+  /* 结果面板 */
+  .result-panel{
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    max-height:45vh;
+    background:var(--panel);
+    border-top:1px solid var(--border);
+    backdrop-filter:blur(20px);
+    overflow-y:auto;
+    padding:16px 20px;
+    z-index:20;
+    transform: translateY(100%);
+    transition: transform .3s ease;
+  }
+  .result-panel.visible{ transform: translateY(0); }
+  .result-title{
+    font-size:14px;
+    font-weight:600;
+    color:var(--accent);
+    margin-bottom:10px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .result-body{
+    font-size:14px;
+    line-height:1.8;
+    color:var(--text);
+    white-space:pre-wrap;
+    word-break:break-word;
+  }
+  .result-facts{
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px solid var(--border);
+    font-size:12px;
+    color:var(--muted);
+  }
+  .result-facts div{
+    margin-bottom:4px;
+  }
+
   /* 响应式 */
-  @media (max-width:640px){
+  @media (max-width:800px){
+    #app{ flex-direction: column; }
+    .sidebar{ width:100%; min-width:auto; height:auto; max-height:45vh; }
+    .bubble-scene{ height:55vh; }
     .bubble{ max-width:80vw; }
-    .topbar{ top:70px; right:12px; flex-wrap:wrap; }
   }
 </style>
 <!-- 前端事件契约样本数据 -->
-<script src="bubble-sample.js"></script>
-<!-- 事件契约适配器：将标准事件映射为气泡组件所需结构 -->
-<script src="bubble-adapter.js"></script>
+<script src="/static/bubble-sample.js"></script>
+<!-- 事件契约适配器 -->
+<script src="/static/bubble-adapter.js"></script>
 </head>
 <body>
   <!-- 背景层 -->
   <div class="bg-fluid"></div>
   <div class="bg-particles" id="particles"></div>
-
-  <!-- 中心 AI 脉动 -->
   <div class="ai-core">
     <div class="ai-core-ring"></div>
     <div class="ai-core-ring"></div>
@@ -111,19 +394,110 @@
     <div class="ai-core-dot"></div>
   </div>
 
-  <!-- Vue 挂载根节点 -->
   <div id="app">
-    <!-- 提示条 -->
-    <div class="hint">前端样式示例：点击右上角"播放示例"可看到气泡依次浮现</div>
+    <!-- ========== 左侧控制面板 ========== -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1>🤖 多智能体协作</h1>
+        <p>调整参数，点击运行，观察 Agent 实时协作</p>
+      </div>
 
-    <!-- 顶部工具栏 -->
-    <div class="topbar">
-      <button class="play-btn" @click="play" :disabled="playing">播放示例</button>
-      <button class="reset-btn" @click="reset">重置</button>
-    </div>
+      <div class="sidebar-body">
+        <!-- 用户问题 -->
+        <div class="section">
+          <div class="section-title">用户问题</div>
+          <div class="field">
+            <textarea v-model="user_query" placeholder="输入你想让 Agent 团队解决的问题..."></textarea>
+          </div>
+        </div>
 
-    <!-- 气泡场景 -->
-    <div class="bubble-scene">
+        <!-- 运行控制 -->
+        <div class="section">
+          <div class="section-title">运行控制</div>
+          <div class="field">
+            <label>调度策略</label>
+            <select v-model="strategy">
+              <option value="first_match">first_match（首个满足条件）</option>
+              <option value="priority">priority（按优先级）</option>
+              <option value="round_robin">round_robin（轮询）</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>最大总步数：{{ max_steps }}</label>
+            <input type="range" v-model.number="max_steps" min="10" max="100" step="5" />
+          </div>
+        </div>
+
+        <!-- Agent 配置 -->
+        <div class="section">
+          <div class="section-title">Agent 配置</div>
+          <div v-for="(cfg, name) in agents" :key="name" class="agent-card">
+            <div class="agent-card-header">
+              <span class="agent-name">{{ name }}</span>
+              <span class="agent-badge">{{ cfg.role || name }}</span>
+            </div>
+            <div class="field">
+              <label>角色 (role)</label>
+              <input v-model="agents[name].role" />
+            </div>
+            <div class="field">
+              <label>目标 (goal)</label>
+              <textarea v-model="agents[name].goal" rows="2"></textarea>
+            </div>
+            <div class="field">
+              <label>背景 (backstory)</label>
+              <textarea v-model="agents[name].backstory" rows="3"></textarea>
+            </div>
+            <div class="field">
+              <label>工具 (tools，逗号分隔)</label>
+              <input v-model="tools_input[name]" @input="update_tools(name)" placeholder="search, calculator" />
+            </div>
+            <div class="field">
+              <label>最大迭代 (max_iter)</label>
+              <input type="number" v-model.number="agents[name].max_iter" min="1" max="50" />
+            </div>
+            <div class="field">
+              <label>前置条件 (preconditions)</label>
+              <input v-model="agents[name].preconditions" placeholder="True 或 facts.has('result::xxx')" />
+            </div>
+          </div>
+        </div>
+
+        <!-- 优先级 -->
+        <div class="section">
+          <div class="section-title">优先级映射</div>
+          <div v-for="(val, name) in relationships.priority" :key="'p-'+name" class="field" style="display:flex;align-items:center;gap:8px;">
+            <label style="width:80px;margin:0;">{{ name }}</label>
+            <input type="number" v-model.number="relationships.priority[name]" min="1" max="100" />
+          </div>
+        </div>
+
+        <!-- 终止条件 -->
+        <div class="section">
+          <div class="section-title">终止条件</div>
+          <div v-for="(expr, idx) in relationships.termination" :key="'t-'+idx" class="field" style="display:flex;align-items:center;gap:8px;">
+            <input v-model="relationships.termination[idx]" style="flex:1;" />
+            <button class="btn btn-reset" style="flex:none;padding:6px 10px;" @click="remove_termination(idx)">×</button>
+          </div>
+          <button class="btn btn-reset" style="width:100%;margin-top:4px;" @click="add_termination">+ 添加终止条件</button>
+        </div>
+      </div>
+
+      <!-- 底部按钮 -->
+      <div class="sidebar-footer">
+        <button class="btn btn-run" @click="run" :disabled="running">▶ 运行</button>
+        <button class="btn btn-reset" @click="reset" :disabled="running">重置</button>
+      </div>
+      <div style="padding:0 20px 12px;">
+        <div class="status-bar">
+          <span class="status-dot" :class="run_status"></span>
+          <span>{{ status_text }}</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ========== 右侧气泡场景 ========== -->
+    <main class="bubble-scene">
       <div
         v-for="b in bubbles"
         :key="b.id"
@@ -135,32 +509,325 @@
           <div><strong>{{ b.name }}</strong>({{ b.args || '' }})</div>
           <pre v-if="b.observation">{{ b.observation }}</pre>
         </div>
+        <div v-else-if="b.type === 'thinking'">
+          <div style="opacity:.8;font-size:11px;margin-bottom:4px;">💭 思考中...</div>
+          <div v-html="renderText(b.content)"></div>
+        </div>
+        <div v-else-if="b.type === 'final'">
+          <div style="opacity:.8;font-size:11px;margin-bottom:4px;">✅ 最终答案 · {{ b.meta || '' }}</div>
+          <div v-html="renderText(b.content)"></div>
+        </div>
+        <div v-else-if="b.type === 'error'">
+          <div>❌ {{ b.content }}</div>
+        </div>
+        <div v-else-if="b.type === 'user'">
+          <div style="opacity:.8;font-size:11px;margin-bottom:4px;">🙋 用户问题</div>
+          <div v-html="renderText(b.content)"></div>
+        </div>
         <div v-else v-html="renderText(b.content)"></div>
         <div class="bubble-meta" v-if="b.meta">{{ b.meta }}</div>
       </div>
-    </div>
+
+      <!-- 过程流面板：对话时间线 -->
+      <div class="process-panel" v-if="processCards.length">
+        <div v-for="c in processCards" :key="c.id" class="process-card" @click="toggleCard(c.id)">
+          <div class="process-header">
+            <span class="dot" :class="c.type"></span>
+            <span>{{ c.agent || c.type }}</span>
+            <span v-if="c.step !== undefined">· step={{ c.step }}</span>
+            <span style="margin-left:auto;font-size:11px;opacity:.7;">{{ c.expanded ? '收起' : '展开' }}</span>
+          </div>
+          <!-- 默认摘要 -->
+          <div class="process-summary" v-if="!c.expanded">
+            <span v-if="c.type === 'tool' && c.name">{{ c.name }}({{ c.args || '' }})</span>
+            <span v-else-if="c.type === 'final'">最终答案</span>
+            <span v-else-if="c.type === 'user'">用户问题</span>
+            <span v-else>思考中...</span>
+          </div>
+          <!-- 展开后详情 -->
+          <div class="process-detail" v-if="c.expanded">
+            <div v-if="c.type === 'tool'">
+              <div class="process-tool-call" v-if="c.name">
+                <strong>{{ c.name }}</strong>({{ c.args || '' }})
+              </div>
+              <div class="process-tool-obs" v-if="c.observation">{{ c.observation }}</div>
+            </div>
+            <div v-else-if="c.type === 'final'">
+              <div class="process-final" v-html="c.contentPreview || c.content"></div>
+            </div>
+            <div v-else-if="c.type === 'user'">
+              <div class="process-user" v-html="c.contentPreview || c.content"></div>
+            </div>
+            <div v-else v-html="c.contentPreview || c.content"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 底部结果面板 -->
+      <div class="result-panel" :class="{ visible: show_result }">
+        <div class="result-title">
+          <span>📋 运行结果</span>
+          <button class="btn btn-reset" style="flex:none;padding:4px 10px;font-size:11px;" @click="show_result = false">关闭</button>
+        </div>
+        <div class="result-body" v-if="final_result">{{ final_result }}</div>
+        <div class="result-facts" v-if="Object.keys(final_facts).length">
+          <div v-for="(val, key) in final_facts" :key="key">
+            <strong>{{ key }}：</strong>{{ val }}
+          </div>
+        </div>
+      </div>
+    </main>
   </div>
 
 <script>
 /* ------------------------------------------------------------------ */
-/* 前端控制脚本：Vue 3 组合式 API                                     */
-/* 本文件为纯前端样式示例，不与任何后端联通                          */
+/* 前端控制脚本：Vue 3 组合式 API + 真实 API / SSE                    */
 /* ------------------------------------------------------------------ */
 
-const { createApp, ref, onMounted } = Vue;
+const { createApp, ref, onMounted, reactive, nextTick } = Vue;
 
 createApp({
   setup() {
-    /* ---------- 响应式状态 ---------- */
-    const bubbles = ref([]);      // 气泡列表
-    const playing = ref(false);   // 是否正在播放示例
-    let positions = [];           // 已放置气泡位置缓存
-    let playTimers = [];          // 播放定时器集合
+    /* ---------- 状态 ---------- */
+    const bubbles = ref([]);
+    const processCards = ref([]);
+    const positions = [];
+    const timers = [];
 
-    /* ---------- 文本渲染（Markdown 简化） ---------- */
+    const show_result = ref(false);
+    const final_result = ref('');
+    const final_facts = reactive({});
+
+    const user_query = ref('200人研发团队6个月完成AI转型，预算1500万，请给出5项核心能力、预算分配和里程碑。');
+    const strategy = ref('priority');
+    const max_steps = ref(50);
+    const running = ref(false);
+    const run_status = ref('');   // '' | 'running' | 'done' | 'error'
+    const status_text = ref('就绪');
+    let run_id = null;
+    let event_source = null;
+
+    const agents = reactive({});
+    const relationships = reactive({ priority: {}, termination: [] });
+    const tools_input = reactive({});
+
+    /* ---------- 初始化：加载配置 ---------- */
+    async function load_config() {
+      try {
+        const [agents_res, rel_res] = await Promise.all([
+          fetch('/api/config/agents').then(r => r.json()),
+          fetch('/api/config/relationships').then(r => r.json()),
+        ]);
+        const agents_data = agents_res.data || {};
+        const rel_data = rel_res.data || {};
+
+        Object.keys(agents_data).forEach(name => {
+          const cfg = agents_data[name];
+          agents[name] = {
+            role: cfg.role || name,
+            goal: cfg.goal || '',
+            backstory: cfg.backstory || '',
+            tools: cfg.tools || [],
+            max_iter: cfg.max_iter || 8,
+            preconditions: cfg.preconditions || 'True',
+          };
+          tools_input[name] = (cfg.tools || []).join(', ');
+        });
+
+        relationships.priority = rel_data.priority || {};
+        relationships.termination = Array.isArray(rel_data.termination) ? [...rel_data.termination] : [];
+      } catch (e) {
+        status_text.value = '配置加载失败：' + e.message;
+      }
+    }
+
+    function update_tools(name) {
+      const raw = tools_input[name] || '';
+      agents[name].tools = raw.split(',').map(s => s.trim()).filter(Boolean);
+    }
+
+    function add_termination() {
+      relationships.termination.push("facts.has('result::xxx')");
+    }
+    function remove_termination(idx) {
+      relationships.termination.splice(idx, 1);
+    }
+
+    /* ---------- 气泡布局 ---------- */
+    function placeBubble(bubble) {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const sidebarW = w > 800 ? 380 : 0;
+      const elW = Math.min(420, (w - sidebarW) * .75);
+      const elH = 120;
+      let x, y, attempts = 0;
+      const margin = 80;
+      do {
+        x = sidebarW + margin + Math.random() * (w - sidebarW - elW - margin * 2);
+        y = margin + Math.random() * (h - elH - margin * 2);
+        attempts++;
+      } while (
+        attempts < 60 &&
+        positions.some(p => Math.abs(p.x - x) < elW + 24 && Math.abs(p.y - y) < elH + 24)
+      );
+      positions.push({ x, y, w: elW, h: elH });
+      if (positions.length > 30) positions.shift();
+      bubble.x = x;
+      bubble.y = y;
+    }
+
+    function addBubble(data) {
+      const b = {
+        id: Date.now() + Math.random(),
+        x: 0, y: 0,
+        ...data,
+      };
+      bubbles.value.push(b);
+      placeBubble(b);
+      // 限制气泡总数，避免页面卡顿
+      if (bubbles.value.length > 80) bubbles.value.splice(0, bubbles.value.length - 80);
+
+      // 记录最终答案
+      if (b.type === 'final' && b.content) {
+        final_result.value = b.content;
+      }
+    }
+
+    function addProcessCard(evt) {
+      const mapped = mapEventToBubble(evt);
+      const card = {
+        id: (evt.ts || '') + '-' + (mapped.name || mapped.type || 'card') + '-' + Math.random(),
+        ...mapped,
+        contentPreview: previewText(mapped.content || mapped.observation || ''),
+        step: evt.step,
+        agent: evt.agent || mapped.name || '',
+        expanded: false,
+      };
+      processCards.value.push(card);
+      // 限制卡片数
+      if (processCards.value.length > 200) processCards.value.splice(0, processCards.value.length - 200);
+
+      // 自动滚动到底部，保持最新事件可见
+      nextTick(() => {
+        const panel = document.querySelector('.process-panel');
+        if (panel) panel.scrollTop = panel.scrollHeight;
+      });
+    }
+
+    function toggleCard(cardId) {
+      const card = processCards.value.find(c => c.id === cardId);
+      if (card) card.expanded = !card.expanded;
+    }
+
+    /* ---------- 重置 ---------- */
+    function reset() {
+      timers.forEach(t => clearTimeout(t));
+      timers.length = 0;
+      if (event_source) { event_source.close(); event_source = null; }
+      running.value = false;
+      run_status.value = '';
+      status_text.value = '就绪';
+      bubbles.value = [];
+      positions.length = 0;
+      run_id = null;
+      show_result.value = false;
+      final_result.value = '';
+      Object.keys(final_facts).forEach(k => delete final_facts[k]);
+      processCards.value = [];
+    }
+
+    /* ---------- 运行 ---------- */
+    async function run() {
+      if (running.value) return;
+      reset();
+      running.value = true;
+      run_status.value = 'running';
+      status_text.value = '正在启动多 Agent 流水线...';
+
+      try {
+        // 1. 启动运行
+        const payload = {
+          user_query: user_query.value,
+          strategy: strategy.value,
+          max_steps: max_steps.value,
+          agents: JSON.parse(JSON.stringify(agents)),
+          relationships: JSON.parse(JSON.stringify(relationships)),
+        };
+
+        const start_res = await fetch('/api/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!start_res.ok) throw new Error('启动失败：' + start_res.status);
+        const start_data = await start_res.json();
+        run_id = start_data.run_id;
+
+        // 2. 连接 SSE
+        status_text.value = 'Agent 协作进行中...';
+        event_source = new EventSource('/api/runs/' + run_id + '/events');
+
+        event_source.addEventListener('message', (e) => {
+          const evt = JSON.parse(e.data);
+          addProcessCard(evt);
+        });
+
+        event_source.addEventListener('done', (e) => {
+          const data = JSON.parse(e.data);
+          if (data.status === 'done') {
+            run_status.value = 'done';
+            status_text.value = '运行完成 ✓';
+          } else {
+            run_status.value = 'error';
+            status_text.value = '运行失败：' + (data.error || '未知错误');
+          }
+          running.value = false;
+          event_source.close();
+
+          // 提取最终结果事实
+          const bb = data.blackboard || {};
+          const facts = bb.facts || {};
+          Object.keys(facts).forEach(k => { final_facts[k] = facts[k]; });
+          if (!final_result.value && Object.keys(facts).length) {
+            const last = Object.keys(facts).pop();
+            final_result.value = facts[last];
+          }
+          show_result.value = true;
+        });
+
+        event_source.addEventListener('error', (e) => {
+          run_status.value = 'error';
+          status_text.value = '连接异常';
+          running.value = false;
+          event_source.close();
+        });
+
+        event_source.onerror = () => {
+          // SSE 连接断开
+        };
+
+      } catch (e) {
+        run_status.value = 'error';
+        status_text.value = '启动失败：' + e.message;
+        running.value = false;
+      }
+    }
+
+    /* ---------- 文本渲染 ---------- */
+    function previewText(text) {
+      if (!text) return '';
+      const t = String(text).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      // 只展示前 240 字，避免占屏
+      const short = t.length > 240 ? t.slice(0, 240) + '…' : t;
+      return short
+        .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+        .replace(/```(\w+)?\n([\s\S]+?)```/g,'<pre><code>$2</code></pre>')
+        .replace(/`(.+?)`/g,'<code>$1</code>')
+        .replace(/\n/g,'<br>');
+    }
+
     function renderText(text) {
       if (!text) return '';
-      // 先转义 HTML，避免注入
       const escape = (s) => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
       const t = escape(text);
       return t
@@ -170,77 +837,9 @@ createApp({
         .replace(/\n/g,'<br>');
     }
 
-    /* ---------- 气泡放置：随机但不重叠 ---------- */
-    function placeBubble(bubble) {
-      const w = window.innerWidth;
-      const h = window.innerHeight;
-      const elW = Math.min(360, w * .8);
-      const elH = 100; // 估算高度
-      let x, y, attempts = 0;
-      const margin = 80;
-      do {
-        x = margin + Math.random() * (w - elW - margin * 2);
-        y = margin + Math.random() * (h - elH - margin * 2);
-        attempts++;
-      } while (
-        attempts < 50 &&
-        positions.some(p => Math.abs(p.x - x) < elW + 20 && Math.abs(p.y - y) < elH + 20)
-      );
-      positions.push({ x, y, w: elW, h: elH });
-      if (positions.length > 20) positions.shift();
-      bubble.x = x;
-      bubble.y = y;
-    }
-
-    /* ---------- 工具：添加单个气泡 ---------- */
-    function addBubble(data) {
-      const b = {
-        id: Date.now() + Math.random(),
-        x: 0, y: 0,
-        ...data,
-      };
-      bubbles.value.push(b);
-      placeBubble(b);
-    }
-
-    /* ---------- 重置 ---------- */
-    function reset() {
-      // 清理所有未触发的定时器
-      playTimers.forEach(t => clearTimeout(t));
-      playTimers = [];
-      playing.value = false;
-      bubbles.value = [];
-      positions = [];
-    }
-
-    /* ---------- 播放示例对话 ---------- */
-    function play() {
-      if (playing.value) return;
-      reset();
-      playing.value = true;
-
-      // 示例事件流：直接使用前端事件契约格式（见 bubble-sample.js）
-      const samples = typeof SAMPLE_EVENTS !== 'undefined' ? SAMPLE_EVENTS : [];
-
-      // 逐条按延迟入队
-      samples.forEach((s) => {
-        const t = setTimeout(() => {
-          if (!playing.value) return;
-          addBubble(mapEventToBubble(s));
-        }, s.delay || 0);
-        playTimers.push(t);
-      });
-
-      // 播放结束
-      const endDelay = samples.length > 0 ? (samples[samples.length - 1].delay || 0) + 1000 : 1000;
-      const endTimer = setTimeout(() => {
-        playing.value = false;
-      }, endDelay);
-      playTimers.push(endTimer);
-    }
-
-    /* ---------- 生命周期：生成背景粒子 ---------- */
-    onMounted(() => {
+    /* ---------- 生命周期 ---------- */
+    onMounted(async () => {
+      await load_config();
       const particles = document.getElementById('particles');
       for (let i = 0; i < 30; i++) {
         const p = document.createElement('div');
@@ -258,8 +857,12 @@ createApp({
     });
 
     return {
-      bubbles, playing,
-      renderText, play, reset,
+      bubbles, processCards, user_query, strategy, max_steps,
+      running, run_status, status_text,
+      agents, relationships, tools_input,
+      show_result, final_result, final_facts,
+      renderText, reset, run, toggleCard,
+      update_tools, add_termination, remove_termination,
     };
   }
 }).mount('#app');
