@@ -161,10 +161,19 @@
   - `run_react_agent(user_input, client, model, tools, system_prompt, max_steps) -> str`
   - `filter_tools_schema(tools)`：根据工具名列表过滤 OpenAI Schema
   - `call_tool_safe(tool_name, tool_args)`：安全调用工具
+  - `Blackboard` / `Command` / `KnowledgeSource` / `ControlShell` / `RelationshipEngine`：关系驱动协作 API
 - **关键文件**：
   - `agent_api.py`：统一 API，包装 core.run_loop
   - `tool_filter.py`：工具过滤
   - `tool_caller.py`：安全工具调用包装
+  - `relationship.py`：**关系驱动多 Agent 协作引擎**（~330 行）
+    - `Blackboard`：共享状态（facts / open_questions / history）
+    - `Command`：LangGraph 风格路由原语（goto + update + terminate）
+    - `KnowledgeSource`：Agent 单元（preconditions + action + role/goal/backstory）
+    - `ControlShell`：OODA 调度器（first_match / priority / round_robin）
+    - `RelationshipEngine`：YAML 驱动的协作引擎，含 `from_yaml()` 工厂
+    - `_parse_precondition()`：安全子集表达式解析（避免 eval）
+  - `__init__.py`：暴露基础 ReAct API + 关系驱动 API
 
 ### config.py
 
