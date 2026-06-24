@@ -200,8 +200,18 @@
   - `stategraph_demo.py`：自定义状态图模式演示（自实现图引擎）
   - `langgraph_demo.py`：LangGraph 框架模式演示
   - `langgraph_official.py`：LangGraph 官方代码示例
+  - `relationship_demo.py`：关系驱动协作演示（3 个 demo：Python API / YAML 驱动 / 自定义 action）
   - `README.md`：演示目录说明
 - **运行方式**：`python agent_core/demos/<文件名>.py`
+
+### config/（项目根目录）
+
+- **路径**：config/
+- **作用**：YAML 配置文件目录，**关系驱动协作引擎**加载这些文件来定义多 Agent 协作行为。
+- **关键文件**：
+  - `agents.yaml`：Agent 定义（role / goal / backstory / tools / preconditions / max_iter）
+  - `relationships.yaml`：关系定义（priority / termination）
+- **修改这些 YAML 文件即可改变多 Agent 协作流程，无需改任何 Python 代码**。
 
 ---
 
