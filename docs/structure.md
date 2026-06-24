@@ -1,5 +1,105 @@
 # 项目文件结构索引
 
+本文档用于快速定位具体文件的内容行号，并在开头提供完整目录树，方便快速浏览整体结构。
+
+## 目录树
+
+```text
+my-agent/
+├── AGENTS.md
+├── CHANGELOG.md
+├── CONTRIBUTING.md
+├── README.md
+├── _check_structure.py
+├── agent_core/
+│   ├── config.py
+│   ├── core/
+│   │   ├── __init__.py
+│   │   ├── react_agent.py
+│   │   └── tool_registry.py
+│   ├── demos/
+│   │   ├── README.md
+│   │   ├── langgraph_demo.py
+│   │   ├── langgraph_official.py
+│   │   ├── multi_agent_demo.py
+│   │   ├── relationship_demo.py
+│   │   └── stategraph_demo.py
+│   ├── frontend/
+│   │   ├── __init__.py
+│   │   ├── adapter.py
+│   │   ├── bus.py
+│   │   └── events.py
+│   ├── multi_agent/
+│   │   ├── __init__.py
+│   │   ├── agent_api.py
+│   │   ├── relationship.py
+│   │   ├── tool_caller.py
+│   │   └── tool_filter.py
+│   ├── server/
+│   │   ├── __init__.py
+│   │   ├── run.py
+│   │   └── server.py
+│   └── static/
+│       ├── bubble-adapter.js
+│       ├── bubble-sample.js
+│       ├── bubble.html
+│       ├── index.html
+│       └── vue.html
+├── config/
+│   ├── agents.yaml
+│   └── relationships.yaml
+├── docs/
+│   ├── structure.md
+│   ├── adr/
+│   ├── explain/
+│   │   ├── README.md
+│   │   └── 代码走读-relationship.py-2026-06-24.md
+│   ├── guides/
+│   │   ├── development.md
+│   │   ├── frontend-exploration.md
+│   │   └── running.md
+│   ├── overview/
+│   │   ├── README.md
+│   │   ├── architecture.md
+│   │   └── glossary.md
+│   ├── reference/
+│   │   ├── api.md
+│   │   └── configuration.md
+│   └── report/
+│       ├── Skill_Engineering_Technical_Details.md
+│       ├── 写一个自己的智能体_完整调研与最佳实践报告.md
+│       ├── 关系驱动多Agent协作架构实现方案.md
+│       ├── 多智能体协作系统设计模式完整调研报告.md
+│       ├── 气泡卡片样式参考.md
+│       ├── LangGraph多Agent架构官方模式参考.md
+│       ├── ReAct智能体实现评估与改进路线图.md
+│       ├── GCMP_400_input_invalid_排查与修复报告.md
+│       └── reports/
+├── docs_sync/
+├── experiments/
+│   ├── run_log.py
+│   ├── outputs/
+│   └── ...
+├── memories/
+│   ├── repo/
+│   │   ├── 项目约定.md
+│   │   └── 架构决策记录.md
+│   └── session/
+│       ├── _TEMPLATE.md
+│       └── ...
+├── mkdocs.yml
+├── research/
+├── setup_documentation.py
+├── site/
+└── tests/
+    ├── __init__.py
+    ├── test_control_shell.py
+    ├── test_parse_precondition.py
+    └── test_run_loop.py
+```
+
+---
+
 本文档用于快速定位具体文件的内容行号。整体目录可直接通过目录浏览查看，此处仅记录需要按行号精确定位的核心文件。
 
 ---
