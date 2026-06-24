@@ -1,0 +1,34 @@
+# experiments/2026-06-24-tool-scenario.yaml
+#
+# 目的：设计一个**必触发工具调用**的场景，证明 relationship.py 的
+#       ReAct 循环里 Action / Observation 链路正常工作。
+#
+# 关键：
+# - tools 字段**显式列出**，让 LLM 真正看到工具（默认 [] = 看不到）
+# - 用户 query 明确指示"必须用 calculator 算"
+# - 2 个 agent：analyst 必调工具，writer 整理输出
+#
+# 配合 experiments/2026-06-24-tool-scenario.py 使用。
+
+analyst:
+  role: 财务分析师
+  goal: 用 calculator 工具精确计算 3 条产品线的成本与占比，输出结构化数字
+  backstory: |
+    你是严谨的财务分析师。**所有数字必须经过 calculator 工具计算**后写入报告，
+    禁止心算（心算可能四舍五入或错位）。报告末尾请用 get_time 工具标注生成时间。
+    输出格式：每条产品线一段，包含【各项明细 + 总成本 + 公司月总成本 + AI 成本占比】。
+  max_iter: 8
+  preconditions: "True"
+  tools: [calculator, get_time]
+
+writer:
+  role: 财务简报作家
+  goal: 把分析师的结构化数字写为给 CFO 的简明简报（含执行摘要 + 关键数字 + 行动建议）
+  backstory: |
+    你是简报专家。把 analyst 的数字组织为 1 页简报，要求：
+    - 执行摘要 3 行
+    - 关键数字表（产品线 / 月成本 / 占比）
+    - 行动建议 3 条
+  max_iter: 3
+  preconditions: "facts.has('result::analyst')"
+  tools: [get_time]

@@ -1,0 +1,9 @@
+# experiments/2026-06-24-scenario-relationships.yaml
+# 关系配置：3 Agent 协作的调度顺序与终止条件
+priority:
+  advisor: 1
+  strategist: 2
+  writer: 3
+
+termination:
+  - "facts.has('result::writer')"

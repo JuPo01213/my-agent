@@ -129,6 +129,12 @@
 
 - **路径**：memories/session/
 - **说明**：对话归档目录，按日期+轮次命名。模板见 `_TEMPLATE.md`。
+- **当前归档**：
+  - 01~05：项目早期（功能开发 + 调研）
+  - 06：reAct 推理模型问题首次暴露
+  - 07：绕过 ReAct 循环的尝试（被用户回退）
+  - 08：修核心不绕核心（ADR-007 落地）
+  - 09：工具调用场景 + 完整日志机制 + ADR-008 + 文档结构优化
 
 ---
 
@@ -212,6 +218,45 @@
   - `agents.yaml`：Agent 定义（role / goal / backstory / tools / preconditions / max_iter）
   - `relationships.yaml`：关系定义（priority / termination）
 - **修改这些 YAML 文件即可改变多 Agent 协作流程，无需改任何 Python 代码**。
+
+---
+
+## experiments/
+
+- **路径**：experiments/
+- **作用**：所有真实实验（调用 LLM、跑测试、跑 benchmark）的脚本与日志归档目录。
+  - 按 `experiments/<日期>-<实验名>.py` 命名脚本
+  - 同名 `.log` 存放执行输出（stdout + stderr 全部重定向）
+  - 任何实验汇报必须给出日志的绝对路径供用户 `cat` 验真
+- **当前归档**：
+  - `2026-06-24-relationship-real.py`：用 StepFun 真实 API 跑 relationship.py 的 3 Agent 协作
+  - `2026-06-24-relationship-real.log`：上述脚本的完整执行输出（含 KPI 校验）
+  - `2026-06-24-relationship-real-kpi.py`：从 log 反推顺序的辅助 KPI 校验脚本
+  - `2026-06-24-scenario.yaml`：纯 LLM 场景的 Agent 配置（advisor/strategist/writer，**未显式列 tools → 0 工具调用**，见 ADR-008）
+  - `2026-06-24-scenario-relationships.yaml`：纯 LLM 场景的关系配置（priority + termination）
+  - `2026-06-24-scenario.py`：跑"6 个月 AI 转型路线图"场景的主脚本（保留默认 ReAct 循环，175.08s）
+  - `2026-06-24-scenario.log`：场景实验完整日志（3 段产出实测 19750 字，6/6 KPI 全过）
+  - `2026-06-24-scenario-kpi.py`：从 log 反推 KPI 的辅助脚本（解决主脚本 KPI 段被 PowerShell 截断的问题）
+  - `2026-06-24-tool-scenario.yaml`：工具调用场景 Agent 配置（analyst 显式 `[calculator, get_time]`，writer `[get_time]`，见 ADR-008）
+  - `2026-06-24-tool-scenario-relationships.yaml`：工具调用场景关系配置（priority analyst=1, writer=2）
+  - `2026-06-24-tool-scenario.py`：工具调用场景主脚本（包装 OpenAI client + TOOLS，35.03s 跑出 8 LLM + 10 工具）
+  - `2026-06-24-tool-scenario.log`：工具调用场景完整日志（**65515 字符，含每次 LLM 调用的完整 request/response JSON**）
+- **outputs/**（子目录）：
+  - **作用**：所有实验的"干净交付物"——完整原文 + 代码 + 配置 + 索引，按需打开可独立验证
+  - `README.md`：双场景完整索引（含流程图、KPI、再跑命令） + **三场演进对比表**（ADR × KPI × 踩坑 一图速查，导航索引）
+  - 第一场（无工具）：advisor-output.md (5043字) / strategist-output.md (5873字) / writer-output.md (8834字) / scenario-script.py / 两个 yaml
+  - 第二场（有工具）：tool-analyst-output.md (498字) / tool-writer-output.md (963字) / tool-scenario-script.py / 两个 yaml
+  - **原则**：产物非代码，手工归档保证零修改，**不做自动生成脚本**
+
+---
+
+## docs/explain/
+
+- **路径**：docs/explain/
+- **作用**：代码走读 / 讲解类文档，按主题+日期命名。
+- **当前归档**：
+  - `README.md`：目录说明
+  - `代码走读-relationship.py-2026-06-24.md`：relationship.py 的 6 步走读
 
 ---
 

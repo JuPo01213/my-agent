@@ -1,0 +1,8 @@
+# experiments/2026-06-24-tool-scenario-relationships.yaml
+
+priority:
+  analyst: 1
+  writer: 2
+
+termination:
+  - "facts.has('result::writer')"

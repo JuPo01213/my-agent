@@ -100,6 +100,10 @@ def run_loop(
         )
         response_msg = response.choices[0].message
         reply_content = response_msg.content or ""
+        # 兼容推理模型（StepFun step-3.7-flash 等）：content 经常为空，
+        # 真实输出在 reasoning_content 字段。final answer 取自此。
+        if not reply_content and getattr(response_msg, "reasoning_content", None):
+            reply_content = response_msg.reasoning_content
         messages.append(response_msg)
 
         # 没有工具调用 → 返回最终答案
