@@ -58,6 +58,20 @@
   - 150-250：Swarm 模式详解 + 官方代码
   - 250-300：分层架构 + 成熟案例
 
+### 关系驱动多Agent协作架构实现方案.md
+
+- **路径**：docs/report/关系驱动多Agent协作架构实现方案.md
+- **总行数**：约 600 行
+- **作用**：基于 LangGraph / SALLMA / Accountability / CrewAI / Blackboard / SAMALM 等业界成熟实践，给出本项目"关系驱动多 Agent 协作层"的完整实现方案。包含 7 个业界案例、关系引擎 Python 代码、YAML 配置示例、模式融合策略和落地路线图。
+- **关键内容**：
+  - 1-150：7 个业界案例（LangGraph / SALLMA / Accountability / CrewAI / Blackboard / SAMALM / 7 拓扑），每个都有出处链接
+  - 150-250：项目当前状态盘点 + 设计目标 + 架构分层
+  - 250-450：关系引擎 `multi_agent/relationship.py` 完整实现（Blackboard / Command / KnowledgeSource / ControlShell / RelationshipEngine）
+  - 450-550：YAML 配置示例（agents.yaml / relationships.yaml）+ 使用 demo
+  - 550-650：模式融合策略（Blackboard 底 + Supervisor 顶）+ 关系即配置原则
+  - 650-750：5 阶段落地路线图（v1.0 骨架 → v3.0 高级特性）
+  - 750-末：参考资料（29 项）+ 完整可运行最小示例 + 与 LangGraph 对比表
+
 ### ReAct智能体实现评估与改进路线图.md
 
 - **路径**：docs/report/ReAct智能体实现评估与改进路线图.md
@@ -121,31 +135,36 @@
 ## agent_core/
 
 - **路径**：agent_core/
-- **说明**：智能体核心代码，按渐进式披露组织，直接按文件名定位。
+- **说明**：智能体核心代码，按"core + multi_agent"分层组织，关注点分离。
+- **架构原则**：
+  - `core/`：最底层的 ReAct 循环 + 工具注册表，**不暴露任何 dashboard 相关参数**
+  - `multi_agent/`：多 Agent 协作的公开 API，Supervisor 唯一入口
+  - `static/`：前端探索期静态文件（**当前不与后端联通**）
+  - `demos/`：多 Agent 架构演示代码，**不参与主项目运行**
 
-### react_agent.py
+### core/
 
-- **总行数**：约 410 行
-- **作用**：最小可运行 ReAct 智能体核心，基于原生 Function Calling 实现，包含工具注册表（带 Schema 校验）、LLM 调用封装、Thought-Action-Observation 循环、流式事件接口、交互式 REPL 和**多 Agent 协作参数化接口**。
-- **关键行号**：
-  - 1-120：工具注册层（`register_tool` 装饰器、`build_openai_tools_schema`、`validate_tool_args` 参数校验 + 3 个示例工具）
-  - 122-200：LLM 层（`get_llm_client` + 优化后的 `SYSTEM_PROMPT`）
-  - 202-230：循环层配置（`MAX_STEPS` 常量）
-  - 230-350：**统一的循环层**（`run_react_loop` 同步入口 + `run_react_loop_stream` 流式入口，支持 `tools` / `system_prompt` / `max_steps` 参数化，是多 Agent 协作的核心接口）
-  - 350-410：**辅助函数**（`_filter_tools_schema` 工具过滤 + `_call_tool_safe` 工具安全调用，Supervisor 复用）
-  - 410+：入口（`main` + REPL）
-
-### demos/
-
-- **路径**：agent_core/demos/
-- **作用**：存放多 Agent 架构的演示代码，**不参与主项目运行**，避免污染主项目稳定性。
+- **路径**：agent_core/core/
+- **作用**：核心层，**只做一件事**：跑一次 ReAct 循环 + 工具注册表。
+- **公开 API**（从 `agent_core.core` 导入）：
+  - `run_loop(user_input, client, model, system_prompt, openai_tools, max_steps) -> str`
+  - `TOOLS` / `register_tool` / `build_openai_tools_schema` / `validate_tool_args`
 - **关键文件**：
-  - `multi_agent_demo.py`：简单 Supervisor 模式演示（函数调用链）
-  - `stategraph_demo.py`：自定义状态图模式演示（自实现图引擎）
-  - `langgraph_demo.py`：LangGraph 框架模式演示
-  - `langgraph_official.py`：LangGraph 官方代码示例
-  - `README.md`：演示目录说明
-- **运行方式**：`python agent_core/demos/<文件名>.py`
+  - `react_agent.py`：纯 ReAct 循环（~100 行），无任何 dashboard 事件协议
+  - `tool_registry.py`：工具注册表 + 3 个内置工具（calculator / search / get_time）
+
+### multi_agent/
+
+- **路径**：agent_core/multi_agent/
+- **作用**：多 Agent 协作的公开 API 层，**Supervisor 唯一入口**。
+- **公开 API**（从 `agent_core.multi_agent` 导入）：
+  - `run_react_agent(user_input, client, model, tools, system_prompt, max_steps) -> str`
+  - `filter_tools_schema(tools)`：根据工具名列表过滤 OpenAI Schema
+  - `call_tool_safe(tool_name, tool_args)`：安全调用工具
+- **关键文件**：
+  - `agent_api.py`：统一 API，包装 core.run_loop
+  - `tool_filter.py`：工具过滤
+  - `tool_caller.py`：安全工具调用包装
 
 ### config.py
 
@@ -158,51 +177,22 @@
   - 40-55：`get_provider()` 解析当前生效的 (api_key, base_url, model)，优先级 StepFun > OpenAI
   - 57-70：`get_provider_config(name)` 按名称返回指定 Provider 配置，支持 stepfun/ark/doubao/openai
 
-### dashboard.py
+### static/
 
-- **总行数**：约 170 行
-- **作用**：纯 Python 标准库实现的智能体前端控制台，提供静态页面服务、SSE 实时日志推送、多模型切换、运行启停接口。
-- **关键行号**：
-  - 1-40：依赖与运行状态类 `Run`、多 Provider 客户端初始化
-  - 42-90：HTTP 请求分发（GET/POST 路由、页面、静态文件、stream）
-  - 92-150：业务接口（`_handle_run` 支持从 query 和 body 读取 provider/model 参数、`_handle_stop`、`_handle_stream` SSE 推送）
-  - 150-170：启动入口
+- **路径**：agent_core/static/
+- **作用**：前端样式探索期静态文件（index.html / vue.html / bubble.html），**当前不与后端联通**，纯静态预览。
 
-### static/index.html
+### demos/
 
-- **总行数**：约 260 行
-- **作用**：单文件深色主题前端，提供用户输入、启动/停止按钮，以及 Thought / Action / Observation / Final Answer 的实时日志展示。
-- **关键行号**：
-  - 1-40：设计令牌与全局样式
-  - 40-70：输入区、工具栏、状态栏
-  - 70-130：日志卡片、空状态、CSS 打字机光标
-  - 130-260：JavaScript 逻辑（转义、日志渲染、SSE 订阅）
-
-### static/vue.html
-
-- **总行数**：约 300 行
-- **作用**：基于 Vue 3 CDN 的单文件前端，提供与原生版相同的功能，但采用浅色渐变、圆角卡片等不同视觉风格。
-- **关键行号**：
-  - 1-40：Vue 3 CDN 引入与设计令牌
-  - 40-80：模板结构（输入框、工具栏、日志列表、切换链接）
-  - 80-180：CSS 样式（卡片、按钮、日志、打字机动画）
-  - 180-300：Vue 逻辑（setup、SSE、打字机效果、响应式状态）
-
-### static/bubble.html
-
-- **总行数**：约 280 行
-- **作用**：第三版前端样式示例（深色主题），纯前端静态页面，**不与后端联通**。基于 Vue 3 CDN 实现，消息以气泡形式随机分布在全屏空间中，支持毛玻璃效果、弹出动画、粒子背景、中心 AI 脉动。
-- **打开方式**：浏览器直接打开 `agent_core/static/bubble.html`，或本地 `file://` 协议访问
-- **交互**：点击右上角"播放示例"按钮，按时间线依次浮现示例对话气泡；点击"重置"清空
-- **关键行号**：
-  - 1-30：设计令牌与基础重置
-  - 30-50：背景层（流体渐变、浮动粒子、AI 脉动环）
-  - 50-65：顶部工具栏（播放示例、重置）
-  - 65-90：气泡样式（七种类型：user/agent/tool/thinking/final/error/system）
-  - 90-140：Vue 模板（提示条、工具栏、气泡渲染）
-  - 140-200：核心方法（文本渲染、气泡放置、添加气泡）
-  - 200-250：播放示例与重置逻辑（内置 11 条示例数据）
-  - 250-280：生命周期（生成背景粒子）
+- **路径**：agent_core/demos/
+- **作用**：存放多 Agent 架构的演示代码，**不参与主项目运行**，避免污染主项目稳定性。
+- **关键文件**：
+  - `multi_agent_demo.py`：简单 Supervisor 模式演示（函数调用链）
+  - `stategraph_demo.py`：自定义状态图模式演示（自实现图引擎）
+  - `langgraph_demo.py`：LangGraph 框架模式演示
+  - `langgraph_official.py`：LangGraph 官方代码示例
+  - `README.md`：演示目录说明
+- **运行方式**：`python agent_core/demos/<文件名>.py`
 
 ---
 
