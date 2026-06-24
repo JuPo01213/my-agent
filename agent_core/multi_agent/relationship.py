@@ -239,15 +239,17 @@ class KnowledgeSource:
             )
         user_input = "\n".join(user_input_parts) or "（无任务）"
 
-        # 调 LLM 跑 ReAct
-        answer = run_react_agent(
+        # 调 LLM 跑 ReAct（拿到中性 trace，写回黑板供 ControlShell emit）
+        answer, trace = run_react_agent(
             user_input=user_input,
             client=engine.client,
             model=engine.model,
             tools=self.tools or None,
             system_prompt=self.system_prompt,
             max_steps=self.max_iter,
+            return_trace=True,
         )
+        blackboard.metadata[f"_trace::{self.name}"] = trace
 
         # 把结果写回黑板
         return Command(
@@ -284,6 +286,7 @@ class ControlShell:
         max_steps: int = 50,
         strategy: str = "first_match",
         done_when: Callable[[Blackboard], bool] | None = None,
+        on_event: Callable[[dict], None] | None = None,
     ):
         self.blackboard = blackboard
         self.sources = sources
@@ -294,8 +297,9 @@ class ControlShell:
         self.done_when = done_when
         self._round_robin_index = 0  # 用于 round_robin 策略
         # 记录已经被激活过的 Agent（避免 first_match 死循环）
-        # 若需让某个 Agent 可被多次激活（如反思），使用 Command.goto 显式转交
         self._activated: set[str] = set()
+        # 事件回调：None 时为 no-op
+        self._on_event = on_event
 
     def _select_source(self) -> KnowledgeSource | None:
         """
@@ -366,6 +370,22 @@ class ControlShell:
                 self.blackboard.status = "solved"
                 break
 
+            # Act：emit agent.activate 事件
+            if self._on_event is not None:
+                try:
+                    can_activate = [
+                        s.name for s in self.sources
+                        if s.name not in self._activated and s.can_activate(self.blackboard)
+                    ]
+                except Exception:
+                    can_activate = []
+                self._on_event({
+                    "type": "agent.activate",
+                    "agent": source.name,
+                    "step": step,
+                    "can_activate": can_activate,
+                })
+
             # Act：执行 action
             try:
                 cmd = source.action(self.blackboard, self.engine)
@@ -375,6 +395,13 @@ class ControlShell:
                     f"error::{source.name}", str(e), source="control_shell"
                 )
                 self.blackboard.status = "failed"
+                if self._on_event is not None:
+                    self._on_event({
+                        "type": "agent.error",
+                        "agent": source.name,
+                        "step": step,
+                        "error": str(e),
+                    })
                 break
 
             # 标记为已激活
@@ -382,6 +409,20 @@ class ControlShell:
 
             # 把 Command 写回黑板
             self._apply_command(cmd)
+
+            # 把该 Agent 的 trace emit 给前端（如果有 on_event）
+            if self._on_event is not None:
+                trace_key = f"_trace::{source.name}"
+                trace = self.blackboard.metadata.get(trace_key, [])
+                for t in trace:
+                    self._on_event({
+                        "kind": t.get("kind"),
+                        "step": t.get("step", step),
+                        "data": t.get("data", {}),
+                        "agent": source.name,
+                    })
+                # 清掉已 emit 的 trace（避免重复）
+                self.blackboard.metadata.pop(trace_key, None)
 
             # 检查终止条件
             if cmd.terminate or self.blackboard.is_solved():
@@ -458,6 +499,7 @@ class RelationshipEngine:
         strategy: str = "first_match",
         metadata: dict | None = None,
         done_when: Callable[[Blackboard], bool] | None = None,
+        on_event: Callable[[dict], None] | None = None,
     ) -> Blackboard:
         """
         启动一次多 Agent 协作。
@@ -467,6 +509,8 @@ class RelationshipEngine:
             strategy：ControlShell 调度策略（first_match / priority / round_robin）
             metadata：注入黑板的额外元信息（如 priority 映射）
             done_when：自定义终止条件 callable(blackboard) -> bool
+            on_event：事件回调，**与前端契约层解耦**（详见 agent_core.frontend.events）。
+                      传入 None 时完全不发事件，行为与原版一致。
 
         Returns:
             最终的 Blackboard 实例（包含 facts / history / status）
@@ -484,6 +528,7 @@ class RelationshipEngine:
             max_steps=self.max_steps,
             strategy=strategy,
             done_when=done_when,
+            on_event=on_event,
         )
 
         # 3. 启动 OODA 循环

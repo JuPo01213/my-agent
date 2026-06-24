@@ -211,6 +211,17 @@
     - `_parse_precondition()`：安全子集表达式解析（避免 eval）
   - `__init__.py`：暴露基础 ReAct API + 关系驱动 API
 
+### frontend/
+
+- **路径**：agent_core/frontend/
+- **作用**：前端事件契约层，**与 Vue/HTML 0 耦合**，仅定义中性事件格式 + 聚合 + 翻译。
+- **关键文件**：
+  - `events.py`：8 类前端事件工厂函数，ISO-8601 时间戳，snake_case 字段
+  - `bus.py`：`EventBus` 收集事件，同时兼容 `type` 与 `kind` 字段统计
+  - `adapter.py`：`wrap_trace_to_events()` 将核心中性 trace 翻译为前端事件；`aggregate_run_events()` 聚合 Agent 级 trace
+  - `__init__.py`：导出 `EventBus`、事件工厂、适配器
+- **关联 ADR**：ADR-013（异步事件流 / 前端解耦）
+
 ### config.py
 
 - **总行数**：约 70 行

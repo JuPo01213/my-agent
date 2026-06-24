@@ -10,6 +10,9 @@ agent_core.core.react_agent - 纯 ReAct 循环
 
 接口：
 - run_loop(user_input, client, model, system_prompt, openai_tools) -> str
+  - return_trace=True 时返回 (final_text, trace: list[dict])，trace 字段是
+    **中性 trace**（`{"kind": "llm|tool|final", "step": int, "data": {...}}`），
+    由上层模块 wrap 为具体事件契约，**核心层不感知任何上层 schema**。
 """
 from __future__ import annotations
 
@@ -62,7 +65,8 @@ def run_loop(
     system_prompt: str | None = None,
     openai_tools: list[dict[str, Any]] | None = None,
     max_steps: int = MAX_STEPS,
-) -> str:
+    return_trace: bool = False,
+):
     """
     执行一次完整的 ReAct 循环，返回最终答案。
 
@@ -75,14 +79,21 @@ def run_loop(
         system_prompt: 系统提示，None 表示使用默认
         openai_tools: OpenAI Function Calling Schema，None 表示使用所有已注册工具
         max_steps: 最大步数限制，防止无限循环
+        return_trace: 若 True，返回 (final_text, trace)。
+                     trace 是**中性 trace**，由 frontend 层 wrap 为前端契约，
+                     核心层不感知前端 schema。
 
     Returns:
-        最终答案字符串
+        - return_trace=False: str（最终答案，与原版一致）
+        - return_trace=True:  tuple[str, list[dict]] (final_text, trace)
     """
     if openai_tools is None:
         openai_tools = build_openai_tools_schema()
     if system_prompt is None:
         system_prompt = DEFAULT_SYSTEM_PROMPT
+
+    # 中性 trace：纯业务事件，core 完全不知道"前端"是什么
+    trace: list[dict[str, Any]] = []
 
     messages = [
         {"role": "system", "content": system_prompt},
@@ -106,10 +117,20 @@ def run_loop(
             reply_content = response_msg.reasoning_content
         messages.append(response_msg)
 
+        # 把 LLM 输出记到 trace（content 可能是 thought / reasoning_content）
+        if reply_content:
+            trace.append({
+                "kind": "llm",
+                "step": step,
+                "data": {"content": reply_content, "has_tool_calls": bool(response_msg.tool_calls)},
+            })
+
         # 没有工具调用 → 返回最终答案
         tool_calls = response_msg.tool_calls
         if not tool_calls:
-            return reply_content.strip() or "未得到有效回答。"
+            final_text = reply_content.strip() or "未得到有效回答。"
+            trace.append({"kind": "final", "step": step, "data": {"content": final_text}})
+            return (final_text, trace) if return_trace else final_text
 
         # 处理工具调用
         for tool_call in tool_calls:
@@ -119,7 +140,21 @@ def run_loop(
             except json.JSONDecodeError:
                 tool_args = {}
 
+            # 记录 tool.call（中性事件）
+            trace.append({
+                "kind": "tool",
+                "step": step,
+                "data": {"phase": "call", "name": tool_name, "args": tool_args},
+            })
+
             observation = _call_tool(tool_name, tool_args)
+
+            # 记录 tool.observation（中性事件）
+            trace.append({
+                "kind": "tool",
+                "step": step,
+                "data": {"phase": "observation", "name": tool_name, "observation": observation},
+            })
 
             messages.append({
                 "tool_call_id": tool_call.id,
@@ -128,4 +163,6 @@ def run_loop(
                 "content": observation,
             })
 
-    return "超过最大步数限制，未得出最终答案。"
+    timeout_msg = "超过最大步数限制，未得出最终答案。"
+    trace.append({"kind": "final", "step": max_steps, "data": {"content": timeout_msg}})
+    return (timeout_msg, trace) if return_trace else timeout_msg

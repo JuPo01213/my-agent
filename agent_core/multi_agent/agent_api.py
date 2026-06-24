@@ -49,7 +49,8 @@ def run_react_agent(
     tools: list[str] | None = None,
     system_prompt: str | None = None,
     max_steps: int = DEFAULT_MAX_STEPS,
-) -> str:
+    return_trace: bool = False,
+) -> str | tuple[str, list[dict[str, Any]]]:
     """
     运行一个独立的 ReAct Agent，返回最终答案。
 
@@ -63,9 +64,12 @@ def run_react_agent(
         tools: 此 Agent 可用的工具名列表，None 表示使用所有已注册工具
         system_prompt: 自定义系统提示，None 表示使用默认
         max_steps: 最大步数限制
+        return_trace: 若 True，返回 (final_text, trace)，trace 为**中性 trace**
+                      列表，由上层模块 wrap 为具体事件契约。
 
     Returns:
-        最终答案字符串
+        - return_trace=False: str（最终答案，与原版一致）
+        - return_trace=True:  tuple[str, list[dict]] (final_text, trace)
     """
     # 工具名列表 → OpenAI Schema
     if tools is None:
@@ -85,6 +89,7 @@ def run_react_agent(
         system_prompt=system_prompt,
         openai_tools=openai_tools,
         max_steps=max_steps,
+        return_trace=return_trace,
     )
 
 
