@@ -93,6 +93,10 @@
     .topbar{ top:70px; right:12px; flex-wrap:wrap; }
   }
 </style>
+<!-- 前端事件契约样本数据 -->
+<script src="bubble-sample.js"></script>
+<!-- 事件契约适配器：将标准事件映射为气泡组件所需结构 -->
+<script src="bubble-adapter.js"></script>
 </head>
 <body>
   <!-- 背景层 -->
@@ -215,34 +219,23 @@ createApp({
       reset();
       playing.value = true;
 
-      // 示例对话数据：模拟一次完整的 ReAct 调用过程
-      const samples = [
-        { delay: 0,    type: 'user',     content: '北京今天天气怎么样？',                       meta: '10:23 · 用户' },
-        { delay: 600,  type: 'thinking', content: '用户询问北京天气。\n1. 识别意图：获取天气信息\n2. 地点：北京\n3. 时间：今天\n4. 调用 get_weather 工具', meta: '10:23 · Thought' },
-        { delay: 1200, type: 'tool',     name: 'get_weather', args: '{ location: "北京", date: "2024-06-24" }', meta: '10:23 · Action' },
-        { delay: 1800, type: 'tool',     name: 'result', args: '', observation: '{\n  "temperature": 28,\n  "condition": "晴转多云",\n  "humidity": "45%"\n}', meta: '10:23 · Observation' },
-        { delay: 2600, type: 'agent',    content: '北京今天天气晴转多云，气温 22°C ~ 32°C，当前温度约 28°C。\n\n• 湿度：45%\n• 风向：东南风 2级\n• 空气质量：良', meta: '10:23 · Final' },
-        { delay: 3400, type: 'user',     content: '那明天呢？需要带伞吗？', meta: '10:25 · 用户' },
-        { delay: 4000, type: 'agent',    content: '明天北京多云转阴，午后有雷阵雨。\n\n**建议您带伞！** 降水概率约 60%。', meta: '10:25 · Final' },
-        { delay: 4800, type: 'user',     content: '帮我计算 123 × 456', meta: '10:27 · 用户' },
-        { delay: 5400, type: 'agent',    content: '123 × 456 = **56,088**\n\n计算步骤：\n```\n123 × 456\n= 49,200 + 6,150 + 738\n= 56,088\n```', meta: '10:27 · Final' },
-        { delay: 6400, type: 'user',     content: '搜索最新AI新闻', meta: '10:30 · 用户' },
-        { delay: 7000, type: 'agent',    content: '为您找到最新AI新闻：\n\n**1. OpenAI 发布 GPT-5 预览版**\n新模型在复杂推理方面实现显著突破。\n\n**2. 国内大模型竞赛白热化**\n多家企业发布新版本。\n\n**3. 欧盟AI法案正式生效**', meta: '10:30 · Final' },
-      ];
+      // 示例事件流：直接使用前端事件契约格式（见 bubble-sample.js）
+      const samples = typeof SAMPLE_EVENTS !== 'undefined' ? SAMPLE_EVENTS : [];
 
       // 逐条按延迟入队
-      samples.forEach(s => {
+      samples.forEach((s) => {
         const t = setTimeout(() => {
           if (!playing.value) return;
-          addBubble(s);
-        }, s.delay);
+          addBubble(mapEventToBubble(s));
+        }, s.delay || 0);
         playTimers.push(t);
       });
 
       // 播放结束
+      const endDelay = samples.length > 0 ? (samples[samples.length - 1].delay || 0) + 1000 : 1000;
       const endTimer = setTimeout(() => {
         playing.value = false;
-      }, samples[samples.length - 1].delay + 1000);
+      }, endDelay);
       playTimers.push(endTimer);
     }
 
