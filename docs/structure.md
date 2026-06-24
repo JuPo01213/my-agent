@@ -424,6 +424,52 @@
 
 ---
 
+## docs_sync/
+
+- **路径**：docs_sync/
+- **说明**：文档同步增强层，包含 AI 辅助审查脚本。
+
+### ai_reviewer.py
+
+- **总行数**：约 280 行
+- **作用**：基于大模型自动分析代码变更，判断是否需要更新文档，并在 PR 中自动评论提醒
+- **关键功能**：
+  - 获取 PR 的代码变更文件列表
+  - 基于 CODE_TO_DOC_MAP 和目录约定推断受影响的文档
+  - 调用 StepFun LLM 分析变更内容，判断文档是否需要更新
+  - 在 PR 中发布评论，提醒更新文档
+- **环境变量**：
+  - STEPFUN_API_KEY：StepFun API 密钥
+  - STEPFUN_BASE_URL：StepFun API 地址
+  - STEPFUN_MODEL：模型名称，默认 step-3.7-flash
+  - GITHUB_TOKEN：GitHub Actions 自动提供
+  - PR_NUMBER：PR 编号，GitHub Actions 自动提供
+
+### config.yaml
+
+- **总行数**：约 80 行
+- **作用**：文档同步模型配置，定义项目结构模型、检查策略和站点生成配置
+- **关键内容**：
+  - structure.directories：目录职责约定，定义每个目录的角色和文档义务
+  - structure.files：单文件特殊规则，覆盖目录规则
+  - policies：检查策略配置，包括代码-文档同步、引用检查、ADR 触发、结构变更检测
+  - site：文档站点生成配置，支持 MkDocs 构建和 GitHub Pages 部署
+
+### engine.py
+
+- **总行数**：约 400 行
+- **作用**：文档同步检查引擎，实现模型驱动的同步检查
+- **关键功能**：
+  - 加载 docs_sync/config.yaml 配置
+  - StructureScanner：扫描实际项目结构
+  - StructureChangeCheck：检测项目结构变化
+  - CodeDocSyncCheck：检查代码-文档同步
+  - ReferenceCheck：检查文档引用有效性
+  - AdrTriggerCheck：检查 ADR 触发条件
+  - 支持 --changed 参数指定变更文件，或自动检测 git 变更
+
+---
+
 ## docs/explain/
 
 - **路径**：docs/explain/

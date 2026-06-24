@@ -112,7 +112,7 @@ DIRECTORY_DOC_RULES = {
 # 文档引用有效性检查：需要验证的链接模式
 DOC_REFERENCE_PATTERNS = [
     r"\[.*?\]\((.*?)\)",  # Markdown 链接
-    r"`([^`]*\.(py|md|yaml|yml|json|html|js|ts))`",  # 代码块中的文件引用
+    r"`([^`]*\.(?:py|md|yaml|yml|json|html|js|ts))`",  # 代码块中的文件引用
 ]
 
 # 外部链接前缀，不检查存在性
