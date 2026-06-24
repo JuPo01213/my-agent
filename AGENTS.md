@@ -10,9 +10,16 @@ description: "Use when: working in my-agent workspace, building or extending AI 
 ## 文件布局
 
 - `AGENTS.md` — 本工作区 always-on agent 指令，为第一入口。
+- `README.md` — 人类可读的项目总览，包含快速开始、架构概览、文档地图。
 - `.github/skills/` — 全部技能资产。
-- `docs/report/` — 调研报告与最佳实践文档。
+- `docs/` — 分层文档体系：
+  - `docs/overview/` — 项目总览、架构概览、术语表
+  - `docs/guides/` — 开发指南、运行指南、前端探索期说明
+  - `docs/reference/` — 配置说明、YAML 示例、API 速查
+  - `docs/report/` — 调研报告与最佳实践文档
+  - `docs/adr/` — 架构决策记录（ADR）
 - `docs/structure.md` — 文件结构文档，用于快速定位代码。
+- `memories/` — 会话归档和仓库级经验沉淀。
 
 详细结构说明见 `docs/structure.md`。
 

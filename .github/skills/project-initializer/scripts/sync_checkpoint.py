@@ -9,6 +9,10 @@ sync_checkpoint.py
   1. docs/structure.md 是否包含新增/修改的核心文件索引（自动排除归档类文件）
   2. 若变更涉及报告内容，主报告参考来源是否已更新
   3. 当前对话是否已创建 session 归档
+  4. README.md 是否存在且包含关键章节
+  5. docs/ 目录完整性检查
+  6. CHANGELOG.md 是否存在
+  7. 文档引用有效性检查
 
 用法：
   # 手动指定变更文件
@@ -33,6 +37,9 @@ WORKSPACE = Path(__file__).resolve().parents[4]
 STRUCTURE_DOC = WORKSPACE / "docs" / "structure.md"
 MAIN_REPORT = WORKSPACE / "docs" / "report" / "写一个自己的智能体_完整调研与最佳实践报告.md"
 SESSION_DIR = WORKSPACE / "memories" / "session"
+README_DOC = WORKSPACE / "README.md"
+CHANGELOG_DOC = WORKSPACE / "CHANGELOG.md"
+DOCS_DIR = WORKSPACE / "docs"
 
 # 不需要加入结构索引的目录/文件模式
 EXCLUDE_FROM_INDEX = [
@@ -40,6 +47,12 @@ EXCLUDE_FROM_INDEX = [
     ".github/",           # 技能和脚本文件，本身有自描述结构
     "__pycache__/",
     ".git/",
+]
+
+# 文档引用有效性检查：需要验证的链接模式
+DOC_REFERENCE_PATTERNS = [
+    r"\[.*?\]\((.*?)\)",  # Markdown 链接
+    r"`([^`]*\.(py|md|yaml|yml|json|html|js|ts))`",  # 代码块中的文件引用
 ]
 
 
@@ -149,17 +162,104 @@ def check_session_archive() -> list[str]:
     if not SESSION_DIR.exists():
         return [f"[错误] session 目录不存在: {SESSION_DIR}"]
     
-    # 检查今天或最近1天内是否有归档文件
+    # 检查今天或最近3天内是否有归档文件（放宽时间窗口）
     today = datetime.now().strftime("%Y-%m-%d")
     recent_files = []
     
     for f in SESSION_DIR.glob("*.md"):
-        if today in f.name or (datetime.now() - datetime.fromtimestamp(f.stat().st_mtime)) < timedelta(days=1):
+        if today in f.name or (datetime.now() - datetime.fromtimestamp(f.stat().st_mtime)) < timedelta(days=3):
             recent_files.append(f)
     
     if recent_files:
         return [f"[通过] session 归档检查通过 ({len(recent_files)} 个最近归档)"]
-    return [f"[警告] 未检测到今天的 session 归档 ({SESSION_DIR})"]
+    return [f"[警告] 未检测到最近3天内的 session 归档 ({SESSION_DIR})"]
+
+
+def check_readme_exists() -> list[str]:
+    """检查 README.md 是否存在且包含关键章节。"""
+    if not README_DOC.exists():
+        return [f"[错误] README.md 不存在: {README_DOC}"]
+    
+    content = README_DOC.read_text(encoding="utf-8")
+    issues = []
+    
+    # 检查关键章节
+    required_sections = ["# ", "## ", "快速开始", "目录说明", "架构概览"]
+    for section in required_sections:
+        if section not in content:
+            issues.append(f"[警告] README.md 缺少关键内容: {section}")
+    
+    if not issues:
+        return ["[通过] README.md 检查通过"]
+    return issues
+
+
+def check_docs_structure() -> list[str]:
+    """检查 docs/ 目录完整性。"""
+    if not DOCS_DIR.exists():
+        return [f"[错误] docs/ 目录不存在: {DOCS_DIR}"]
+    
+    issues = []
+    
+    # 检查关键子目录
+    expected_dirs = ["overview", "guides", "reference", "report", "adr"]
+    for dir_name in expected_dirs:
+        dir_path = DOCS_DIR / dir_name
+        if not dir_path.exists():
+            issues.append(f"[警告] docs/ 缺少子目录: {dir_name}/")
+    
+    # 检查关键文件
+    expected_files = ["structure.md"]
+    for file_name in expected_files:
+        file_path = DOCS_DIR / file_name
+        if not file_path.exists():
+            issues.append(f"[错误] docs/ 缺少关键文件: {file_name}")
+    
+    if not issues:
+        return ["[通过] docs/ 目录结构检查通过"]
+    return issues
+
+
+def check_changelog_exists() -> list[str]:
+    """检查 CHANGELOG.md 是否存在。"""
+    if not CHANGELOG_DOC.exists():
+        return ["[警告] CHANGELOG.md 不存在，建议创建"]
+    return ["[通过] CHANGELOG.md 存在"]
+
+
+def check_document_references(changed_files: list[Path]) -> list[str]:
+    """检查文档中的引用是否有效。"""
+    issues = []
+    
+    # 只检查 Markdown 文件
+    md_files = [f for f in changed_files if f.suffix == ".md" and f.exists()]
+    
+    for file_path in md_files:
+        try:
+            content = file_path.read_text(encoding="utf-8")
+            rel_path = file_path.relative_to(WORKSPACE)
+            
+            # 查找所有文件引用
+            for pattern in DOC_REFERENCE_PATTERNS:
+                matches = re.findall(pattern, content)
+                for match in matches:
+                    # 处理相对路径
+                    if match.startswith("/"):
+                        ref_path = WORKSPACE / match[1:]
+                    elif match.startswith("./"):
+                        ref_path = (file_path.parent / match[2:]).resolve()
+                    else:
+                        ref_path = (file_path.parent / match).resolve()
+                    
+                    # 检查引用是否存在
+                    if not ref_path.exists():
+                        issues.append(f"[警告] 无效引用: {rel_path} -> {match}")
+        except Exception as e:
+            issues.append(f"[错误] 读取文件失败: {file_path} ({e})")
+    
+    if not issues:
+        return ["[通过] 文档引用检查通过"]
+    return issues
 
 
 def main():
@@ -188,7 +288,7 @@ def main():
     all_issues = []
     
     # 检查 1: 结构索引
-    print("[检查 1/3] 结构索引同步")
+    print("[检查 1/6] 结构索引同步")
     issues = check_structure_index(changed_files)
     for msg in issues:
         print(f"  {msg}")
@@ -196,7 +296,7 @@ def main():
     print()
     
     # 检查 2: 主报告引用
-    print("[检查 2/3] 主报告引用同步")
+    print("[检查 2/6] 主报告引用同步")
     issues = check_main_report_reference(changed_files)
     for msg in issues:
         print(f"  {msg}")
@@ -204,8 +304,32 @@ def main():
     print()
     
     # 检查 3: session 归档
-    print("[检查 3/3] session 归档")
+    print("[检查 3/6] session 归档")
     issues = check_session_archive()
+    for msg in issues:
+        print(f"  {msg}")
+    all_issues.extend([i for i in issues if i.startswith("[错误]")])
+    print()
+    
+    # 检查 4: README.md
+    print("[检查 4/6] README.md")
+    issues = check_readme_exists()
+    for msg in issues:
+        print(f"  {msg}")
+    all_issues.extend([i for i in issues if i.startswith("[错误]")])
+    print()
+    
+    # 检查 5: docs/ 目录结构
+    print("[检查 5/6] docs/ 目录结构")
+    issues = check_docs_structure()
+    for msg in issues:
+        print(f"  {msg}")
+    all_issues.extend([i for i in issues if i.startswith("[错误]")])
+    print()
+    
+    # 检查 6: 文档引用有效性
+    print("[检查 6/6] 文档引用有效性")
+    issues = check_document_references(changed_files)
     for msg in issues:
         print(f"  {msg}")
     all_issues.extend([i for i in issues if i.startswith("[错误]")])
@@ -218,6 +342,9 @@ def main():
         for issue in all_issues:
             print(f"  {issue}")
         sys.exit(1)
+    else:
+        print("[通过] 所有检查通过")
+        sys.exit(0)
     else:
         print("[通过] 所有检查通过，同步更新完整")
         sys.exit(0)

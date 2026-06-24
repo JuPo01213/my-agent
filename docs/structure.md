@@ -4,7 +4,74 @@
 
 ---
 
-## docs/report/
+## 根目录文件
+
+### README.md
+
+- **总行数**：约 50 行
+- **作用**：人类可读的项目总览，包含项目定位、快速开始、目录说明、架构概览、文档地图、贡献方式。
+- **关键内容**：
+  - 1-10：项目定位与简介
+  - 11-20：快速开始指南
+  - 21-30：目录说明
+  - 31-40：架构概览
+  - 41-50：文档地图与贡献方式
+
+### CONTRIBUTING.md
+
+- **总行数**：约 80 行
+- **作用**：贡献指南，包含项目规则、开发流程、文档规范、测试原则、诚实记录原则、实验日志规范、重构原则。
+- **关键内容**：
+  - 1-20：项目规则
+  - 21-40：开发流程
+  - 41-60：文档规范与测试原则
+  - 61-80：诚实记录原则与实验日志规范
+
+### CHANGELOG.md
+
+- **总行数**：约 60 行
+- **作用**：变更日志，记录版本级变更，与 `experiments/` 日志形成互补。
+- **关键内容**：
+  - 1-30：未发布版本变更
+  - 31-60：2026-06-24 版本变更
+
+---
+
+## docs/
+
+- **路径**：docs/
+- **说明**：分层文档体系，包含概念架构、操作指南、配置参考、调研报告和架构决策。
+
+### overview/（概念与架构）
+
+- **路径**：docs/overview/
+- **作用**：项目总览、架构概览、术语表，帮助快速理解项目定位和核心概念。
+- **关键文件**：
+  - `README.md`：项目总览，包含核心能力、文档地图、快速导航
+  - `architecture.md`：架构概览，包含分层结构、核心模块、关键抽象、演进路线
+  - `glossary.md`：术语表，定义项目中常用的术语和概念
+
+### guides/（操作与最佳实践）
+
+- **路径**：docs/guides/
+- **作用**：开发指南、运行指南、前端探索期说明，提供操作层面的指导。
+- **关键文件**：
+  - `development.md`：开发指南，包含开发环境、代码规范、开发流程、重构原则、测试原则、实验规范
+  - `running.md`：运行指南，包含运行测试、运行 Demo、运行同步检查点、前端预览、实验日志
+  - `frontend-exploration.md`：前端探索期说明，包含阶段定义、约束、当前文件、后续演进
+
+### reference/（配置与 API）
+
+- **路径**：docs/reference/
+- **作用**：配置说明、YAML 示例、API 速查，提供参考层面的文档。
+- **关键文件**：
+  - `configuration.md`：配置参考，包含配置文件列表、YAML 结构、关键字段说明、注意事项
+  - `api.md`：API 速查，包含核心层 API、多 Agent 层 API、事件 API
+
+### report/（调研报告）
+
+- **路径**：docs/report/
+- **作用**：调研报告与最佳实践文档，包含完整调研、架构方案、样式参考等。
 
 - **路径**：docs/report/
 
@@ -301,19 +368,21 @@
 - **路径**：tests/
 - **作用**：单元测试目录，**标准库 unittest，零外部依赖**。
   - 命名约定：`test_<模块名>.py`
-  - 覆盖范围（截至 2026-06-24 E2 任务完成时）：
-    - `test_parse_precondition.py`：20 个测试，覆盖 `_parse_precondition` 安全子集解析（True/False / facts.has / and 组合 / open_questions / 默认放行 / snapshot 兼容）
-    - `test_run_loop.py`：12 个测试，覆盖 `core/run_loop` 行为（基础 / 推理模型 fallback / 工具调用 / max_steps / 工具错误处理）
+  - 设计原则（参见 ADR-012）：**风险点优先，不是覆盖率优先**。每个测试都对应一个明确的"风险 N"注释。
+  - 当前覆盖范围（2026-06-24 第 12 轮精简后）：
+    - `test_parse_precondition.py`：1 个表驱动测试方法覆盖 4 类真风险（未知表达式放行 / 三 key and 真"全部满足" / malformed 不崩 / snapshot 缺字段不崩）
+    - `test_run_loop.py`：3 个测试（推理模型 fallback / 未知工具不崩 / max_steps 占位符）
+    - `test_control_shell.py`：4 个测试（priority 排序 / 3 Agent 串行链 / 异常 failed / max_steps timeout 设计语义）
+  - **删除**：`test_command.py`（整体）+ `test_blackboard.py`（整体），原因参见 ADR-012
+  - 关联 ADR：
+    - ADR-007（推理模型 fallback）由 `test_reasoning_model_fallback_works` 守护
+    - ADR-009（_parse_precondition 三 key and 修复）由 `test_risk_table` 守护
+    - ADR-011（max_steps 触发条件）由 `test_max_steps_timeout_design_semantics` 守护
   - 运行方式（在项目根目录）：
     ```bash
     python -m unittest discover -s tests -v
-    # 或单文件：
-    python -m unittest tests.test_parse_precondition -v
     ```
-  - 关联 ADR：
-    - ADR-007（推理模型 fallback）有专门测试覆盖
-    - ADR-008（YAML 缺省 tools）通过 `_parse_precondition` 间接验证 + `relationship.py:from_yaml` 内置 warning 日志
-    - ADR-009（_parse_precondition 三 key and 修复）由 `test_and_three_keys` 守护
+  - 当前测试统计：**8 个测试**，0.002s 全过，**不追求覆盖率**
 
 ## experiments/
 
@@ -355,6 +424,30 @@
 - **当前归档**：
   - `README.md`：目录说明
   - `代码走读-relationship.py-2026-06-24.md`：relationship.py 的 6 步走读
+
+### adr/（架构决策记录）
+
+- **路径**：docs/adr/
+- **作用**：架构决策记录（ADR），按文件拆分，便于检索和版本化。
+- **关键文件**：
+  - `001-function-calling.md`：采用原生 Function Calling 替代正则解析工具调用
+  - `002-self-hosted-core.md`：核心 Agent 内核自主实现，不直接依赖重型框架
+  - `003-no-safety-guardrails.md`：无安全护栏设计
+  - `004-search-over-memory.md`：路由决策使用搜索而非记忆
+  - `005-core-multi-agent-split.md`：后端核心分层重构 - core/ 与 multi_agent/ 分离
+  - `006-relationship-engine.md`：引入关系驱动多 Agent 协作引擎
+  - `007-reasoning-content-fallback.md`：ReAct 循环兼容推理模型
+  - `008-yaml-tools-default.md`：YAML 缺省 tools 字段的隐性陷阱
+  - `009-parse-precondition-bug.md`：修复 _parse_precondition 三 key and 表达式分支顺序 bug
+  - `010-unit-test-foundation.md`：引入单元测试体系（unittest 标准库）
+  - `011-max-steps-and-test-baseline.md`：max_steps 触发条件 + 多模块单元测试基线完成
+  - `012-risk-based-testing.md`：测试用例设计原则 — 风险点优先，不是覆盖率优先
+  - `013-async-event-interface.md`：后续方向 A — 异步/流式事件接口
+  - `014-tool-whitelist.md`：后续方向 B — 工具白名单让 LLM 真用工具
+  - `015-gatekeeper-pattern.md`：后续方向 C — first_match 看门人模式
+  - `016-langgraph-adapter.md`：后续方向 D — LangGraph 兼容适配层
+  - `017-ci-integration.md`：后续方向 E — 单元测试 + CI 接入
+- **说明**：每个 ADR 文件包含状态、背景、决策、后果、关联教训等完整信息。
 
 ---
 
