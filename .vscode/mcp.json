@@ -4,7 +4,7 @@
       "type": "http",
       "url": "https://api.stepfun.com/step_plan/v1/mcp/web_search/mcp",
       "headers": {
-        "Authorization": "Bearer 3tZqqWODY5avioff3DF5JrnRtzK5cwYh5AW9N2DAnXA5gP1AR38rzDADkQugvHJgO"
+        "Authorization": "Bearer ${env:STEPFUN_API_KEY}"
       }
     }
   }

@@ -37,7 +37,7 @@ from typing import Optional
 STEPFUN_BASE_URL: str = os.getenv("STEPFUN_BASE_URL", "https://api.stepfun.com/step_plan/v1")
 STEPFUN_MODEL: str = os.getenv("STEPFUN_MODEL", "step-3.7-flash")
 # ↓ 本地开发默认值，生产环境必须用环境变量覆盖
-STEPFUN_API_KEY: Optional[str] = os.getenv("STEPFUN_API_KEY", "3tZqqWODY5avioff3DF5JrnRtzK5cwYh5AW9N2DAnXA5gP1AR38rzDADkQugvHJgO")
+STEPFUN_API_KEY: Optional[str] = os.getenv("STEPFUN_API_KEY")
 
 # ---------------------------------------------------------------------------
 # OpenAI 兼容配置（可选 fallback）
@@ -56,7 +56,7 @@ OPENAI_API_KEY: Optional[str] = os.getenv("OPENAI_API_KEY")
 ARK_BASE_URL: str = os.getenv("ARK_BASE_URL", "https://ark.cn-beijing.volces.com/api/v3")
 ARK_MODEL: str = os.getenv("ARK_MODEL", "doubao-seed-evolving")
 # ↓ 本地开发默认值，生产环境必须用环境变量覆盖
-ARK_API_KEY: Optional[str] = os.getenv("ARK_API_KEY", "ark-105fe362-e7e2-454c-a88b-cc049f1e72fb-ffe98")
+ARK_API_KEY: Optional[str] = os.getenv("ARK_API_KEY")
 
 # ---------------------------------------------------------------------------
 # 运行时解析

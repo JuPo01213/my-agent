@@ -46,7 +46,7 @@
 1. 登录 [StepFun 开放平台](https://platform.stepfun.com/)
 2. 进入 **API Keys** 页面
 3. 创建新的 API Key
-4. 复制 Key（格式类似：`3tZqqWODY5avioff3DF5JrnRtzK5cwYh5AW9N2DAnXA5gP1AR38rzDADkQugvHJgO`）
+4. 复制 Key
 
 ### 步骤 2：配置 GitHub Secrets
 1. 进入你的 GitHub 仓库
