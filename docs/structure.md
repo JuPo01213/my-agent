@@ -35,6 +35,13 @@
   - 1-30：未发布版本变更
   - 31-60：2026-06-24 版本变更
 
+### .vscode/mcp.json
+
+- **总行数**：约 20 行
+- **作用**：VS Code MCP 服务器配置，当前已配置 StepSearch 搜索服务。
+- **关键内容**：
+  - 1-20：StepSearch MCP 服务器定义（HTTP 类型、URL、Bearer 认证头）
+
 ---
 
 ## docs/
