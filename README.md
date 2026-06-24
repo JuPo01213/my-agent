@@ -25,9 +25,7 @@
 
 - `agent_core/core/`：最底层，只做 ReAct 循环和工具注册表。
 - `agent_core/multi_agent/`：多 Agent 协作公开 API，Supervisor 唯一入口。
-- `agent_core/frontend/`：前端事件协议层，独立于核心层。
-- `agent_core/static/`：前端样式探索期静态文件，当前不与后端联通。
-- `agent_core/demos/`：多 Agent 架构演示，不参与主项目运行。
+- `agent_core/frontend/` 与 `agent_core/static/`：前端事件协议与样式探索期静态文件。
 
 详细架构说明见 `docs/overview/architecture.md`。
 

@@ -41,6 +41,4 @@ python .github/skills/project-initializer/scripts/sync_checkpoint.py --changed "
 
 ## 实验日志
 
-所有实验日志保存在 `experiments/` 目录，按日期命名：
-
-- `experiments/<日期>-<实验名>.log`
+实验日志规范、路径约定和真实性要求，统一见 `docs/guides/development.md`。
