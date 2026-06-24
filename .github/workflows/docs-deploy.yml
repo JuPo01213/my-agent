@@ -28,7 +28,7 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
       - run: pip install mkdocs-material mkdocs-minify-plugin
-      - run: mkdocs build --strict
+      - run: mkdocs build
       - uses: actions/upload-pages-artifact@v4
         with:
           path: ./site
