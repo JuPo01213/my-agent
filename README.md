@@ -35,6 +35,7 @@
 - AI 入口：`AGENTS.md`
 - 结构索引：`docs/structure.md`
 - 概念与架构：`docs/overview/`
+- 项目进度：`docs/overview/progress.md`
 - 操作指南：`docs/guides/`
 - 配置与 API：`docs/reference/`
 - 调研报告：`docs/report/`
