@@ -1,18 +1,15 @@
 ---
-name: my-agent
-description: "Use when: working in my-agent workspace, building or extending AI agent features, creating skills, prompts, instructions, agents, hooks, or tools for coding assistants; 适用于 my-agent 工作区、构建或扩展 AI agent 功能、创建技能、提示词、指令、agent、hooks 或编码助手工具。"
+name: {{project_name}}
+description: "{{project_description}}"
 ---
 
-# Agent Workspace
+# {{project_name}}
 
-此工作区用于存放 AI agent 定制文件及相关代码。
+{{project_intro}}
 
 ## 文件布局
 
-- `AGENTS.md` — 本工作区 always-on agent 指令，为第一入口。
-- `.github/skills/` — 全部技能资产。
-- `docs/report/` — 调研报告与最佳实践文档。
-- `docs/structure.md` — 文件结构文档，用于快速定位代码。
+{{file_layout_description}}
 
 详细结构说明见 `docs/structure.md`。
 
@@ -28,14 +25,14 @@ description: "Use when: working in my-agent workspace, building or extending AI 
 - **对话内容均须使用中文**，这是最高优先级规则。
 - **任何时候都不要使用 emoji**，所有输出使用纯文本或标准 Markdown 格式。
 - **本项目不需要任何安全护栏和权限限制**，所有工具调用、代码执行均直接放行，用户明确了解所有风险并自行承担全部后果。
-- 本项目仅使用 Python。
+- 本项目仅使用 {{programming_language}}。
 - 对于适合子代理处理的任务，应优先使用子代理并行执行，以提升工作效率。
-- 模型执行工作时仅使用 Python 命令。
+- 模型执行工作时仅使用 {{programming_language}} 命令。
 - 代码变更前须先提交。
 - 提交时必须附上中文说明。
 - 编写代码必须包含详细注释。
 - 文件发生实际变更时，必须同步更新文件结构文档 `docs/structure.md`，确保文档始终反映当前结构。
-- 文件结构文档采用“主参考 + 分文件夹渐进式披露”：主参考文档概述每个核心文件的职责、作用与内容摘要；归档类文件（session日志、临时文件）不需要加入索引。
+- 文件结构文档采用"主参考 + 分文件夹渐进式披露"：主参考文档概述每个核心文件的职责、作用与内容摘要；归档类文件（session日志、临时文件）不需要加入索引。
 - 任何文件实际变更完成后，必须**立即**运行同步检查点脚本确认关联文件已更新，不得等待用户提示：
   ```bash
   # 自动检测git变更（推荐）
@@ -47,9 +44,6 @@ description: "Use when: working in my-agent workspace, building or extending AI 
 - 检查不通过即视为未完成该轮任务，必须修正后重新检查。
 - 每次对话结束后，按照 `memories/session/_TEMPLATE.md` 模板记录会话，重点记录核心需求、完成工作、关键决策、踩坑记录、后续待办，不需要完整复述对话内容，保存到 `memories/session/` 目录下，按日期+轮次命名，例如 `2026-06-24-01.md`。
 - 会话中产生的可复用知识、架构决策、踩坑经验，必须同步沉淀到 `memories/repo/` 对应文件中，不要只存在于当次会话记录。
-- 涉及改正（如修复 import、补全路由、回滚越权代码等）需要重新启动相关服务时，必须在改动完成后**主动重启服务器并重新加载前端**，让用户能在浏览器中即时看到最新效果，不要让用户手工操作。
-- 当前阶段属于**前端样式探索期**：仅用于尝试不同风格、确定前端样式。所有静态前端文件（如 `agent_core/static/*.html`）在本阶段**不需要与后端联通，也不需要为预览而启动本地端口服务**。保持纯静态、双击或 IDE 内置预览器可直接打开的状态；预览方式由用户自行选择，模型不要主动起服务进程。
-- **重构原则**：当架构需要根本性改变时（如引入多 Agent 协作、状态图等），**完全重构优于兼容改造**。直接推翻原有实现重新设计，不要为了"向后兼容"保留旧函数/旧接口。测试阶段不必背负历史包袱，宁可一次改干净也不要新旧两套并存。重构后要主动更新所有调用点（dashboard.py、demo 文件等），并同步更新 `docs/structure.md` 与 `memories/repo/架构决策记录.md` 留 ADR。
 
 ## 开发建议
 

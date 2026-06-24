@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<!-- 移动端视口设置 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>沉浸式气泡对话 · 前端示例</title>
+<!-- 引入 Vue 3 CDN 版本，无需构建步骤 -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<style>
+  /* ------------------------------------------------------------------ */
+  /* 设计令牌                                                          */
+  /* ------------------------------------------------------------------ */
+  :root{
+    --bg:#0a0c10;
+    --bubble-user:rgba(244,114,182,.15);
+    --bubble-agent:rgba(0,212,170,.12);
+    --bubble-tool:rgba(96,165,250,.12);
+    --bubble-think:rgba(156,163,175,.12);
+    --bubble-final:rgba(245,158,11,.12);
+    --bubble-error:rgba(239,68,68,.12);
+    --text:#e2e8f0;
+    --muted:#94a3b8;
+    --accent:#00d4aa;
+    --glow-user:rgba(244,114,182,.4);
+    --glow-agent:rgba(0,212,170,.4);
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* 基础重置                                                          */
+  /* ------------------------------------------------------------------ */
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html,body{ height:100%; overflow:hidden; background:var(--bg); color:var(--text); font-family:system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif; }
+
+  /* ------------------------------------------------------------------ */
+  /* 背景层：流体渐变 + 浮动粒子 + 中心 AI 脉动                       */
+  /* ------------------------------------------------------------------ */
+  .bg-fluid{ position:fixed; inset:0; z-index:0; background:radial-gradient(ellipse at 20% 80%,rgba(244,114,182,.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(0,212,170,.08) 0%,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(96,165,250,.05) 0%,transparent 60%); pointer-events:none; }
+  .bg-particles{ position:fixed; inset:0; z-index:0; pointer-events:none; }
+  .particle{ position:absolute; border-radius:50%; opacity:.3; animation:float 20s infinite ease-in-out; }
+  @keyframes float{ 0%,100%{ transform:translate(0,0) scale(1); } 25%{ transform:translate(30px,-40px) scale(1.1); } 50%{ transform:translate(-20px,-80px) scale(.9); } 75%{ transform:translate(40px,-30px) scale(1.05); } }
+
+  .ai-core{ position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); z-index:5; pointer-events:none; }
+  .ai-core-ring{ width:120px; height:120px; border-radius:50%; border:2px solid rgba(0,212,170,.1); animation:ringPulse 3s infinite ease-out; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
+  .ai-core-ring:nth-child(2){ animation-delay:1s; width:160px; height:160px; border-color:rgba(0,212,170,.06); }
+  .ai-core-ring:nth-child(3){ animation-delay:2s; width:200px; height:200px; border-color:rgba(0,212,170,.04); }
+  @keyframes ringPulse{ 0%{ transform:translate(-50%,-50%) scale(1); opacity:1; } 100%{ transform:translate(-50%,-50%) scale(1.5); opacity:0; } }
+  .ai-core-dot{ width:16px; height:16px; border-radius:50%; background:var(--accent); box-shadow:0 0 30px rgba(0,212,170,.5); position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); }
+
+  /* ------------------------------------------------------------------ */
+  /* 提示条                                                            */
+  /* ------------------------------------------------------------------ */
+  .hint{ position:fixed; top:24px; left:50%; transform:translateX(-50%); font-size:12px; color:var(--muted); background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); padding:8px 20px; border-radius:20px; z-index:200; pointer-events:none; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+
+  /* ------------------------------------------------------------------ */
+  /* 顶部工具栏：示例控制                                              */
+  /* ------------------------------------------------------------------ */
+  .topbar{ position:fixed; top:24px; right:24px; z-index:200; display:flex; gap:8px; align-items:center; }
+  .topbar button{ background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.1); color:var(--text); border-radius:20px; padding:6px 14px; font-size:12px; cursor:pointer; outline:none; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); transition:border-color .2s,box-shadow .2s; }
+  .topbar .play-btn{ background:linear-gradient(135deg,#00d4aa,#0d9488); border-color:transparent; color:#fff; font-weight:600; box-shadow:0 4px 16px rgba(0,212,170,.3); }
+  .topbar .play-btn:hover{ box-shadow:0 6px 20px rgba(0,212,170,.4); }
+  .topbar .reset-btn{ background:linear-gradient(135deg,#ef4444,#dc2626); border-color:transparent; color:#fff; font-weight:600; }
+
+  /* ------------------------------------------------------------------ */
+  /* 气泡场景：全屏容器                                                */
+  /* ------------------------------------------------------------------ */
+  .bubble-scene{ position:fixed; inset:0; z-index:10; overflow:hidden; }
+
+  /* 消息气泡 */
+  .bubble{ position:absolute; padding:16px 24px; border-radius:32px; backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); font-size:14px; line-height:1.6; max-width:360px; word-break:break-word; cursor:default; animation:popIn .6s cubic-bezier(.34,1.56,.64,1) forwards; opacity:0; transform:scale(.8); box-shadow:0 4px 24px rgba(0,0,0,.3); transition:transform .2s,box-shadow .2s; }
+  .bubble:hover{ transform:scale(1.02); box-shadow:0 8px 32px rgba(0,0,0,.4); z-index:100; }
+  @keyframes popIn{ to{ opacity:1; transform:scale(1); } }
+
+  .bubble::before{ content:""; position:absolute; width:8px; height:8px; border-radius:50%; }
+  .bubble.user{ background:var(--bubble-user); border:1px solid rgba(244,114,182,.2); color:#fce7f3; }
+  .bubble.user::before{ background:var(--glow-user); box-shadow:0 0 12px var(--glow-user); }
+  .bubble.agent{ background:var(--bubble-agent); border:1px solid rgba(0,212,170,.2); color:#ccfbf1; }
+  .bubble.agent::before{ background:var(--glow-agent); box-shadow:0 0 12px var(--glow-agent); }
+  .bubble.tool{ background:var(--bubble-tool); border:1px solid rgba(96,165,250,.2); color:#dbeafe; font-size:12px; font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; }
+  .bubble.thinking{ background:var(--bubble-think); border:1px solid rgba(156,163,175,.2); color:#e5e7eb; font-size:12px; font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace; }
+  .bubble.final{ background:var(--bubble-final); border:1px solid rgba(245,158,11,.2); color:#fde68a; }
+  .bubble.error{ background:var(--bubble-error); border:1px solid rgba(239,68,68,.2); color:#fecaca; }
+  .bubble.system{ background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); color:var(--muted); font-size:12px; }
+
+  .bubble-meta{ font-size:10px; color:var(--muted); margin-top:8px; opacity:.7; }
+  .bubble pre{ background:rgba(0,0,0,.2); padding:10px; border-radius:12px; font-size:11px; overflow-x:auto; margin:8px 0; }
+  .bubble code{ background:rgba(0,0,0,.2); padding:2px 6px; border-radius:4px; font-size:11px; }
+  .bubble strong{ color:#fff; }
+
+  /* 响应式 */
+  @media (max-width:640px){
+    .bubble{ max-width:80vw; }
+    .topbar{ top:70px; right:12px; flex-wrap:wrap; }
+  }
+</style>
+</head>
+<body>
+  <!-- 背景层 -->
+  <div class="bg-fluid"></div>
+  <div class="bg-particles" id="particles"></div>
+
+  <!-- 中心 AI 脉动 -->
+  <div class="ai-core">
+    <div class="ai-core-ring"></div>
+    <div class="ai-core-ring"></div>
+    <div class="ai-core-ring"></div>
+    <div class="ai-core-dot"></div>
+  </div>
+
+  <!-- Vue 挂载根节点 -->
+  <div id="app">
+    <!-- 提示条 -->
+    <div class="hint">前端样式示例：点击右上角"播放示例"可看到气泡依次浮现</div>
+
+    <!-- 顶部工具栏 -->
+    <div class="topbar">
+      <button class="play-btn" @click="play" :disabled="playing">播放示例</button>
+      <button class="reset-btn" @click="reset">重置</button>
+    </div>
+
+    <!-- 气泡场景 -->
+    <div class="bubble-scene">
+      <div
+        v-for="b in bubbles"
+        :key="b.id"
+        class="bubble"
+        :class="b.type"
+        :style="{ left: b.x + 'px', top: b.y + 'px' }"
+      >
+        <div v-if="b.type === 'tool'">
+          <div><strong>{{ b.name }}</strong>({{ b.args || '' }})</div>
+          <pre v-if="b.observation">{{ b.observation }}</pre>
+        </div>
+        <div v-else v-html="renderText(b.content)"></div>
+        <div class="bubble-meta" v-if="b.meta">{{ b.meta }}</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ------------------------------------------------------------------ */
+/* 前端控制脚本：Vue 3 组合式 API                                     */
+/* 本文件为纯前端样式示例，不与任何后端联通                          */
+/* ------------------------------------------------------------------ */
+
+const { createApp, ref, onMounted } = Vue;
+
+createApp({
+  setup() {
+    /* ---------- 响应式状态 ---------- */
+    const bubbles = ref([]);      // 气泡列表
+    const playing = ref(false);   // 是否正在播放示例
+    let positions = [];           // 已放置气泡位置缓存
+    let playTimers = [];          // 播放定时器集合
+
+    /* ---------- 文本渲染（Markdown 简化） ---------- */
+    function renderText(text) {
+      if (!text) return '';
+      // 先转义 HTML，避免注入
+      const escape = (s) => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const t = escape(text);
+      return t
+        .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+        .replace(/```(\w+)?\n([\s\S]+?)```/g,'<pre><code>$2</code></pre>')
+        .replace(/`(.+?)`/g,'<code>$1</code>')
+        .replace(/\n/g,'<br>');
+    }
+
+    /* ---------- 气泡放置：随机但不重叠 ---------- */
+    function placeBubble(bubble) {
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const elW = Math.min(360, w * .8);
+      const elH = 100; // 估算高度
+      let x, y, attempts = 0;
+      const margin = 80;
+      do {
+        x = margin + Math.random() * (w - elW - margin * 2);
+        y = margin + Math.random() * (h - elH - margin * 2);
+        attempts++;
+      } while (
+        attempts < 50 &&
+        positions.some(p => Math.abs(p.x - x) < elW + 20 && Math.abs(p.y - y) < elH + 20)
+      );
+      positions.push({ x, y, w: elW, h: elH });
+      if (positions.length > 20) positions.shift();
+      bubble.x = x;
+      bubble.y = y;
+    }
+
+    /* ---------- 工具：添加单个气泡 ---------- */
+    function addBubble(data) {
+      const b = {
+        id: Date.now() + Math.random(),
+        x: 0, y: 0,
+        ...data,
+      };
+      bubbles.value.push(b);
+      placeBubble(b);
+    }
+
+    /* ---------- 重置 ---------- */
+    function reset() {
+      // 清理所有未触发的定时器
+      playTimers.forEach(t => clearTimeout(t));
+      playTimers = [];
+      playing.value = false;
+      bubbles.value = [];
+      positions = [];
+    }
+
+    /* ---------- 播放示例对话 ---------- */
+    function play() {
+      if (playing.value) return;
+      reset();
+      playing.value = true;
+
+      // 示例对话数据：模拟一次完整的 ReAct 调用过程
+      const samples = [
+        { delay: 0,    type: 'user',     content: '北京今天天气怎么样？',                       meta: '10:23 · 用户' },
+        { delay: 600,  type: 'thinking', content: '用户询问北京天气。\n1. 识别意图：获取天气信息\n2. 地点：北京\n3. 时间：今天\n4. 调用 get_weather 工具', meta: '10:23 · Thought' },
+        { delay: 1200, type: 'tool',     name: 'get_weather', args: '{ location: "北京", date: "2024-06-24" }', meta: '10:23 · Action' },
+        { delay: 1800, type: 'tool',     name: 'result', args: '', observation: '{\n  "temperature": 28,\n  "condition": "晴转多云",\n  "humidity": "45%"\n}', meta: '10:23 · Observation' },
+        { delay: 2600, type: 'agent',    content: '北京今天天气晴转多云，气温 22°C ~ 32°C，当前温度约 28°C。\n\n• 湿度：45%\n• 风向：东南风 2级\n• 空气质量：良', meta: '10:23 · Final' },
+        { delay: 3400, type: 'user',     content: '那明天呢？需要带伞吗？', meta: '10:25 · 用户' },
+        { delay: 4000, type: 'agent',    content: '明天北京多云转阴，午后有雷阵雨。\n\n**建议您带伞！** 降水概率约 60%。', meta: '10:25 · Final' },
+        { delay: 4800, type: 'user',     content: '帮我计算 123 × 456', meta: '10:27 · 用户' },
+        { delay: 5400, type: 'agent',    content: '123 × 456 = **56,088**\n\n计算步骤：\n```\n123 × 456\n= 49,200 + 6,150 + 738\n= 56,088\n```', meta: '10:27 · Final' },
+        { delay: 6400, type: 'user',     content: '搜索最新AI新闻', meta: '10:30 · 用户' },
+        { delay: 7000, type: 'agent',    content: '为您找到最新AI新闻：\n\n**1. OpenAI 发布 GPT-5 预览版**\n新模型在复杂推理方面实现显著突破。\n\n**2. 国内大模型竞赛白热化**\n多家企业发布新版本。\n\n**3. 欧盟AI法案正式生效**', meta: '10:30 · Final' },
+      ];
+
+      // 逐条按延迟入队
+      samples.forEach(s => {
+        const t = setTimeout(() => {
+          if (!playing.value) return;
+          addBubble(s);
+        }, s.delay);
+        playTimers.push(t);
+      });
+
+      // 播放结束
+      const endTimer = setTimeout(() => {
+        playing.value = false;
+      }, samples[samples.length - 1].delay + 1000);
+      playTimers.push(endTimer);
+    }
+
+    /* ---------- 生命周期：生成背景粒子 ---------- */
+    onMounted(() => {
+      const particles = document.getElementById('particles');
+      for (let i = 0; i < 30; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        const size = Math.random() * 6 + 2;
+        p.style.width = size + 'px';
+        p.style.height = size + 'px';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.top = Math.random() * 100 + '%';
+        p.style.background = `rgba(${Math.random() > .5 ? '244,114,182' : '0,212,170'},${Math.random() * .3 + .1})`;
+        p.style.animationDelay = Math.random() * 20 + 's';
+        p.style.animationDuration = (15 + Math.random() * 10) + 's';
+        particles.appendChild(p);
+      }
+    });
+
+    return {
+      bubbles, playing,
+      renderText, play, reset,
+    };
+  }
+}).mount('#app');
+</script>
+</body>
+</html>

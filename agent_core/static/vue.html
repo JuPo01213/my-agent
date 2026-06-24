@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<!-- 移动端视口设置 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ReAct 智能体控制台 · Vue</title>
+<!-- 引入 Vue 3 CDN 版本，无需构建步骤 -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<style>
+  /* ------------------------------------------------------------------ */
+  /* 基础重置                                                          */
+  /* ------------------------------------------------------------------ */
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  /* 浅色渐变背景，与原生深色版本形成差异 */
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    color: #1f2937;
+  }
+  /* Vue 挂载根节点：限制最大宽度并居中 */
+  #app {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 24px 16px 64px;
+  }
+  /* 顶部栏：标题 + 版本标签 + 切换链接 */
+  .header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .header h1 { font-size: 22px; margin: 0; }
+  .badge {
+    font-size: 12px;
+    background: #e5e7eb;
+    color: #4b5563;
+    border-radius: 999px;
+    padding: 2px 10px;
+  }
+  /* 卡片容器：白色背景 + 阴影 + 圆角 */
+  .card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  /* 输入框样式 */
+  textarea {
+    width: 100%;
+    min-height: 88px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 10px;
+    font: inherit;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  textarea:focus { border-color: #3b82f6; }
+  .toolbar {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    align-items: center;
+  }
+  /* 按钮：蓝紫渐变，带按压反馈 */
+  button {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  button:active { transform: scale(0.98); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  /* 停止按钮使用红色渐变 */
+  button.secondary {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  }
+  .status {
+    color: #6b7280;
+    font-size: 13px;
+    margin-left: auto;
+  }
+  /* 日志列表：纵向排列，条目间距 12px，带淡入动画 */
+  .log { display: flex; flex-direction: column; gap: 12px; }
+  .entry {
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    padding: 12px;
+    background: #f9fafb;
+    animation: fadeIn 0.3s ease-out;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  /* 事件类型色条 + 背景色，与原生版保持一致语义 */
+  .entry.thought { border-left: 4px solid #9ca3af; }
+  .entry.action { border-left: 4px solid #3b82f6; background: #eff6ff; }
+  .entry.observation { border-left: 4px solid #10b981; background: #ecfdf5; }
+  .entry.final { border-left: 4px solid #f59e0b; background: #fffbeb; }
+  .entry.error { border-left: 4px solid #ef4444; background: #fef2f2; }
+  .entry.stopped { border-left: 4px solid #f59e0b; }
+  .meta {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  /* 打字机光标：仅在正在输出的文本后闪烁 */
+  .typing::after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 14px;
+    background: #9ca3af;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: blink 1s steps(2) infinite;
+  }
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+  .empty {
+    text-align: center;
+    color: #9ca3af;
+    padding: 40px 0;
+    font-size: 14px;
+  }
+  /* 右上角版本切换链接 */
+  .switch {
+    margin-left: auto;
+    font-size: 12px;
+    color: #6b7280;
+  }
+  .switch a {
+    color: #2563eb;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  .switch a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+  <!-- Vue 挂载根节点 -->
+  <div id="app">
+    <div class="header">
+      <h1>ReAct 智能体控制台</h1>
+      <span class="badge">Vue 版本</span>
+      <!-- 提供跳转回原生版本的快捷链接 -->
+      <div class="switch">
+        <a href="/index.html">切换回原生版本</a>
+      </div>
+    </div>
+
+    <!-- 输入卡片：通过 v-model 双向绑定到 input，支持回车快捷启动 -->
+    <div class="card">
+      <textarea
+        v-model="input"
+        placeholder="输入你想让智能体完成的任务，例如：计算 12 * (3 + 4) 并告诉我结果"
+        @keydown.enter.exact.prevent="start"
+      ></textarea>
+      <div class="toolbar">
+        <!-- 绑定 running 状态，运行时禁用 -->
+        <button @click="start" :disabled="running">启动运行</button>
+        <button @click="stop" class="secondary" :disabled="!running">停止</button>
+        <span class="status">{{ statusText }}</span>
+        <select v-model="provider" style="margin-left:auto;padding:6px 10px;border-radius:8px;border:1px solid #d1d5db;background:white;color:#1f2937;">
+          <option value="stepfun">StepFun</option>
+          <option value="ark">Doubao</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 日志卡片：根据 logs 数组动态渲染列表 -->
+    <div class="card">
+      <div class="log" ref="logEl">
+        <!-- 空状态：logs 为空时显示占位提示 -->
+        <div v-if="logs.length === 0" class="empty">点击“启动运行”后，智能体的 Thought / Action / Observation 将实时显示在这里。</div>
+        <!-- 日志条目循环渲染，key 使用随机 id 保证响应式更新 -->
+        <div v-for="log in logs" :key="log.id" class="entry" :class="log.type">
+          <div class="meta">Step {{ log.step ?? '-' }} · {{ log.type }}</div>
+          <!-- 文本内容：对 reply / final 应用打字机效果 -->
+          <div v-if="log.content">
+            <pre :class="{ typing: isTyping(log) }">{{ displayContent(log) }}</pre>
+          </div>
+          <!-- 工具调用信息：name + args -->
+          <div v-if="log.name">
+            <pre><strong>{{ log.name }}</strong>({{ log.args || '' }})</pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ------------------------------------------------------------------ */
+/* 前端控制脚本：Vue 3 组合式 API                                     */
+/* ------------------------------------------------------------------ */
+
+/* 用于收集前端错误，方便排查 */
+window.__vueErrors = [];
+window.addEventListener('error', (e) => window.__vueErrors.push({type: 'error', msg: e.message, filename: e.filename, lineno: e.lineno}));
+window.addEventListener('unhandledrejection', (e) => window.__vueErrors.push({type: 'unhandledrejection', msg: e.reason}));
+
+/* 从 Vue 全局对象中解构所需 API */
+const { createApp, ref, nextTick } = Vue;
+
+createApp({
+  setup() {
+    window.__vueSetupRan = true;
+    /* ---------- 响应式状态 ---------- */
+    const input = ref('');               // 用户输入文本
+    const running = ref(false);          // 是否正在运行
+    const statusText = ref('就绪');      // 状态栏文字
+    const logs = ref([]);                // 日志列表，每一项是一条 event
+    const provider = ref('stepfun');     // 当前模型提供商
+    let currentRunId = null;             // 当前运行 ID
+    let eventSource = null;              // SSE 连接句柄
+    let typingTimer = null;              // 打字机定时器
+    const logEl = ref(null);             // 日志容器 DOM 引用
+
+    /* ---------- 打字机相关方法 ---------- */
+
+    /* 判断某条日志是否正在打字机输出中 */
+    function isTyping(log) {
+      return running.value && (log.type === 'reply' || log.type === 'final') && log._pending;
+    }
+
+    /* 返回展示用文本：打字机输出中时返回已输出片段，否则返回完整内容 */
+    function displayContent(log) {
+      if (log.type === 'reply' || log.type === 'final') {
+        return log._displayContent || log.content || '';
+      }
+      return log.content || '';
+    }
+
+    /* 清除打字机定时器 */
+    function stopTyping() {
+      if (typingTimer) {
+        clearInterval(typingTimer);
+        typingTimer = null;
+      }
+    }
+
+    /* 对单条日志执行打字机效果 */
+    function typeLog(log, speed = 18) {
+      stopTyping();
+      log._pending = true;
+      log._displayContent = '';
+      const text = log.content || '';
+      let index = 0;
+      typingTimer = setInterval(() => {
+        if (currentRunId === null) {
+          stopTyping();
+          return;
+        }
+        index += 1;
+        log._displayContent = text.slice(0, index);
+        if (index >= text.length) {
+          stopTyping();
+          log._pending = false;
+        }
+        scrollToBottom();
+      }, speed);
+    }
+
+    /* 滚动日志区到底部，nextTick 保证在 Vue DOM 更新后执行 */
+    function scrollToBottom() {
+      nextTick(() => {
+        if (logEl.value) {
+          logEl.value.scrollTop = logEl.value.scrollHeight;
+        }
+      });
+    }
+
+    /* ---------- 日志处理 ---------- */
+
+    /* 收到一个 SSE 事件后，将其加入 logs 列表，并按类型决定渲染方式 */
+    function appendLog(event) {
+      const isTypingEvent = event.type === 'reply' || event.type === 'final';
+      const isDirect = ['action', 'observation', 'error', 'stopped'].includes(event.type);
+
+      if (isTypingEvent) {
+        stopTyping();
+        logs.value.push({
+          id: Date.now() + Math.random(),
+          step: event.step,
+          type: event.type,
+          content: event.content,
+          _pending: true,
+          _displayContent: '',
+        });
+        const last = logs.value[logs.value.length - 1];
+        typeLog(last, 18);
+      } else if (isDirect) {
+        logs.value.push({
+          id: Date.now() + Math.random(),
+          step: event.step,
+          type: event.type,
+          content: event.content || '',
+          name: event.name,
+          args: event.args,
+        });
+      }
+      scrollToBottom();
+    }
+
+    /* ---------- 控制逻辑 ---------- */
+
+    /* 关闭 SSE 并重置状态 */
+    function stopCurrent() {
+      if (eventSource) {
+        eventSource.close();
+        eventSource = null;
+      }
+      running.value = false;
+      statusText.value = '就绪';
+    }
+
+    /* 启动一次智能体运行 */
+    function start() {
+      console.log('vue start called', input.value);
+      window.__vueStartCalled = true;
+      const text = input.value.trim();
+      if (!text) return;
+
+      stopCurrent();
+      logs.value = [];
+      currentRunId = null;
+
+      fetch(`/run?provider=${encodeURIComponent(provider.value)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ input: text })
+      })
+      .then((r) => {
+        console.log('vue /run status', r.status);
+        if (!r.ok) throw new Error('启动失败：' + r.status);
+        return r.json();
+      })
+      .then((data) => {
+        console.log('vue /run data', data);
+        currentRunId = data.id;
+        running.value = true;
+        statusText.value = '运行中...';
+        eventSource = new EventSource('/stream?id=' + encodeURIComponent(currentRunId));
+
+        eventSource.onmessage = (e) => {
+          try {
+            const event = JSON.parse(e.data);
+            appendLog(event);
+            if (['final', 'stopped', 'end'].includes(event.type)) {
+              stopTyping();
+              stopCurrent();
+              statusText.value = event.type === 'final' ? '已完成' : '已停止';
+            }
+          } catch (err) {
+            console.error('解析事件失败', err);
+          }
+        };
+
+        eventSource.onerror = () => {
+          console.error('vue sse error');
+          stopTyping();
+          stopCurrent();
+          statusText.value = '连接中断';
+        };
+      })
+      .catch((err) => {
+        console.error('vue start error', err);
+        statusText.value = '启动失败';
+      });
+    }
+
+    /* 停止当前运行 */
+    function stop() {
+      if (currentRunId) {
+        fetch('/stop?id=' + encodeURIComponent(currentRunId), { method: 'POST' });
+      }
+    }
+
+    /* 暴露给模板的响应式数据和方法 */
+    return {
+      input,
+      running,
+      statusText,
+      logs,
+      logEl,
+      isTyping,
+      displayContent,
+      start,
+      stop,
+    };
+  }
+}).mount('#app');
+</script>
+</body>
+</html>

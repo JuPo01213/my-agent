@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<!-- 设置移动端视口，保证在手机/平板上的缩放比例正常 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ReAct 智能体控制台</title>
+<style>
+  /* ------------------------------------------------------------------ */
+  /* 设计令牌：集中管理颜色，方便后续换肤                              */
+  /* ------------------------------------------------------------------ */
+  :root {
+    bg: #0b1220;
+    card: #111827;
+    border: #1f2937;
+    text: #e5e7eb;
+    muted: #9ca3af;
+    thought: #1f2937;
+    action: #1e3a8a;
+    observation: #064e3b;
+    final: #7c2d12;
+    error: #7f1d1d;
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  /* 整体背景采用深色主题，减少长时间盯屏的视觉疲劳 */
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans SC", sans-serif;
+    background: #0b1220;
+    color: #e5e7eb;
+  }
+  /* 限制内容最大宽度并居中，保证大屏阅读体验 */
+  .container { max-width: 960px; margin: 0 auto; padding: 24px 16px 64px; }
+  header { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+  header h1 { font-size: 20px; margin: 0; }
+  /* 顶部小标签样式 */
+  header .badge {
+    font-size: 12px;
+    background: #1f2937;
+    color: #9ca3af;
+    border: 1px solid #374151;
+    border-radius: 999px;
+    padding: 2px 10px;
+  }
+  /* 通用卡片容器：用于包裹输入区和日志区 */
+  .card {
+    background: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+  /* 多行输入框：最小高度 88px，支持垂直拉伸 */
+  textarea {
+    width: 100%;
+    min-height: 88px;
+    background: #0b1220;
+    color: #e5e7eb;
+    border: 1px solid #1f2937;
+    border-radius: 8px;
+    padding: 10px;
+    font: inherit;
+    resize: vertical;
+  }
+  textarea:focus { outline: none; border-color: #2563eb; }
+  .toolbar { display: flex; gap: 10px; margin-top: 12px; align-items: center; }
+  /* 主按钮样式 */
+  button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  /* 禁用态：降低不透明度并禁止点击 */
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  button.secondary { background: #374151; }
+  button.danger { background: #dc2626; }
+  /* 右侧状态文字 */
+  .status { color: #9ca3af; font-size: 13px; }
+  /* 日志列表：纵向排列，条目间距 10px */
+  .log { display: flex; flex-direction: column; gap: 10px; }
+  .entry {
+    border: 1px solid #1f2937;
+    border-radius: 10px;
+    padding: 12px;
+    background: #0f172a;
+  }
+  /* 不同类型事件的左侧色条，方便快速区分 */
+  .entry.thought { border-left: 4px solid #6b7280; }
+  .entry.action { border-left: 4px solid #3b82f6; }
+  .entry.observation { border-left: 4px solid #10b981; }
+  .entry.final { border-left: 4px solid #f97316; background: #1c1917; }
+  .entry.error { border-left: 4px solid #ef4444; }
+  .entry.stopped { border-left: 4px solid #f59e0b; }
+  .meta { font-size: 12px; color: #9ca3af; margin-bottom: 6px; }
+  /* 代码/日志文本样式：保留空格、换行和自动换行 */
+  pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  /* 空状态占位文本 */
+  .empty {
+    text-align: center;
+    color: #6b7280;
+    padding: 40px 0;
+    font-size: 14px;
+  }
+  /* 打字机效果：在正在输出的文本后显示闪烁光标 */
+  .typing::after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 14px;
+    background: #9ca3af;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: blink 1s steps(2) infinite;
+  }
+  @keyframes blink {
+    0% { opacity: 1; }
+    50% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <!-- 页面头部：标题 + 标签 -->
+    <header>
+      <h1>ReAct 智能体控制台</h1>
+      <span class="badge">本地运行</span>
+    </header>
+
+    <!-- 输入卡片：任务输入框 + 控制按钮 -->
+    <div class="card">
+      <!-- 用户输入框，placeholder 给出示例 -->
+      <textarea id="userInput" placeholder="输入你想让智能体完成的任务，例如：计算 12 * (3 + 4) 并告诉我结果"></textarea>
+      <div class="toolbar">
+        <!-- 点击后发起 /run 请求，开始一次智能体运行 -->
+        <button id="startBtn">启动运行</button>
+        <!-- 点击后调用 /stop 请求，中断当前运行 -->
+        <button id="stopBtn" class="danger secondary" disabled>停止</button>
+        <!-- 实时显示当前状态：就绪 / 运行中... / 已完成 -->
+        <span id="status" class="status">就绪</span>
+        <select id="providerSelect" style="margin-left:auto;padding:6px 10px;border-radius:6px;background:#0b1220;color:#e5e7eb;border:1px solid #1f2937;">
+          <option value="stepfun">StepFun</option>
+          <option value="ark">Doubao</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- 日志卡片：实时展示 Thought / Action / Observation -->
+    <div class="card">
+      <div id="log" class="log">
+        <!-- 空状态：未启动运行前显示占位文本 -->
+        <div class="empty">点击“启动运行”后，智能体的 Thought / Action / Observation 将实时显示在这里。</div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/* ------------------------------------------------------------------ */
+/* 前端控制脚本：负责调用后端接口、渲染实时日志                        */
+/* ------------------------------------------------------------------ */
+
+/* DOM 缓存：避免在事件处理中重复查询 */
+const input = document.getElementById('userInput');
+const startBtn = document.getElementById('startBtn');
+const stopBtn = document.getElementById('stopBtn');
+const statusEl = document.getElementById('status');
+const logEl = document.getElementById('log');
+
+  /* 当前运行的 ID，用于 SSE 订阅和停止请求 */
+let currentRunId = null;
+/* SSE 连接句柄，用于断开和重建 */
+let eventSource = null;
+/* 当前选择的 provider */
+let currentProvider = 'stepfun';
+
+/* 对工具返回或模型输出进行 HTML 转义，防止 XSS */
+function escapeHtml(text) {
+  const map = {
+    '&': '&amp;',
+    '<': '&lt;',
+    '>': '&gt;',
+    '"': '&quot;',
+    "'": '&#039;'
+  };
+  return String(text).replace(/[&<>"']/g, (m) => map[m]);
+}
+
+/* 更新右上角状态文字 */
+function setStatus(text) {
+  statusEl.textContent = text;
+}
+
+/* 统一控制按钮和输入框的禁用状态 */
+function setRunning(running) {
+  startBtn.disabled = running;
+  stopBtn.disabled = !running;
+  input.disabled = running;
+  setStatus(running ? '运行中...' : '就绪');
+}
+
+/* 在日志区创建一条新记录并返回内容容器 */
+function appendLog(event) {
+  const empty = logEl.querySelector('.empty');
+  if (empty) empty.remove();
+
+  const div = document.createElement('div');
+  div.className = 'entry ' + (event.type || '');
+
+  /* 元信息：Step 编号 + 事件类型 */
+  const meta = document.createElement('div');
+  meta.className = 'meta';
+  meta.textContent = `Step ${event.step ?? '-' } · ${event.type || 'event'}`;
+  div.appendChild(meta);
+
+  /* 内容容器：后续可追加 text / tool name / args */
+  const body = document.createElement('div');
+  div.appendChild(body);
+  logEl.appendChild(div);
+  logEl.scrollTop = logEl.scrollHeight;
+
+  return body;
+}
+
+/* 将 content / name 拼进指定容器，复用渲染逻辑 */
+function appendContent(body, event) {
+  if (event.content) {
+    const pre = document.createElement('pre');
+    pre.textContent = event.content;
+    body.appendChild(pre);
+  }
+  if (event.name) {
+    const pre = document.createElement('pre');
+    pre.innerHTML = `<strong>${escapeHtml(event.name)}</strong>(${escapeHtml(event.args || '')})`;
+    body.appendChild(pre);
+  }
+}
+
+/* 打字机效果：逐字渲染 reply / final 文本 */
+function typeStream(event, speed = 18) {
+  const body = appendLog(event);
+  const pre = document.createElement('pre');
+  pre.className = 'typing';
+  body.appendChild(pre);
+
+  const text = event.content || '';
+  let index = 0;
+
+  const timer = setInterval(() => {
+    if (currentRunId === null) {
+      clearInterval(timer);
+      return;
+    }
+    index += 1;
+    pre.textContent = text.slice(0, index);
+    logEl.scrollTop = logEl.scrollHeight;
+    if (index >= text.length) {
+      clearInterval(timer);
+      pre.classList.remove('typing');
+    }
+  }, speed);
+
+  return timer;
+}
+
+/* 全局计时器：同一时刻只有一个打字机在跑 */
+let typeTimer = null;
+
+function clearTypeTimer() {
+  if (typeTimer) {
+    clearInterval(typeTimer);
+    typeTimer = null;
+  }
+}
+
+/* 关闭 SSE 并重置 UI 状态 */
+function stopCurrent() {
+  if (eventSource) {
+    eventSource.close();
+    eventSource = null;
+  }
+  setRunning(false);
+}
+
+/* ------------------------------------------------------------------ */
+/* 启动运行：校验输入 -> POST /run -> 建立 SSE -> 实时渲染日志         */
+/* ------------------------------------------------------------------ */
+startBtn.addEventListener('click', () => {
+  const text = input.value.trim();
+  if (!text) {
+    input.focus();
+    return;
+  }
+
+  clearTypeTimer();
+  stopCurrent();
+  logEl.innerHTML = '';
+  currentRunId = null;
+  currentProvider = document.getElementById('providerSelect').value;
+
+  /* 1. 请求后端启动一次智能体运行 */
+  fetch(`/run?provider=${encodeURIComponent(currentProvider)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ input: text })
+  })
+  .then((r) => {
+    if (!r.ok) throw new Error('启动失败：' + r.status);
+    return r.json();
+  })
+  .then((data) => {
+    /* 2. 拿到 run_id，打开 SSE 实时通道 */
+    currentRunId = data.id;
+    setRunning(true);
+    setStatus('运行中...');
+    eventSource = new EventSource('/stream?id=' + encodeURIComponent(currentRunId));
+
+    /* 3. 每收到一个 SSE 事件，按类型决定渲染方式 */
+    eventSource.onmessage = (e) => {
+      try {
+        const event = JSON.parse(e.data);
+        const isTyping = event.type === 'reply' || event.type === 'final';
+        const isDirect = ['action', 'observation', 'error', 'stopped'].includes(event.type);
+
+        if (isTyping) {
+          clearTypeTimer();
+          typeTimer = typeStream(event, 18);
+        } else if (isDirect) {
+          const body = appendLog(event);
+          appendContent(body, event);
+          logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        /* 4. 遇到结束事件，清理资源并更新状态 */
+        if (event.type === 'final' || event.type === 'stopped' || event.type === 'end') {
+          clearTypeTimer();
+          stopCurrent();
+          setStatus(event.type === 'final' ? '已完成' : '已停止');
+        }
+      } catch (err) {
+        console.error('解析事件失败', err);
+      }
+    };
+
+    eventSource.onerror = () => {
+      stopCurrent();
+      setStatus('连接中断');
+    };
+  })
+  .catch((err) => {
+    console.error(err);
+    setStatus('启动失败');
+  });
+});
+
+/* 点击停止按钮时，向后端发起停止请求 */
+stopBtn.addEventListener('click', () => {
+  if (currentRunId) {
+    fetch('/stop?id=' + encodeURIComponent(currentRunId), { method: 'POST' });
+  }
+});
+</script>
+</body>
+</html>
