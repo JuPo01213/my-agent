@@ -1,0 +1,110 @@
+C:\Users\Administrator\AppData\Local\Python\pythoncore-3.14-64\Lib\site-packages\openai\_compat.py:48: UserWarning: Core Pydantic V1 functionality isn't compatible with Python 3.14 or greater.
+  from pydantic.v1.typing import (
+
+======================================================================
+事件流实验 — 中性 trace → 前端契约事件
+======================================================================
+base_url : https://api.stepfun.com/step_plan/v1
+model    : step-3.7-flash
+api_key  : 3tZqqWOD...HJgO (已脱敏)
+log file : C:\Users\Administrator\Desktop\my-agent\experiments\2026-06-24-event-stream.log
+已注册工具 : ['calculator', 'search', 'get_time']
+agents_yaml        : C:\Users\Administrator\Desktop\my-agent\experiments\2026-06-24-scenario.yaml
+relationships_yaml : C:\Users\Administrator\Desktop\my-agent\experiments\2026-06-24-scenario-relationships.yaml
+[WARNING] agent_core.multi_agent.relationship: 以下 Agent 的 YAML 缺省 `tools` 字段：['advisor', 'strategist', 'writer']。LLM 将看不到任何工具（如 calculator / search / get_time），工具调用次数为 0。如需工具，请在 YAML 显式声明 `tools: [...]`。（详见 ADR-008）
+
+加载的 Agent：
+  agent advisor: tools=[]  max_iter=8
+  agent strategist: tools=[]  max_iter=8
+  agent writer: tools=[]  max_iter=8
+
+======================================================================
+启动 OODA 循环（on_event=bus.emit）
+======================================================================
+
+======================================================================
+OODA 循环结束 — 黑板最终状态
+======================================================================
+status         : solved
+current_step   : 3
+history len    : 3
+elapsed        : 70.88s
+
+facts 概览：
+  - result::advisor: 共 1800 字
+  - result::strategist: 共 1170 字
+  - result::writer: 共 3711 字
+
+======================================================================
+EventBus 收集到的事件
+======================================================================
+总线事件数 : 35
+事件类型分布：
+  agent.activate: 3
+  final: 3
+  llm: 9
+  tool: 20
+
+前 30 条事件（JSON）：
+{"type": "agent.activate", "agent": "advisor", "step": 0, "can_activate": ["advisor"]}
+{"kind": "llm", "step": 1, "data": {"content": "用户要求我作为资深AI转型顾问，回答关于200人研发团队6个月完成AI转型的预算分配问题。需要回答三个问题：\n1. 团队需要具备的5项核心AI能力，按重要度排序\n2. 1500万元预算在招聘/培训/工具/外部咨询4项上的分配，用calculator工具给出百分比并验证总和等于100\n3. 6个月分3个阶段的关键里程碑，每个阶段2个月\n\n我需要使用calculator工具来计算百分比。让我先规划预算分配，然后计算。\n\n对于200人研发团队的AI转型，基于前BAT AI平台负责人的经验，我需要考虑：\n- 团队规模：200人研发团队\n- 时间：6个月\n- 预算：1500万元\n\n核心AI能力排序（按重要度）：\n1. LLM应用开发与工程化能力（最基础，所有应用都需要）\n2. RAG（检索增强生成）开发与优化能力（企业应用最常用）\n3. AI系统架构设计能力（确保系统可扩展、可靠）\n4. 模型微调与适配能力（针对特定场景优化）\n5. MLOps与AI工程化能力（确保生产环境稳定）\n\n预算分配思路：\n- 招聘：40%（600万）- 引进关键AI人才，如AI架构师、算法工程师\n- 培训：25%（375万）- 全员AI能力提升\n- 工具：20%（300万）- 开发平台、GPU资源、API费用等\n- 外部咨询：15%（225万）- 引入专家指导转型\n\n让我用calculator验证：\n- 招聘：600/1500 = 40%\n- 培训：375/1500 = 25%\n- 工具：300/1500 = 20%\n- 咨询：225/1500 = 15%\n总和：40+25+20+15 = 100%\n\n6个月3阶段里程碑：\n- 阶段1（第1-2月）：基础能力建设与试点\n- 阶段2（第3-4月）：规模化应用与平台化\n- 阶段3（第5-6月）：优化迭代与组织固化\n\n我需要使用calculator工具来计算百分比。让我先调用calculator。", "has_tool_calls": true}, "agent": "advisor"}
+{"kind": "tool", "step": 1, "data": {"phase": "call", "name": "calculator", "args": {"expression": "600/1500*100"}}, "agent": "advisor"}
+{"kind": "tool", "step": 1, "data": {"phase": "observation", "name": "calculator", "observation": "计算结果：40.0"}, "agent": "advisor"}
+{"kind": "llm", "step": 2, "data": {"content": "好的，招聘占比40%。继续计算其他项。", "has_tool_calls": true}, "agent": "advisor"}
+{"kind": "tool", "step": 2, "data": {"phase": "call", "name": "calculator", "args": {"expression": "375/1500*100"}}, "agent": "advisor"}
+{"kind": "tool", "step": 2, "data": {"phase": "observation", "name": "calculator", "observation": "计算结果：25.0"}, "agent": "advisor"}
+{"kind": "llm", "step": 3, "data": {"content": "培训占比25%。继续计算工具和咨询。", "has_tool_calls": true}, "agent": "advisor"}
+{"kind": "tool", "step": 3, "data": {"phase": "call", "name": "calculator", "args": {"expression": "300/1500*100"}}, "agent": "advisor"}
+{"kind": "tool", "step": 3, "data": {"phase": "observation", "name": "calculator", "observation": "计算结果：20.0"}, "agent": "advisor"}
+{"kind": "llm", "step": 4, "data": {"content": "工具占比20%。继续计算咨询。", "has_tool_calls": true}, "agent": "advisor"}
+{"kind": "tool", "step": 4, "data": {"phase": "call", "name": "calculator", "args": {"expression": "225/1500*100"}}, "agent": "advisor"}
+{"kind": "tool", "step": 4, "data": {"phase": "observation", "name": "calculator", "observation": "计算结果：15.0"}, "agent": "advisor"}
+{"kind": "llm", "step": 5, "data": {"content": "咨询占比15%。现在验证总和。", "has_tool_calls": true}, "agent": "advisor"}
+{"kind": "tool", "step": 5, "data": {"phase": "call", "name": "calculator", "args": {"expression": "40+25+20+15"}}, "agent": "advisor"}
+{"kind": "tool", "step": 5, "data": {"phase": "observation", "name": "calculator", "observation": "计算结果：100"}, "agent": "advisor"}
+{"kind": "llm", "step": 6, "data": {"content": "## 200人研发团队6个月AI转型方案\n\n### 一、5项核心AI能力（按重要度排序）\n\n| 排序 | 能力域 | 核心要求 | 重要度说明 |\n|------|--------|----------|------------|\n| 1 | **LLM应用开发与工程化** | Prompt工程、Chain开发、API集成、输出解析 | 所有AI应用的基础，决定交付效率 |\n| 2 | **RAG开发与优化** | 向量数据库、检索策略、文档处理、混合检索 | 企业知识应用最高频场景，ROI最明确 |\n| 3 | **AI系统架构设计** | 高可用设计、流量治理、成本控制、安全合规 | 确保生产环境稳定性，避免技术债 |\n| 4 | **模型微调与适配** | LoRA/QLoRA、数据集构建、评估体系 | 针对垂直场景提升效果，差异化竞争 |\n| 5 | **MLOps与AI工程化** | 监控告警、A/B测试、版本管理、自动化部署 | 保障系统持续迭代，降低运维成本 |\n\n---\n\n### 二、1500万元预算分配（已验证总和=100%）\n\n| 类别 | 金额（万元） | 占比 | 计算验证 |\n|------|-------------|------|----------|\n| **招聘** | 600 | **40%** | 600÷1500×100 = 40.0% |\n| **培训** | 375 | **25%** | 375÷1500×100 = 25.0% |\n| **工具** | 300 | **20%** | 300÷1500×100 = 20.0% |\n| **外部咨询** | 225 | **15%** | 225÷1500×100 = 15.0% |\n| **合计** | **1500** | **100%** | 40+25+20+15 = **100%** ✓ |\n\n**分配逻辑：**\n- **招聘（40%）**：引进3-5名AI架构师/算法专家作为种子，带动200人团队转型\n- **培训（25%）**：分层培训（管理层+技术骨干+普通开发），含认证费用\n- **工具（20%）**：LLM API调用费、向量数据库、开发平台、GPU算力租赁\n- **外部咨询（15%）**：引入BAT级别专家做转型规划、技术评审、避坑指导\n\n---\n\n### 三、6个月3阶段关键里程碑\n\n#### **阶段1：基础能力建设与试点（第1-2月）**\n- **里程碑1**：完成核心团队（20-30人）AI能力认证，具备独立开发LLM应用能力\n- **里程碑2**：落地3-5个高价值试点场景（如智能客服、代码助手、知识库问答）\n- **量化标准**：试点项目平均响应延迟<2s，用户满意度≥4.0/5.0\n\n#### **阶段2：规模化应用与平台化（第3-4月）**\n- **里程碑1**：建成统一AI开发平台，支持Prompt管理、RAG pipeline、模型路由\n- **里程碑2**：推广至50%以上研发团队，累计上线≥20个AI应用\n- **量化标准**：平台支持并发≥1000 QPS，应用开发周期从2周缩短至3天\n\n#### **阶段3：优化迭代与组织固化（第5-6月）**\n- **里程碑1**：建立MLOps体系，实现模型监控、A/B测试、成本告警自动化\n- **里程碑2**：形成AI转型方法论，完成全员技能评估与组织架构调整\n- **量化标准**：生产环境可用性≥99.9%，AI相关需求交付占比≥30%\n\n---\n\n### 可量化判断标准（转型成功阈值）\n\n| 维度 | 合格线 | 优秀线 |\n|------|--------|--------|\n| 团队AI能力覆盖率 | ≥70%开发者能独立开发AI应用 | ≥90% |\n| 业务应用渗透率 | ≥50%产品线集成AI能力 | ≥80% |\n| 平均交付周期 | 较传统开发缩短≥50% | 缩短≥70% |\n| 投资回报率 | 6个月内ROI≥20% | 6个月内ROI≥50% |\n| 系统稳定性 | 生产事故率≤5% | 生产事故率≤2% |\n\n**风险提示**：若第2个月末试点项目成功率<60%，建议启动预算应急机制，将外部咨询占比提升至20%以获取紧急救援。", "has_tool_calls": false}, "agent": "advisor"}
+{"kind": "final", "step": 6, "data": {"content": "## 200人研发团队6个月AI转型方案\n\n### 一、5项核心AI能力（按重要度排序）\n\n| 排序 | 能力域 | 核心要求 | 重要度说明 |\n|------|--------|----------|------------|\n| 1 | **LLM应用开发与工程化** | Prompt工程、Chain开发、API集成、输出解析 | 所有AI应用的基础，决定交付效率 |\n| 2 | **RAG开发与优化** | 向量数据库、检索策略、文档处理、混合检索 | 企业知识应用最高频场景，ROI最明确 |\n| 3 | **AI系统架构设计** | 高可用设计、流量治理、成本控制、安全合规 | 确保生产环境稳定性，避免技术债 |\n| 4 | **模型微调与适配** | LoRA/QLoRA、数据集构建、评估体系 | 针对垂直场景提升效果，差异化竞争 |\n| 5 | **MLOps与AI工程化** | 监控告警、A/B测试、版本管理、自动化部署 | 保障系统持续迭代，降低运维成本 |\n\n---\n\n### 二、1500万元预算分配（已验证总和=100%）\n\n| 类别 | 金额（万元） | 占比 | 计算验证 |\n|------|-------------|------|----------|\n| **招聘** | 600 | **40%** | 600÷1500×100 = 40.0% |\n| **培训** | 375 | **25%** | 375÷1500×100 = 25.0% |\n| **工具** | 300 | **20%** | 300÷1500×100 = 20.0% |\n| **外部咨询** | 225 | **15%** | 225÷1500×100 = 15.0% |\n| **合计** | **1500** | **100%** | 40+25+20+15 = **100%** ✓ |\n\n**分配逻辑：**\n- **招聘（40%）**：引进3-5名AI架构师/算法专家作为种子，带动200人团队转型\n- **培训（25%）**：分层培训（管理层+技术骨干+普通开发），含认证费用\n- **工具（20%）**：LLM API调用费、向量数据库、开发平台、GPU算力租赁\n- **外部咨询（15%）**：引入BAT级别专家做转型规划、技术评审、避坑指导\n\n---\n\n### 三、6个月3阶段关键里程碑\n\n#### **阶段1：基础能力建设与试点（第1-2月）**\n- **里程碑1**：完成核心团队（20-30人）AI能力认证，具备独立开发LLM应用能力\n- **里程碑2**：落地3-5个高价值试点场景（如智能客服、代码助手、知识库问答）\n- **量化标准**：试点项目平均响应延迟<2s，用户满意度≥4.0/5.0\n\n#### **阶段2：规模化应用与平台化（第3-4月）**\n- **里程碑1**：建成统一AI开发平台，支持Prompt管理、RAG pipeline、模型路由\n- **里程碑2**：推广至50%以上研发团队，累计上线≥20个AI应用\n- **量化标准**：平台支持并发≥1000 QPS，应用开发周期从2周缩短至3天\n\n#### **阶段3：优化迭代与组织固化（第5-6月）**\n- **里程碑1**：建立MLOps体系，实现模型监控、A/B测试、成本告警自动化\n- **里程碑2**：形成AI转型方法论，完成全员技能评估与组织架构调整\n- **量化标准**：生产环境可用性≥99.9%，AI相关需求交付占比≥30%\n\n---\n\n### 可量化判断标准（转型成功阈值）\n\n| 维度 | 合格线 | 优秀线 |\n|------|--------|--------|\n| 团队AI能力覆盖率 | ≥70%开发者能独立开发AI应用 | ≥90% |\n| 业务应用渗透率 | ≥50%产品线集成AI能力 | ≥80% |\n| 平均交付周期 | 较传统开发缩短≥50% | 缩短≥70% |\n| 投资回报率 | 6个月内ROI≥20% | 6个月内ROI≥50% |\n| 系统稳定性 | 生产事故率≤5% | 生产事故率≤2% |\n\n**风险提示**：若第2个月末试点项目成功率<60%，建议启动预算应急机制，将外部咨询占比提升至20%以获取紧急救援。"}, "agent": "advisor"}
+{"type": "agent.activate", "agent": "strategist", "step": 1, "can_activate": ["strategist"]}
+{"kind": "llm", "step": 1, "data": {"content": "用户现在需要我根据给的已知事实来回答那三个问题，首先第一个是5项核心AI能力按重要度排序，第二个是1500万预算分配用计算器算百分比验证总和100，第三个是6个月3阶段每个2个月的里程碑。首先先处理第二个，需要用计算器算每个的占比，还有总和。首先先列出来：招聘600万，600/1500=0.4也就是40%；培训375万，375/1500=0.25也就是25%；工具300万，300/1500=0.2也就是20%；外部咨询225万，225/1500=0.15也就是15%。然后总和40+25+20+15=100，对的。然后第一个能力排序就是给的1到5的那个，第三个里程碑就是阶段1第1-2月，阶段2第3-4月，阶段3第5-6月的内容。等下，要准确对应，首先先回答第一个问题：5项核心AI能力按重要度排序就是：\n1. LLM应用开发与工程化（核心要求：Prompt工程、Chain开发、API集成、输出解析，是所有AI应用的基础，决定交付效率）\n2. RAG开发与优化（核心要求：向量数据库、检索策略、文档处理、混合检索，是企业知识应用最高频场景，ROI最明确）\n3. AI系统架构设计（核心要求：高可用设计、流量治理、成本控制、安全合规，确保生产环境稳定性，避免技术债）\n4. 模型微调与适配（核心要求：LoRA/QLoRA、数据集构建、评估体系，针对垂直场景提升效果，差异化竞争）\n5. MLOps与AI工程化（核心要求：监控告警、A/B测试、版本管理、自动化部署，保障系统持续迭代，降低运维成本）\n然后第二个问题，用计算器算每个的占比，首先调用计算器算每个的：首先算招聘的：600÷1500，然后培训375÷1500，工具300÷1500，外部咨询225÷1500，然后加起来验证总和。哦对，要用到calculator工具，所以先调用计算器算这些。等下，用户要求用calculator工具给出每项的百分比并验证总和等于100，所以我要调用计算器计算这些表达式。首先，先算各个占比：\n第一个表达式：600 / 1500 * 100\n第二个：375 / 1500 * 100\n第三个：300 / 1500 * 100\n第四个：225 / 1500 * 100\n然后总和：(40 + 25 + 20 + 15) 或者直接算四个的和。对，先调用计算器算这些。然后第三个问题是6个月分3阶段每个2个月的里程碑，就是给的阶段1第1-2月，阶段2第3-4月，阶段3第5-6月的内容。现在先调用计算器计算这些数值。", "has_tool_calls": true}, "agent": "strategist"}
+{"kind": "tool", "step": 1, "data": {"phase": "call", "name": "calculator", "args": {"expression": "600 / 1500 * 100"}}, "agent": "strategist"}
+{"kind": "tool", "step": 1, "data": {"phase": "observation", "name": "calculator", "observation": "计算结果：40.0"}, "agent": "strategist"}
+{"kind": "tool", "step": 1, "data": {"phase": "call", "name": "calculator", "args": {"expression": "375 / 1500 * 100"}}, "agent": "strategist"}
+{"kind": "tool", "step": 1, "data": {"phase": "observation", "name": "calculator", "observation": "计算结果：25.0"}, "agent": "strategist"}
+{"kind": "tool", "step": 1, "data": {"phase": "call", "name": "calculator", "args": {"expression": "300 / 1500 * 100"}}, "agent": "strategist"}
+{"kind": "tool", "step": 1, "data": {"phase": "observation", "name": "calculator", "observation": "计算结果：20.0"}, "agent": "strategist"}
+{"kind": "tool", "step": 1, "data": {"phase": "call", "name": "calculator", "args": {"expression": "225 / 1500 * 100"}}, "agent": "strategist"}
+{"kind": "tool", "step": 1, "data": {"phase": "observation", "name": "calculator", "observation": "计算结果：15.0"}, "agent": "strategist"}
+{"kind": "tool", "step": 1, "data": {"phase": "call", "name": "calculator", "args": {"expression": "40 + 25 + 20 + 15"}}, "agent": "strategist"}
+{"kind": "tool", "step": 1, "data": {"phase": "observation", "name": "calculator", "observation": "计算结果：100"}, "agent": "strategist"}
+
+======================================================================
+frontend.adapter 验证
+======================================================================
+agents_traces 数量: 3
+  Agent advisor: 17 条 trace
+  Agent strategist: 13 条 trace
+  Agent writer: 2 条 trace
+aggregate_run_events 产出事件数: 37
+聚合后事件类型分布：
+  agent.activate: 3
+  llm.final: 3
+  llm.thought: 9
+  run.done: 1
+  tool.call: 10
+  tool.observation: 10
+  user.input: 1
+
+======================================================================
+KPI 校验
+======================================================================
+  [OK  ] status == 'solved'
+  [OK  ] bus.events 非空
+  [OK  ] 含 agent.activate 事件
+  [OK  ] 含 final 事件（中性 trace）
+  [OK  ] 含 tool 事件（中性 trace）
+  [OK  ] 聚合后含 run.done
+  [OK  ] facts 含 result::advisor
+  [OK  ] facts 含 result::strategist
+  [OK  ] facts 含 result::writer
+
+ALL OK
