@@ -274,13 +274,17 @@
 ### core/
 
 - **路径**：agent_core/core/
-- **作用**：核心层，**只做一件事**：跑一次 ReAct 循环 + 工具注册表。
+- **作用**：核心层，**只做一件事**：跑一次 ReAct 循环 + 工具注册表 + 搜索后端抽象。
 - **公开 API**（从 `agent_core.core` 导入）：
   - `run_loop(user_input, client, model, system_prompt, openai_tools, max_steps) -> str`
   - `TOOLS` / `register_tool` / `build_openai_tools_schema` / `validate_tool_args`
+  - `SearchBackend` / `SearchResult` / `register_backend` / `get_backend` / `set_default_backend` / `list_backends`
 - **关键文件**：
   - `react_agent.py`：纯 ReAct 循环（~100 行），无任何 dashboard 事件协议
   - `tool_registry.py`：工具注册表 + 3 个内置工具（calculator / search / get_time）
+  - `search_backends.py`：搜索后端抽象层，定义 SearchBackend 接口与注册表
+  - `search_mcp_backends.py`：MCP 搜索后端实现，当前包含 StepSearchMCPBackend
+  - `search_init.py`：搜索后端默认初始化，包导入时自动注册 StepSearch 或占位后端
 
 ### multi_agent/
 
