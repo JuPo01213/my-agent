@@ -98,6 +98,17 @@ ARCHITECTURE_FILE_PATTERNS = [
     "config/relationships.yaml",
 ]
 
+# 目录职责约定：即使文件不在映射表中，也能根据目录推断文档
+# 键：目录前缀（相对于 WORKSPACE）
+# 值：对应的文档路径列表（相对于 WORKSPACE）
+DIRECTORY_DOC_RULES = {
+    "agent_core/core/": ["docs/reference/api.md"],
+    "agent_core/multi_agent/": ["docs/reference/api.md", "docs/adr/"],
+    "agent_core/server/": ["docs/reference/api.md"],
+    "agent_core/frontend/": ["docs/reference/api.md"],
+    "config/": ["docs/reference/configuration.md"],
+}
+
 # 文档引用有效性检查：需要验证的链接模式
 DOC_REFERENCE_PATTERNS = [
     r"\[.*?\]\((.*?)\)",  # Markdown 链接
@@ -154,9 +165,10 @@ def check_code_doc_sync(changed_files: list[Path]) -> list[str]:
     """
     检查代码-文档映射：
     对于每个变更的核心代码文件，检查其对应的文档是否在合理时间内更新。
+    支持显式映射表和目录约定两种方式。
     """
-    if not CODE_TO_DOC_MAP:
-        return ["[跳过] 代码-文档映射表为空"]
+    if not CODE_TO_DOC_MAP and not DIRECTORY_DOC_RULES:
+        return ["[跳过] 代码-文档映射表和目录约定均为空"]
     
     issues = []
     checked_mappings = 0
@@ -165,14 +177,25 @@ def check_code_doc_sync(changed_files: list[Path]) -> list[str]:
         rel_code = code_file.relative_to(WORKSPACE)
         rel_code_str = str(rel_code).replace("\\", "/")
         
-        if rel_code_str not in CODE_TO_DOC_MAP:
+        # 收集该文件对应的文档
+        matched_docs = set()
+        
+        # 1. 精确匹配映射表
+        if rel_code_str in CODE_TO_DOC_MAP:
+            matched_docs.update(CODE_TO_DOC_MAP[rel_code_str])
+        
+        # 2. 目录约定匹配（作为 fallback）
+        for dir_pattern, docs in DIRECTORY_DOC_RULES.items():
+            if rel_code_str.startswith(dir_pattern):
+                matched_docs.update(docs)
+        
+        if not matched_docs:
             continue
         
-        doc_paths = CODE_TO_DOC_MAP[rel_code_str]
         code_mtime = code_file.stat().st_mtime
         now = datetime.now().timestamp()
         
-        for doc_rel in doc_paths:
+        for doc_rel in matched_docs:
             doc_path = WORKSPACE / doc_rel
             checked_mappings += 1
             

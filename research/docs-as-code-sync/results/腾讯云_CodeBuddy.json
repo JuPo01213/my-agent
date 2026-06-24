@@ -1,0 +1,89 @@
+{
+  "item_name": "腾讯云 CodeBuddy",
+  "category": "AI 驱动工具",
+  "description": "AI 智能注释分析，代码提交触发文档自动重构，延迟 <1 秒",
+  "search_query": "腾讯云 CodeBuddy AI 智能注释分析，代码提交触发文档自动重构，延迟 <1 秒 文档自动同步 更新机制 最佳实践",
+  "search_results": [
+    {
+      "url": "https://www.codebuddy.cn/setup/",
+      "position": 1,
+      "title": "腾讯云代码助手插件安装教程-腾讯云代码助手",
+      "time": "2026-06-20T15:24:31",
+      "snippet": "腾讯云代码助手 CodeBuddy 插件兼容 Visual Studio Code、Visual Studio、JetBrains IDEs 等主流编程工具，为你提供高效、流畅的智能编码体验",
+      "content": "智能编程伙伴\n灵活集成于你的本地IDE中,符合原有开发习惯,为开发者学习、工作、开发、创造全流程场景。\n通过 Craft 智能体、代码补全等能力,在编码的各个阶段给予可靠支持\nCraft：全新软件开发智能体\n自主完成多文件代码生成和改写，即刻落地可执行应用\n代码补全  Plus\n基于上下文理解以及编辑行为，预测下一个改动点，同时给出相应推荐，提升编码效率\nMCP：支持外部工具调用  Plus\n兼容 MCP 开放生态，推动 AI 与外部系统标准化连接，串联端到端的开发全流程\n智能问答\n基于海量技术文档进行训练，支持团队自定义知识库管理和模型切换\n代码评审\n支持代码批量评审，给出优化建议。自动生成commit message，规范开发流程\n●\n方法一: 快速安装\n唤起 Visual Studio Code 本地客户端插件市场直接安装\n注：若未跳转成功,请选择\"方法二\"进行插件包下载安装。\n●\n方法二: 本地插件包安装\n点击下载按钮,获取腾讯云代码助手本地最新安装包\n●\n方法三: 从IDE 安装\n在 Visual Studio Code 中手动安装插件\n1.\n打开插件市场\n已安装 Visual Studio Code 的情况下,左侧导航上点击\"扩展\"\n2.\n搜索\"Tencent Cloud CodeBuddy\"\n在插件市场中搜索框中输入\"Tencent Cloud CodeBuddy\",并搜索\n3.\n点击安装\n在搜索结果中点击\"Install\"\n在 JetBrains IDEs 中安装 CodeBuddy 插件\n还没有 JetBrains IDEs?  点击下载\n●\n方法一: 本地插件包安装\n点击下载按钮，获取腾讯云代码助手本地最新安装包\n●\n方法二: 从 IDE 安装\n在 JetBrains IDEs 中手动安装插件\n1.\n打开插件市场\n已安装 JetBrains IDEs 的情况下,左侧导航上点击\"扩展\"\n2.\n搜索\"腾讯云 AI代码助手\"\n在插件市场中搜索框中输入\"腾讯云代码助手\",并搜索\n3.\n点击安装\n在搜索结果中点击\"Install\"\n在微信开发者工具 中安装 CodeBuddy 插件\n还没有微信开发者工具?  点击下载\n●\n安装方法\n在微信开发者工具中手动安装插件\n1.\n打开插件市场\n已安装微信开发者工具的情况下,左侧导航上点击\"扩展\"\n2.\n搜索\"腾讯云 AI代码助手\"\n在插件市场中搜索框中输入\"腾讯云代码助手\",并搜索\n3.\n点击安装\n在搜索结果中点击\"Install\"\n在 Xcode 中使用 CodeBuddy 插件\n还没有 Xcode?  点击下载\n●\n安装方法\n在 Xcode 中安装 CodeBuddy 插件\n1.\n下载\n点击下载按钮,获取 CodeBuddy Xcode 最新安装包\n2.\n本地安装\n本地安装包快速安装。双击打开安装包,将 CodeBuddy 的图标拖拽到右侧 Applications,即可完成安装\n3.\n辅助功能授权和启动服务\n辅助功能授权和启动服务。依次打开电脑\"设置—隐私与安全性-辅助功能\",开启\"CodeingCopilotService\"开关\n4.\n启用 Xcode 的扩展能力\n启用 Xcode的扩展能力,接入代码补全等能力。依次打开电脑\"设置-通用-登录项与扩展\",开启\"Xcode Source Editor\"开关\n5.\n登录账号\n打开对话，即可唤起对话窗口，在窗口中完成登录\n在 Visual Studio 中安装 CodeBuddy 插件\n还没有 Visual Studio?  点击下载\n●\n方法一"
+    },
+    {
+      "url": "https://page.quark.cn/baike?id=71d5469bbd0243389b3d58b23f22a4c8",
+      "position": 2,
+      "title": "CodeBuddy",
+      "time": "2026-05-27T00:00:00",
+      "snippet": "CodeBuddy是 推出的AI代码助手，定位为智能编程伙伴，集成DeepSeek与腾讯混元双模型，支持自然语言编程、多文件代码生成、代码补全及单元测试等功能。2025年4月，产品上线Craft软件开发智能体，首次实现AI...2025年4月，腾讯云推出CodeBuddy的Craft软件开发智能体，支持通过自然语言指令生成完整可执...",
+      "content": "CodeBuddy是\n推出的AI代码助手，定位为智能编程伙伴，集成DeepSeek与腾讯混元双模型，支持自然语言编程、多文件代码生成、代码补全及单元测试等功能。2025年4月，产品上线Craft软件开发智能体，首次实现AI自主理解需求并生成可执行项目；5月成为国内首个支持MCP（Model Context Protocol）协议的代码助手，支持与外部工具对接；7月22日推出CodeBuddy IDE内测版，整合需求文档生成、设计稿转代码与云端部署功能，实现“产品-设计-研发-部署”全流程AI一体化开发。该版本兼容VS Code、\n等主流IDE，覆盖超200种编程语言及框架。7月31日，CodeBuddy入选2025全球百大AI应用 \n 。\n2025年4月，腾讯云推出CodeBuddy的Craft软件开发智能体，支持通过自然语言指令生成完整可执行项目。\n5月，CodeBuddy发布全新开发Agent智能体，成为国内首个支持MCP协议的代码助手，增强智能体协作开发能力。\n7月22日，CodeBuddy IDE开启内测，作为首个实现“产品-设计-研发-部署”全流程AI一体化的开发工作台，集成需求分析、界面设计转化与自动化部署功能。\n8月21日，CodeBuddy IDE国内版正式开放公测，无需邀请码即可免费使用最新DeepSeek-V3.1模型。\nCodeBuddy的Craft模式支持AI自主理解用户需求，完成多文件代码生成与重构。开发者通过自然语言指令即可生成完整应用项目，降低传统对话式编程的交互成本，提升开发灵活性。"
+    },
+    {
+      "url": "http://staging-codebuddy.tencent.com/docs/zh/cli/release-notes/README",
+      "position": 3,
+      "title": "Release Notes",
+      "time": "2026-05-28T00:00:00",
+      "snippet": "腾讯云 CodeBuddy 是新一代 AI 代码编辑器。提供代码补全、错误诊断、技术问答、性能优化等服务。",
+      "content": "CodeBuddy Code 的版本发布说明，面向终端用户的功能更新和改进。\n     关于 Release Notes  ​\nRelease Notes 记录了每个版本的用户可见变更，包括：\n✨ 新功能      改进优化      问题修复\n与 CHANGELOG.md 的区别：\nRelease Notes ：面向终端用户，强调功能价值和用户体验 CHANGELOG ：面向开发者，记录技术细节和代码变更\n     版本历史  ​\nv2.99.1  - 2026-05-28\nv2.99.0  - 2026-05-27\nv2.98.1  - 2026-05-25\nv2.98.0  - 2026-05-24\nv2.97.5  - 2026-05-22\nv2.97.4  - 2026-05-21\nv2.97.3  - 2026-05-19\nv2.97.2  - 2026-05-16\nv2.97.1  - 2026-05-14\nv2.97.0  - 2026-05-13\nv2.96.1  - 2026-05-12\nv2.96.0  - 2026-05-11\nv2.95.1  - 2026-05-07\nv2.95.0  - 2026-05-01\nv2.94.4  - 2026-05-01\nv2.94.3  - 2026-04-29\nv2.94.2  - 2026-04-28\nv2.94.1  - 2026-04-28\nv2.94.0  - 2026-04-28\nv2.93.7  - 2026-04-26\nv2.93.6  - 2026-04-25\nv2.93.5  - 2026-04-23\nv2.93.4  - 2026-04-23\nv2.93.3  - 2026-04-22\nv2.93.2  - 2026-04-22\nv2.93.1  - 2026-04-21\nv2.93.0  - 2026-04-20\nv2.92.0  - 2026-04-20\nv2.91.0  - 2026-04-17\nv2.90.0  - 2026-04-16\nv2.89.0  - 2026-04-16\nv2.88.0  - 2026-04-14\nv2.87.0  - 2026-04-14\nv2.86.0  - 2026-04-13\nv2.85.0  - 2026-04-12\nv2.84.0  - 2026-04-12\nv2.83.1  - 2026-04-10\nv2.83.0  - 2026-04-10\nv2.82.0  - 2026-04-10\nv2.81.2  - 2026-04-09\nv2.81.1  - 2026-04-08\nv2.81.0  - 2026-04-08\nv2.80.0  - 2026-04-08\nv2.79.1  - 2026-04-07\nv2.79.0  - 2026-04-07\nv2.78.1  - 2026-04-05\nv2.78.0  - 2026-04-05\nv2.77.1  - 2026-04-04\nv2.77.0  - 2026-04-03\nv2.76.0  - 2026-04-03\nv2.75.0  - 2026-04-03\nv2.74.0  - 2026-04-03\nv2.73.0  - 2026-04-03\nv2.72.0  - 2026-04-02\nv2.71.1  - 2026-04-01\nv2.71.0  - 2026-04-01\nv2.70.1  - 2026-03-31\nv2.70.0  - 2026-03-31\nv2.69"
+    },
+    {
+      "url": "https://www.codebuddy.cn/ide/",
+      "position": 4,
+      "title": "让灵感即刻落地",
+      "time": "2026-06-20T01:50:40",
+      "snippet": "CodeBuddy IDE 构建一个产品、设计、研发无缝协作的共生环境。通过将 AI 深度融入从需求规划、产品设计到代码开发的全流程，实现从一个从想法到产品发布的一站式高效交付平台。自然语言驱动的全流程开发 用户仅需用自然语言描述需求，如“帮我做一个电商网站”，AI 即可自动生成结构化的 PRD 文档、设计原型、前后端代码，并完成部署，实现从构想到上线的全流程自动化。集成后端服务&一...",
+      "content": "CodeBuddy IDE 构建一个产品、设计、研发无缝协作的共生环境。通过将 AI 深度融入从需求规划、产品设计到代码开发的全流程，实现从一个从想法到产品发布的一站式高效交付平台。\n自然语言驱动的全流程开发\n用户仅需用自然语言描述需求，如“帮我做一个电商网站”，AI 即可自动生成结构化的 PRD 文档、设计原型、前后端代码，并完成部署，实现从构想到上线的全流程自动化。\n集成后端服务 & 一键部署\n接入腾讯云 CloudBase 或 Supabase 等服务。几步之内将应用上线，实现从开发到部署的全流程自动化。\nmacOS 11.0+\nWindows 10+\nWindows (x64)"
+    },
+    {
+      "url": "https://cloud.tencent.com/developer/article/2522517?from=15425&frompage=seopage&policyId=20240001&traceId=01jwq8zcg4mnxp7ap8h1n1hvan",
+      "position": 5,
+      "title": "CodeBuddy Craft 使用体验：提升开发效率的智能编程助手",
+      "time": "2025-05-20T15:17:21",
+      "snippet": "CodeBuddy Craft 提供专业的重构建议，帮助改善代码结构和设计模式应用。代码语言：javascript AI代码解释 重构前：简单的条件渲染 function UserCard({ user }){ if(user.role='admin'){ return(< div className = \"card admin\" ><h2>{ user.name }< ...",
+      "content": "一、CodeBuddy Craft 简介\nCodeBuddy Craft 是一款新兴的 AI 编程辅助工具，旨在帮助开发者提高编码效率、减少重复劳动并提升代码质量。作为一款基于 人工智能 的编程助手，它能够理解上下文、生成代码片段、提供智能建议，并与主流  IDE  无缝集成。\n1.1 核心功能概述\nCodeBuddy Craft 提供以下主要功能：\n智能代码补全 ：基于上下文预测开发者意图 代码片段生成 ：根据自然语言描述生成完整代码块 错误检测与修复 ：实时分析代码潜在问题 文档自动生成 ：为代码生成清晰的注释和文档 代码重构建议 ：提供优化代码结构的专业建议\n二、安装与配置体验\n2.1 安装过程\nCodeBuddy Craft 支持多种开发环境，包括 VS Code、 IntelliJ IDEA  和  Eclipse 。以下以 VS Code 为例展示安装步骤：\n打开 VS Code 扩展市场 搜索 \"CodeBuddy Craft\" 点击安装按钮 安装完成后重启 VS Code\n代码语言： javascript\nAI代码解释\n# 也可以通过命令行安装 code  -- install - extension codebuddy . craft\n2.2 基本配置\n安装完成后，需要进行简单的配置以优化使用体验：\n代码语言： javascript\nAI代码解释\n// settings.json 配置示例 { \"codebuddy.enable\" : true , \"codebuddy.suggestionDelay\" : 200 , \"codebuddy.maxSuggestions\" : 5 , \"codebuddy.languageSupport\" : [ \"javascript\" , \"typescript\" , \"python\" , \"java\" ] , \"codebuddy.autoDocumentation\" : true }\n配置说明：\nsuggestionDelay : 建议弹出延迟(毫秒) maxSuggestions : 最大显示建议数 languageSupport : 支持的语言列表 autoDocumentation : 是否自动生成文档\n图2：VS Code 中的配置界面截图\n三、核心功能深度体验\n3.1 智能代码补全\nCodeBuddy Craft 的代码补全功能远超传统 IDE 的简单关键字补全。它能理解上下文，预测开发者意图，提供更精准的建议。\n代码语言： javascript\nAI代码解释\n// 示例：React 组件开发中的智能补全 import  React , {  useState  } from 'react' ; function Counter ( ) { // 当输入\"useS\"时，CodeBuddy Craft 会建议完整的useState hook const [ count ,  setCount ] = useState ( 0 ) ; // 输入\"handleIncrement\"时，会建议完整的事件处理函数 const handleIncrement = ( ) => { setCount ( prevCount =>  prevCount  + 1 ) ; } ; return ( < div > < p > Count : { count } < / p > { /* 输入\"button\"时，会建议完整的JSX按钮元素 */ } < button onClick = { han"
+    },
+    {
+      "url": "http://staging-codebuddy.tencent.com/docs/zh/cli/release-notes/v2.13.0",
+      "position": 6,
+      "title": "CodeBuddy Code v2.13.0 发布",
+      "time": "2026-05-25T03:50:00",
+      "snippet": "腾讯云 CodeBuddy 是新一代 AI 代码编辑器。提供代码补全、错误诊断、技术问答、性能优化等服务。",
+      "content": "​\n✨ 新功能  ​\nToken 分析命令：新增  /context  命令，可查看当前会话中各模块的 token 使用分布，帮助了解上下文消耗情况 IDE 自动连接：CLI 启动时自动检测本地 IDE 并建立通信连接，状态栏实时显示连接状态 Ripgrep 配置选项：新增  USE_BUILTIN_RIPGREP  环境变量，可选择使用系统安装的 ripgrep 或内置版本\n     改进优化  ​\n加载界面优化：改进工具调用结果和加载提示的显示样式，提升视觉体验 模型输出配置：支持通过环境变量动态调整模型输出限制 Skill 加载加速：优化技能扫描机制，提升启动速度 Shell 兼容性增强：改进默认 shell 配置，提升跨平台稳定性\n     问题修复  ​\n命令执行反馈：修复自定义命令执行时缺少运行状态提示的问题 IDE 文件提示：改进文件打开提示逻辑，未选中内容时也会正确提示 编码检测优化：改进系统编码检测机制，避免错误输出干扰"
+    },
+    {
+      "url": "https://cloud.tencent.com/developer/article/2551403",
+      "position": 7,
+      "title": "腾讯云CodeBuddy AI IDE+CloudBase AI ToolKit打造理财小助手网页",
+      "time": "2025-08-05T09:46:02",
+      "snippet": "腾讯云CodeBuddy与CloudBase AI ToolKit联合打造智能理财助手，提供个性化财务分析、资产配置建议和理财规划服务。采用Vue3+TailwindCSS技术栈，支持财务健康评估、风险评分、可视化图表和报告导出功能。体验地址：https://pickstar-cloud-8g304kyq275603f...",
+      "content": "@CodeBuddy\n腾讯云CodeBuddy AI IDE+CloudBase AI ToolKit打造理财小助手网页\n在线体验地址： https://pickstar-cloud-8g304kyq275603ff-1359706957.tcloudbaseapp.com/\n在线仓库： https://cnb.cool/pickstars-2025/ai-financial-assistant\n     Hello，我是摘星！\n     在彩虹般绚烂的技术栈中，我是那个永不停歇的色彩收集者。\n     每一个优化都是我培育的花朵，每一个特性都是我放飞的蝴蝶。\n     每一次代码审查都是我的显微镜观察，每一次重构都是我的化学实验。\n     在编程的交响乐中，我既是指挥家也是演奏者。让我们一起，在技术的音乐厅里，奏响属于程序员的华美乐章。\n理财小助手网页展示\n首页\n信息收集\n年龄信息\n收支情况\n资产与负债\n风险承受能力\n投资期限\n理财目标\n财务画像\n财务指标总览\n财务健康评估\n动态风险评分\n资产配置分析\n收支结构分析\n投资建议\n未来现金流预测\n人生财务阶段分析\n理财规划\n规划概览\n资产配置建议\n智能产品推荐\n投资收益预测\n执行计划路线图\n风险提示\n前置准备：下载CodeBuddy+开通CloudBase\nCodeBuddy\nhttps://www.codebuddy.ai/\n一、产品简介\n产品定位：打破产品、设计与研发职能壁垒的下一代AI全栈高级工程师 核心价值：我们致力于构建一个产品、设计、研发无缝协作的共生环境。通过将AI\n深度融入从需求规划、产品设计到代码开发的全流程，实现从一个从想法到产品发布的一站式高效交付平台\n二、核心功能：重塑产设研一体化工作流\n1.产品阶段：从想法到需求\n需求文档PRD生成： 只需用自然语言描述产品构想，A即可辅助进行深度需求分析，自动生成结构化的需求文档 (PRD)\n2.设计阶段：从需求到设计稿\n产品原型/交互/设计生成：\n自然语言生成：需求描述快速将抽象文字转化为可交互产品原型 图像化生成：支持上传手绘草图或参考图片，智能识别并生成高保真设计稿 组件化生成：基于组件库（目前已内置TDesign、MUI、Shadcn，持续更新中)，快速拼装生成符合规范的设计稿\nAI视觉优化：\n通过自然语言指令（如“让风格更有科技感”、“按钮调成蓝色\"）对原型/设计稿进行实时视觉迭代和优化\nCloudBase\n「CloudBase AI ToolKit」 是 腾讯云开发 CloudBase （面向AI 开发一站式应用开发工具）的新能力，它无缝适配主流 AI 编程工具（如Cursor、CodeBuddy、Trae、WinSurf等），它能自动帮你生成可直接部署的前后端应用+小程序，并一键发布到腾讯云开发，让你通过简单 Prompt 即可完成大量具备商业价值的应用开发、上线和运营。\n前往 云开发CloudBase 官网（tcb.cloud.tencent.com），开通并创建环境（新用户可开通一个免费环境），然后根据云开发相关文档、教程进行开发\npickstar-cloud-8g304kyq275603ff\n下载Vue Web应用的模版并解压，用CodeBuddy打开\n添加cloude-base MCP\n{ \"mcpServers\": { \"cloudbase\": { \"command\": \"npx\", \"args\": [\"@cloudbase/cloudbase-mcp@latest\"] } } } \n对智能体说登录云开发，智能体"
+    },
+    {
+      "url": "https://baike.baidu.com/item/WorkBuddy/67362053",
+      "position": 8,
+      "title": "WorkBuddy",
+      "time": "2026-04-29T00:00:00",
+      "snippet": "WorkBuddy是腾讯云推出的桌面Agent工具。2026年2月6日，该产品开放内测申请，定位为职场AI智能体桌面工作台。WorkBuddy由腾讯云CodeBuddy团队开发。2026年1月19日，WorkBuddy在腾讯内部开放体验。内部测试阶段有超过2000名不同岗位员工参与使用，覆盖HR、行政、秘书、运营、销售等角色。该工具支持通过自然语言指令下达任务，可在本地电脑规划并执行多模态任务，实现自动批量处理文件、生成文档/表格/PP...",
+      "content": "腾讯云推出的桌面Agent工具\nWorkBuddy是 腾讯云 推出的桌面Agent工具。2026年2月6日，该产品开放内测申请，定位为职场AI智能体桌面工作台。WorkBuddy由腾讯云 CodeBuddy 团队开发。  [1]  [3-6]  [11-12]  [14-15]  [17] 2026年1月19日，WorkBuddy在腾讯内部开放体验。内部测试阶段有超过2000名不同岗位员工参与使用，覆盖HR、行政、秘书、运营、销售等角色。  [1-3]  [5]  [11]  [13]  [16-17]\n该工具支持通过自然语言指令下达任务，可在本地电脑规划并执行多模态任务，实现自动批量处理文件、生成文档/表格/PPT、多模态内容创作、数据深度分析、行业调研、多任务Agent并行处理等操作。  [5]  [11]  [13]  [17] 其面向非技术背景职场人群设计，能够理解自然语言指令并操作本地电脑文件，内置多种模型切换和主流MCP Server、Skills技能包，并具备高危指令拦截等安全机制。  [5]  [7]  [9]  [11]  [13]  [16] 该工具的应用场景包括数据处理与分析、构建本地知识库、内容文案创作、海报生成、自动化办公等。  [1-2]  [5]  [11]  [17] 2026年3月9日，腾讯旗下全场景AI智能体WorkBuddy正式上线，完全兼容OpenClaw技能，用户可通过官网下载安装直接使用，并支持通过企业微信、QQ、飞书、钉钉等通讯工具进行远程控制。  [18-22] 3月10日消息，继WorkBuddy发布后，腾讯已初步形成覆盖个人、开发者及企业级部署的智能体“养虾”（部署和使用本地AI智能体OpenClaw）矩阵。  [25]  [36] 4月28日消息，腾讯云发布关于WorkBuddy计费方案调整的公告，计划于2026年5月15日起执行新的计费方案。  [39] 4月29日，腾讯文档已接入至WorkBuddy的资料库。  [40]\n花旗银行认为“WorkBuddy”让人工智能代理可在其安全的云环境中运行。  [29]\n相关星图\n外文名 WorkBuddy\n所属品牌 腾讯云\n产品类型 桌面Agent工具\n上线时间 2026年3月9日  [18]\n研发团队 腾讯云\n软件平台 macOS 11.0+；Windows 10、11  [30]\n运用领域 AI桌面智能体工作台  [30]\n目录\n1 研发背景 2 发展历程 3 功能服务 ▪ 获取与使用\n▪ 基本功能 ▪ 新增功能 4 核心技术 5 核心团队\n6 重要事件 7 社会评价\n研发背景\nWorkBuddy的研发旨在应对非技术背景职场人群使用AI工具时面临的学习成本与易用性挑战。  [7-8]  [16] 该产品由 腾讯云 CodeBuddy 团队开发，其技术基础源于团队在AI编程助手领域已有的积累。  [1]  [7]  [9]\n发展历程\n2026年2月6日，腾讯云桌面Agent工具“WorkBuddy”启动内测，标志着腾讯正式加入桌面Agent工具市场竞争。WorkBuddy由腾讯云CodeBuddy团队开发，于2026年1月19日在腾讯内部启动测试，已有超过2000名员工参与，并在数据处理与分析、构建本地知识库、内容文案创作、海报生成、自动化办公等场景获得应用。  [1-3] 3月9日，腾讯旗下全场景AI智能体WorkBuddy正式上线。  [18]\n2026年3月10日消息，继WorkBuddy发布引发广泛关注后，腾讯持续发力完善相关产品与服务生态"
+    },
+    {
+      "url": "https://m.sohu.com/a/897605927_122431886/?pvid=000115_3w_a",
+      "position": 9,
+      "title": "腾讯重磅推出 AI 编程助手 CodeBuddy！",
+      "time": "2025-05-22T10:46:00",
+      "snippet": "近日，腾讯低调发布了一款 AI Coding 编程助手—CodeBuddy，中文名为腾讯云代码助手，AI 技术问答，通过自然语言生成完整代码仓库的智能体，支持代码补全、诊断、优化和重构，更支持单元测试、代码评审、微信生态知识库，以及全面兼容 MCP 开放生态。这些功能极大帮助开发者高效编程，这是一款对标 Cursor 的全新",
+      "content": "近日， 腾讯低调发布了一款 AI Coding 编程助手 —— CodeBuddy ，中文名为腾讯云代码助手 ，支持 AI 技术问答，通过自然语言生成完整代码仓库的智能体，支持代码补全、诊断、优化和重构，更支持单元测试、代码评审、微信生态知识库，以及全面兼容 MCP 开放生态。\n这些功能极大帮助开发者高效编程，这是一款对标 Cursor 的全新代码助手， 可以说是一款真正为中国开发者/开发团队量身定制的大厂编程工具，可以说是中国开发者的福音。\n我们从官方发布可以看到诸多亮点：\n1.发布全新英文品牌 CodeBuddy 亮相，为全球开发者服务布局\n本次英文品牌（Tencent Cloud CodeBuddy，简称CodeBuddy，官方地址: https://copilot.tencent.com)，产品理念是做开发者在AI时代的智能编程伙伴，此次品牌升级品牌旨在未来更好的服务全球开发者。\n2. 推出编程智能体 Craft 模式，AI 可独立自主理解需求，完成多文件代码生成和改写\n本次升级，通过自然语言指令，AI 深度理解需求，独立自主完成多文件代码编写与修改，自动生成可执行的应用，这意味它不再是一个对话工具，而是一个具有 “独立思考” 和 “自主执行” 的编程伙伴，帮助你更灵活的调用 AI 参与项目，实现更便捷、高效率、更好效果的开发体验。\n目前 CodeBuddy 内置 Craft 和 Chat 两种 对话模式：\nCraft 模式：\n只要你有灵感，可以随时想告诉 AI 你想要了解什么样的应用，一句话，它就能帮你轻松完成从零到一的完整项目构建，而且支持 plan 规划模式。\n据介绍，Craft 模型下目前用户每日 AI 文件生成采纳率90%，无论是专业开发者还是新手开发者，都能体验到 CodeBuddy 带来的效率提升。\nChat 模式：\nAI 将深度理解你的代码，你可随时提出问题、@引用上下文、寻求建议。同时，内置了多种腾讯生态的知识库，此外，也支持编辑器内内联对话，可实时提供建议代码。\nCodeBuddy 底层集成了 DeepSeek R1/V3 和 HunYuan-Turbo S 双模型，且都免费使用无限制，并支持自定义模型接入，全方面提升编码能力，在对话输入框左下角选择tencent-deepseek-v3 模型即可，目前免费使用中。\n3. 国内首家支持MCP协议的代码助手，兼容MCP开放生态，与外部系统实现标准化连接\n这段时间 MCP 非常火，具体来说它是一种由  Anthropic (Claude)  主导发布的一个 开放的、通用的、有共识的 协议标准，全称  Model Context Protocol ，旨在为大语言模型（LLMs）提供一种标准化的方式，以访问外部的上下文数据源与工具。\n简而言之，MCP 使 AI 不再局限于模型本身的能力， 可 实现大模型与外部工具的协作 ，进行更专业、更复杂的开发任务，另外也 降低AI 应用开发成本、数据安全合规等问题\n在 CodeBuddy 中完全兼容 MCP 开放生态，支持 MCP 市场，兼容MCP 被作为一种连接腾讯生态产品/工具以及外部工具与智能体之间的桥梁。\n通过 MCP，开发者可以为智能体添加各种第三方工具或服务，使其具备更强的任务执行与理解能力。例如，利用 CNB MCP Server （http:cnb.cool） 实现无需跳出 IDE 即可实现代码仓库、issue 的管理操作，如创建需求/缺陷、分支创建/提交/MR，以及调用TCA MCP Server 能力进行安全扫描。\n4."
+    },
+    {
+      "url": "https://cloud.tencent.com/product/acc?!trisys-ticket-id=20233",
+      "position": 10,
+      "title": "腾讯云 AI 代码助手",
+      "time": "2026-06-20T17:45:29",
+      "snippet": "腾讯云 AI 代码助手是由腾讯云自研的一款开发编程提效辅助工具，开发者可以通过插件的方式将 AI 代码助手安装到编辑器中辅助编程工作（VSCode 或者 JetBrian 系列 IDE）；而 AI 代码助手插件将提供：自动补全代码、根据注释生成代码、代码解释、生成测试代...",
+      "content": "腾讯云 AI 代码助手，是一款辅助编码工具，基于混元代码大模型，提供技术对话、代码补全、代码诊断和优化等能力。为你生成优质代码，帮你解决技术难题，提升编码效率。\n基于腾讯混元代码模型，帮助腾讯各个部门训练接入不同的代码模型，腾讯内部超过50%的研发都在使用的代码助手。\n支持 Python, JavaScript/TypeScript, Java, C/C++, Go, C#, Rust, Swift, Lua, Kotlin, TSX/JSX, Vue, Proto, PHP 等语言/框架。\nVSCode 和 JetBrains 全家桶。\n通过技术对话与代码补全，辅助生成业务代码、注释、单元测试等内容，大幅提高开发效率。\n辅助补全、BUG诊断、生成测试，释放机械性工作, 专注代码创作。\n对话学习、快速理解、规范编写、缩短学习曲线, 开发少走弯路。\n根据当前上下文，有推理的解答回复\n 理解和分析一个项目中的多个文件，从而为开发者提供更加精确和相关的代码建议。\n根据注释描述以及上下文，生成业务逻辑代码与函数\n腾讯云 AI 代码助手是一个编辑器插件，该插件旨在通过 AI 在代码方面的行业模型能力，和编辑器的紧密联动，来提升开发者日常的开发效率。同时插件还支持对话交流、代码翻译、代码修复等一系列场景。\n更多问题请查看"
+    }
+  ],
+  "source": "stepsearch-mcp"
+}

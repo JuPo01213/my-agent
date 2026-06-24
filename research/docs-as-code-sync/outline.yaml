@@ -1,0 +1,37 @@
+topic: 文档自动同步与更新机制深度调研
+created_at: "2026-06-24"
+items:
+  - name: Swagger / OpenAPI 生态
+    category: 传统方案
+    description: 基于 OpenAPI 规范自动生成 API 文档，支持 CI/CD 集成
+  - name: DeepDocs
+    category: 专业化方案
+    description: GitHub 原生文档自动化工具，基于差异分析更新 Markdown 文档
+  - name: Aider
+    category: AI 驱动工具
+    description: 终端 AI 配对编程工具，深度集成 Git，提交时自动更新文档
+  - name: ShowDoc MCP
+    category: AI 驱动工具
+    description: 通过 MCP 协议让 AI 编辑器直接读写 ShowDoc 文档
+  - name: 腾讯云 CodeBuddy
+    category: AI 驱动工具
+    description: AI 智能注释分析，代码提交触发文档自动重构，延迟 <1 秒
+  - name: Context7 MCP
+    category: 技术文档更新
+    description: 实时抓取 React/Next.js/Supabase 等最新官方文档
+  - name: MkDocs / Docusaurus CI CD
+    category: 文档站点自动化
+    description: 静态文档站自动构建与部署方案
+  - name: Git Hooks 自动化
+    category: 本地自动化
+    description: pre-commit / post-commit 触发文档检查与更新
+  - name: GitHub Actions 文档同步
+    category: CI CD
+    description: 基于 GitHub Actions 监听 push/PR 自动更新文档
+  - name: AI 辅助文档生成
+    category: 新兴方案
+    description: 大模型理解代码逻辑自动生成描述性文档
+execution:
+  batch_size: 3
+  items_per_agent: 2
+  output_dir: ./results

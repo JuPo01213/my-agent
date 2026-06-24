@@ -1,0 +1,89 @@
+{
+  "item_name": "Aider",
+  "category": "AI 驱动工具",
+  "description": "终端 AI 配对编程工具，深度集成 Git，提交时自动更新文档",
+  "search_query": "Aider 终端 AI 配对编程工具，深度集成 Git，提交时自动更新文档 文档自动同步 更新机制 最佳实践",
+  "search_results": [
+    {
+      "url": "https://www.cnblogs.com/aifrontiers/p/19218596",
+      "position": 1,
+      "title": "AI编程助手：Aider使用手册（中文版）",
+      "time": "2025-11-13T16:24:00",
+      "snippet": "原文：AI编程助手：Aider使用手册（中文版）Aider 是一个终端中的 AI 结对编程工具，支持云与本地大语言模型，能为大型项目生成代码库地图以理解代码结构，兼容 100 多种编程语言，集成 Git 自动提交变更，可在 IDE 中使用，还支持图像、网页、语音交互及代码 linting 与测试",
+      "content": "原文：  AI编程助手：Aider使用手册（中文版）\nAider 是一个终端中的 AI 结对编程工具，支持云与本地大语言模型，能为大型项目生成代码库地图以理解代码结构，兼容 100 多种编程语言，集成 Git 自动提交变更，可在 IDE 中使用，还支持图像、网页、语音交互及代码 linting 与测试等功能。\n项目地址： https://github.com/Aider-AI/aider\n本文将Aider的英文版使用手册进行了全文翻译（见 https://aider.chat/docs/ ），方便大家使用。需要完整版pdf的点击  AI编程助手：Aider使用手册（中文版）  ，回复 aider 获取。\n一、安装指南\n使用 aider-install快速开始\n如果您已安装 Python 3.8 - 3.13，可以通过以下方式快速开始：\n首先，安装 Aider：\npython -m pip install aider-install aider-install \n开始在您的代码库中使用 Aider：\n# 进入您的代码库目录 cd  /to/your/project   # DeepSeek模型  aider --model deepseek --api-key deepseek=<密钥>   # Claude 3.7 Sonnet模型  aider --model sonnet --api-key anthropic=<密钥>   # O3-mini模型  aider --model o3-mini --api-key openai=<密钥> \n这将在独立的 Python 环境中安装 Aider。如有需要，aider-install 还会安装 Python 3.12 的独立版本供 Aider 使用。\n安装完成后，还有一些 【1.2 可选的安装步骤】 。\n请参阅【 2 使用说明】 开始使用 Aider 进行编码。\n一键安装命令\n以下一键命令将安装 Aider，必要时还会安装 Python 3.12。这些命令基于  uv  安装程序。\nMac 和 Linux 系统\n使用 curl 下载脚本并通过 sh 执行：\ncurl -LsSf https://aider.chat/install.sh | sh \n如果系统没有 curl，可以使用 wget：\nwget -qO- https://aider.chat/install.sh | sh \nWindows 系统\npowershell -ExecutionPolicy Bypass -c  \"irm https://aider.chat/install.ps1  | iex\"\n使用 uv 安装\n您可以使用 uv 安装 Aider：\npython -m pip install uv   # 如果需要安装 uv  uv tool install --force --python python3.12 --with-pip aider-chat@latest \n这将使用您现有的 Python 3.8 - 3.13 版本安装 uv，并通过  uv  安装 Aider。如有需要，uv 会自动安装独立的 Python 3.12 版本供 Aider 使用。\n有关安装 uv 的其他方法，请参阅  uv  文档。\n使用 pipx 安装\n您可以使用 pipx 安装 Aider：\npython -m pip install pipx   # 如果需要安装 pipx  pipx install aider-chat \n您可以使用 "
+    },
+    {
+      "url": "https://baike.baidu.com/item/Aider/67617415",
+      "position": 2,
+      "title": "Aider",
+      "time": "2026-05-07T00:00:00",
+      "snippet": "Aider是一款集成在终端中的AI配对编程工具。它支持语音识别编码，并与Git仓库深度绑定。Aider支持连接多种主流大型语言模型。Aider是一个开源实现，其成熟版本中有超过80%的代码由自身生成。该项目在GitHub上获得较多关注，是较为成熟的开源代码智能体之一。其持续更新增加了对包括Grok系列在内的新模型支持，并优化了编辑模式。",
+      "content": "集成在终端的AI配对编程工具\nAider是一款集成在终端中的AI配对编程工具 。它支持语音识别编码，并与Git仓库深度绑定  [1]  [3]  [5] 。Aider支持连接多种主流大型语言模型  [5] 。\nAider是一个开源实现，其成熟版本中有超过80%的代码由自身生成  [2] 。该项目在GitHub上获得较多关注，是较为成熟的开源代码智能体之一  [4-5] 。其持续更新增加了对包括 Grok 系列在内的新模型支持，并优化了编辑模式  [6] 。\n外文名 Aider\n类 别 AI配对编程工具\n目录\n1 发展历程 2 产品特色 3 运营模式 4 重要事件 5 需求人群\n发展历程\nAider是一款开源AI配对编程工具，多年来不断演进，在开源代码智能体领域具有一定代表性，在GitHub上获得了超过41.6k的星标。  [4]\n该项目在演进过程中展现了显著的自我进化特性，例如在某个版本中，超过80%的代码由Aider自身生成，而在v0.82.0版本中，这一比例更是达到了92%。  [2]  [6]\n为了在获取新功能与保持开发环境稳定性之间取得平衡，Aider提供了灵活的版本更新检查配置选项，用户可以通过设置 来完全禁用自动更新检查，从而锁定特定版本。  [3]\nAider通过持续迭代引入重要更新以增强功能，例如在2025年6月发布的v0.82.0版本中，项目显著扩展了对多模型的支持，新增了对XAI Grok系列模型、 Fireworks AI 的deepseek-v3-0324等模型的支持，同时引入了新的编辑模式（如patch格式、editor-diff等），并优化了架构师模式。  [6]\n产品特色\nAider是一款开源免费的AI配对编程工具。  [5]\n产品支持与AI进行代码聊天，讨论代码问题。\n请求AI进行代码变更，如新增功能、测试用例、改进、修复bug等。\n该工具还提供自动代码错误修复等高级辅助功能。  [5]\nAI自动提交git变更，附带合理的提交信息。\n支持多种编程语言，如Python、JavaScript、TypeScript等。\nAider支持多种主流AI大模型，用户可根据需要自由切换。  [5]\n能够在大型代码库中进行多文件的协调变更。\n使用git仓库的完整映射，提高在大型项目中的工作效率。\n此外，Aider能自动生成代码库结构映射，以辅助AI理解项目依赖关系。  [5]\n支持在聊天中添加图片和URL，AI会读取其内容。\n支持使用语音识别进行编码。  [1]\n运营模式\nAider是一款开源的AI配对编程工具，完全免费、无任何隐藏收费，允许用户自由下载、使用和修改源码。 Aider采用命令行界面（ CLI ），直接扎根在终端，与Git仓库深度绑定，无 GUI 界面。 Aider支持多种主流大模型，如 DeepSeek 、 GPT-4 等，用户可自由切换，成本可控。  [5]\n其优势包括安装简单、上手快速、Git深度集成等。 其短板包括对终端操作不熟悉的用户有学习成本，在复杂多步骤架构设计或全新项目从0到1开发中表现不如某些付费工具，在超大型项目中的上下文管理能力有待提升。  [5]\n重要事件\n2025年6月1日，Aider发布v0.82.0版本，带来多项重要更新，包括扩展多模型支持（特别是新增对XAI公司 Grok 系列模型和 Fireworks AI 的deepseek-v3-0324模型的支持）、新增patch编辑格式与三种新型编辑器格式、优化架构师模式等，该版本92%的代码由Aider自身生成。  [6]\n在2025年4月7"
+    },
+    {
+      "url": "https://www.cnblogs.com/aifrontiers/p/archive/2025/11/13",
+      "position": 3,
+      "title": "分享AI前沿进展、底层原理和行业应用",
+      "time": "2025-11-13T16:24:00",
+      "snippet": "AI编程助手：Aider使用手册（中文版） 摘要：原文：AI编程助手：Aider使用手册（中文版）Aider 是一个终端中的 AI 结对编程工具，支持云与本地大语言模型，能为大型项目生成代码库地图以理解代码结构，兼容 100 多种编程语言，集成 Git 自动提交变更，可在 IDE 中使用，还支持图像、网页、语音交...",
+      "content": "AI编程助手：Aider使用手册（中文版） \n 摘要： 原文： AI编程助手：Aider使用手册（中文版） Aider 是一个终端中的 AI 结对编程工具，支持云与本地大语言模型，能为大型项目生成代码库地图以理解代码结构，兼容 100 多种编程语言，集成 Git 自动提交变更，可在 IDE 中使用，还支持图像、网页、语音交互及代码 linting 与测试  阅读全文"
+    },
+    {
+      "url": "https://developer.aliyun.com/article/1653028",
+      "position": 4,
+      "title": "Aider：27.6K Star！这个终端AI编程神器能用语音改代码，自动生成Git记录并提交，接入DeepSeek斩获编程基准最高分",
+      "time": "2025-02-20T00:00:00",
+      "snippet": "简介：Aider 是一款基于命令行的开源 AI 编程助手，支持多种编程语言和主流 LLM，可自动完成代码修改、Git 提交及语音交互。❤️ 如果你也关注 AI 的发展现状，且对 AI 应用开发感兴趣，我会每日分享大模型与 AI 领域的开源项目和应用，提供运行实例和实用教程，帮助你快速上手AI技术！AI",
+      "content": "简介： Aider 是一款基于命令行的开源 AI 编程助手，支持多种编程语言和主流 LLM，可自动完成代码修改、Git 提交及语音交互。\n❤️ 如果你也关注 AI 的发展现状，且对 AI 应用开发感兴趣，我会每日分享大模型与 AI 领域的开源项目和应用，提供运行实例和实用教程，帮助你快速上手AI技术！\n      AI 在线答疑 -> 智能检索历史文章和开源项目 -> 尽在微信公众号 -> 搜一搜：蚝油菜花      \n⌨️ “每个CLI爱好者都该试试的AI编程革命：对着终端说话自动生成Git commit是怎样的体验？”\n大家好，我是蚝油菜花。如果你也经历过——\n     在vim里卡了半小时，只为给函数加个try-catch      手工写Git提交信息时，突然忘记某个参数作用      想用GPT重构代码，却在IDE和网页间反复横跳...\n那么 Aider 就是你缺失的终极拼图！这个开源命令行神器，把LLM变成了你的终端拍档：\n✅ 自然语言即代码：用口语指令修改多文件项目 ✅ 智能Git管家：自动生成符合规范的提交信息 ✅ 全模型支持：GPT-4o/Claude3.5/DeepSeek一键切换\n已有开发者用它3天刷完开源贡献，接下来带你解锁终端AI编程的完整姿势！\n     快速阅读\nAider 是一个基于终端的开源 AI 编程助手，专注于提升代码编辑效率。\n核心功能 ：支持代码修改、自动 Git 提交、多文件编辑、语音编程及图片/URL 交互。 技术原理 ：通过 LLM 理解自然语言指令并生成代码，结合本地 Git 仓库上下文实现精准操作。\nAider 是什么\nAider 是一款开源的 AI 辅助编程工具，旨在通过终端与大型语言模型（LLM）协作，为开发者提供高效的代码编辑体验。它支持多种编程语言（如 Python、JavaScript、TypeScript 等），并能够无缝对接 Claude 3.5 Sonnet、DeepSeek R1、GPT-4o 等主流 LLM。用户只需在命令行中指定文件并描述需求，Aider 即可自动完成代码修改并提交到 Git 仓库，同时生成合理的提交信息。\nAider 不仅适用于个人开发者，也能为团队协作提供强有力的支持。其多文件编辑能力、语音编程功能以及对图片和 URL 的支持，进一步提升了开发效率和灵活性。\nAider 的主要功能\n代码编辑与修改 ：根据用户指令完成代码添加、修复或重构任务，支持多文件复杂需求。 自动提交更改 ：自动将代码更改提交到 Git 仓库，并生成合理提交信息。 多语言支持 ：兼容 Python、JavaScript、TypeScript、PHP、HTML、CSS 等主流编程语言。 语音编程 ：支持语音输入，扩展交互方式。 图片与 URL 支持 ：允许在聊天中添加图片或 URL，丰富操作场景。\nAider 的技术原理\n基于 LLM 的代码生成与理解 ：利用 LLM 的自然语言理解和代码生成能力，将用户需求转化为具体代码操作。 本地代码库上下文映射 ：创建 Git 仓库的上下文映射，帮助 LLM 理解代码库结构，确保处理复杂代码时的高效性。 实时同步与交互 ：在用户编辑代码时，Aider 实时同步更新，保证 LLM 始终基于最新版本生成代码。 自动 Git 提交 ：完成代码修改后，Aider 自动生成提交信息并将更改推送到 Git 仓库。\n如何运行 Aider\n1. 安装 Aider\n1.1 使用  aider-install  快速安装\n如果你已经安装了 Python 3.8 至 "
+    },
+    {
+      "url": "https://brzhang.blog.csdn.net/article/details/143809996",
+      "position": 5,
+      "title": "小白到老司机的进化之路：安利一个媲美 Cursor 的AI 编程助手 Aider ？",
+      "time": "2024-11-15T23:42:34",
+      "snippet": "Aider 的核心其实就是 AI 配对编程+Git 集成。AI 可以智能生成代码片段，而 Git 集成的功能让它能自动保存更改。你只需要对它提需求，它会自动理解并帮你写代码、提交代码。小声逼逼下：你也有过一脸懵地翻代码，甚至搞崩系统的经历吗？有也不是什么糗事，关键看能否轻松躺过这种坑。初次上手：Aider 的安装...",
+      "content": "文章标签：\n#人工智能\n哈喽小伙伴们，你觉得代码更改自动化、Git 提交一键完成，AI 助手靠谱吗？不知道最近你有没有碰到过这样的情况：对着自己写的代码一脸迷茫，Bug 修不完，功能改到头秃？假如说，这时候一个神秘的  AI 编程助手 Aider  悄悄登场了。打个响指，它就能帮你改代码、写提交信息、自动提交 Git……简直比带个实习生还贴心。那么问题来了：它真有这么神？接下来我就带你体验一下这个可以媲美 Cursor 的 Aider 的神奇魔力！\n初识 Aider：编程界的“钢铁侠助手”\n还记得电影里的“贾维斯”吗？Tony Stark 打个响指，贾维斯就帮他分析敌人、解决难题。Aider 大概就是咱们码农的“贾维斯”，背后有 GPT-4o 和 Claude 3.5 Sonnet 这些 LLM（大型语言模型）做后盾。不管是你新开的项目，还是百年老代码库，它都能“陪你写、帮你改”，甚至自动提交代码到 Git。是不是很心动？\nAider 的核心其实就是 AI 配对编程 + Git 集成 。AI 可以智能生成代码片段，而 Git 集成的功能让它能自动保存更改。你只需要对它提需求，它会自动理解并帮你写代码、提交代码。\n小声逼逼下：你也有过一脸懵地翻代码，甚至搞崩系统的经历吗？有也不是什么糗事，关键看能否轻松躺过这种坑。\n初次上手：Aider 的安装与使用\n来，咱们简单上手试试！首先，安装 Aider，下面是快速上手的代码：\npython -m pip  install  -U aider-chat  cd  /to/your/git/repo  export ANTHROPIC_API_KEY = your-key-goes-here aider \nAI写代码 bash\n1 2 3 4\n只需要三步：安装、进入项目目录、输入 API 密钥就可以启动 Aider。此时，你的 AI 小助手已经在后台待命了！你可以向它提出代码更改请求，它会理解你的意图并生成代码。如果有 Bug 还会试图帮你找原因，甚至自动提交。\n不过别以为它就是“傻瓜式操作”，其实 Aider 的 交互方式很关键 。比如，如果需求描述太模糊，它可能给出的代码也不够准确。所以， 给 Aider 清晰的任务描述，分步骤操作，能让它更好地帮你实现目标 。是不是有点像和一个刚入职的实习生沟通？你得慢慢给任务，不然可能会出岔子。关于如何 清晰的任务描述，分步骤操作 ，我们团队了很深刻的积累，就目前的研发效率来讲，纯 AI 研发的我们有了之前研发模式上 5-7 倍的效率提升。关于这写技巧，欢迎与我们交流。\n当然，Aider 的使用也会遇到一些小坑\nCursor 不是万能的，Aider 当然也不是！用一段时间你会发现，AI 编程助手的效率，和你对它的理解成正比。要不，我给你爆点小雷区吧？\n过度依赖，别太信任它的“智能”\n有时 Aider 会生成看似合理，但实际上不太对的代码（就像实习生的“自信错误”）。特别是代码逻辑复杂时，它也容易“掉链子”。比如，一些需要深入业务理解的代码，Aider 可能会“懵逼”。这时，你就得自己盯着生成的代码，避免直接用错。这里就像是带新人：初稿不要一股脑儿就全信了，还是得亲自把关。\n不适合“奇葩”项目\n对于那种写法特殊、业务逻辑复杂的项目，Aider 的理解能力往往不太够。毕竟它再智能，也还是个“外行”，很难完全理解某些特定业务。对于某些偏技术边缘领域的代码，Aider 可能会露怯，这时候别指望它一步到位。\n不知道，你是不是也有过“误信 AI”然后后悔的经历？\n关于Aider："
+    },
+    {
+      "url": "https://m.toutiao.com/a7619535121871487551/",
+      "position": 6,
+      "title": "7 款在人工智能时代让你的终端功能倍增的命令行工具",
+      "time": "2026-03-21T10:48:00",
+      "snippet": "Aider 和一般聊天式工具最大的区别，是它会直接修改你的文件，而且还能为每一次改动自动生成清晰的 Git 提交信息。与此同时，它会尽量理解整个仓库的上下文，因此它不仅知道某个文件改了什么，也更容易意识到这次修改会如何影响其他文件。真正让人惊艳的地方，是这种体验已经不再停留在“辅助建议”层面。很多时候，你只要丢一句像“把这部分逻辑重构成 JWT 方案”这样的指令，它就可能一口气改掉 5 个文件，顺手把提交都帮你做完—而...",
+      "content": "2026 年，AI 正以前所未有的速度冲进软件工程领域，整个开发范式都在被改写。我们不再只是“写代码—提交—发布”这一条单线流程，而是在越来越多的时候，与智能代理协作，让 AI 参与自动化、分析、修复、生成，甚至推进完整任务。\n终端当然也不例外。\n这两年，越来越多建立在 AI 能力之上的 CLI 工具开始冒出来，而它们带来的变化，不只是“多一个助手”那么简单。很多几年前根本无法想象的能力，如今已经被打包进一条命令、一个会话、一个终端窗口里。\n说得直接一点：终端，正在慢慢变成一个由 AI 驱动的驾驶舱。\n今天这篇文章，我想分享 7 个真正让我觉得“用了就回不去”的 AI CLI 工具。它们不只是看起来新鲜，而是实打实地提升了我在终端里的效率和体验。\n1. Aider：几乎已经成了行业默认选项的 AI 结对程序员\n如果要在这份名单里挑一个最重磅的工具，Aider 大概率就是那个答案。\n它最强的地方在于：你不是在终端里单纯和大模型“聊天”，而是在终端里真正和模型一起写代码。它支持把 GPT-4o、Claude 3.5，甚至通过 Ollama 接入的本地模型，直接拉进你的开发流程里，让它们成为你的结对程序员。\nAider 和一般聊天式工具最大的区别，是它会直接修改你的文件，而且还能为每一次改动自动生成清晰的 Git 提交信息。与此同时，它会尽量理解整个仓库的上下文，因此它不仅知道某个文件改了什么，也更容易意识到这次修改会如何影响其他文件。\n真正让人惊艳的地方，是这种体验已经不再停留在“辅助建议”层面。很多时候，你只要丢一句像“把这部分逻辑重构成 JWT 方案”这样的指令，它就可能一口气改掉 5 个文件，顺手把提交都帮你做完——而你甚至还没来得及喝完一杯咖啡。\n它还支持 Voice-to-Code，也就是“语音驱动写代码”。你可以直接对着 Aider 说出需求，让它帮你做增强、修复 bug，或者推进某段开发任务。\n下面是一个简单的入门方式：\npython -m pip install aider-install aider-install  # 进入你的项目目录 cd /to/your/project  # DeepSeek aider --model deepseek --api-key deepseek=<key>  # Claude 3.7 Sonnet aider --model sonnet --api-key anthropic=<key>  # o3-mini aider --model o3-mini --api-key openai=<key> \n更多细节，可以直接去官网查看：https://aider.chat/\n2. Gemini CLI：Google 推出的 Agent 式命令行外壳\n如果你想要一套足够强大的 AI 能力，但又不想先掏出订阅费，那么 Gemini CLI 现在确实是免费梯队里很难绕开的选手。\n它可以让你在终端里直接使用 Gemini 3 Flash 和 Pro，而且它并不是那种只会回答问题的“聊天接口”，而是奔着 Agent 化任务设计的。你可以让它执行命令、浏览文件系统、分析报错，并在交互过程中持续修正问题。\n更重要的是，它在 CLI 里的交互界面做得相当不错，用起来不像传统命令行工具那样生硬。单从体验来说，Gemini CLI 已经是 2026 年非常值得试一试的一类工具。\n除此之外，它还能把 Google 生态中的多种 AI 能力串起来，比如视频生成、Deep Research、NotebookLM 等。换句话"
+    },
+    {
+      "url": "https://aider.doczh.com/docs/",
+      "position": 7,
+      "title": "Aider 文档",
+      "time": "2026-06-11T01:20:17",
+      "snippet": "Aider 是终端中的 AI 结对编程工具。本文档将帮助您充分发挥 aider 的潜力。安装指南—如何安装并开始使用 aider 进行结对编程。可选步骤 使用 Docker 运行 Aider GitHub Codespaces Replit 平台 使用指南—如何使用 aider 与 AI 结对编程，并在本地 Git",
+      "content": "Aider 是终端中的 AI 结对编程工具。本文档将帮助您充分发挥 aider 的潜力。\n安装指南 — 如何安装并开始使用 aider 进行结对编程。\n可选步骤 使用 Docker 运行 Aider GitHub Codespaces Replit 平台\n使用指南 — 如何使用 aider 与 AI 结对编程，并在本地 Git 仓库中编辑代码。\nAI 结对编程技巧 — 与 AI 结对编程的技巧建议。 聊天命令 — 使用聊天中的命令（如 /add、/model 等）来控制 aider 聊天模式 — 使用代码(code)、架构(architect)、提问(ask)和帮助(help)聊天模式。 教程视频 — 由 aider 用户制作的介绍和教程视频。 语音编程功能 — 与aider交流您的代码！ 图片与网页 — 在编码对话中添加图片和网页内容。 提示词缓存 — Aider 支持提示词缓存功能，可节省成本并加速编码过程。 在 IDE 中使用 Aider — Aider 可以监控您的文件并响应您在喜爱的 IDE 或文本编辑器中添加的 AI 注释。 通知功能 — 当 Aider 等待您的输入时，它可以发出通知提醒您。 在浏览器中使用 Aider — Aider 不仅可以在命令行中运行，还能在您的浏览器中使用。 指定编码规范 — 让aider在编辑代码时遵循您的编码规范。 与网页聊天界面的复制粘贴操作 — Aider 可与大型语言模型的网页聊天界面协同工作 代码检查与测试 — 自动修复代码风格检查和测试错误。 编辑配置文件和文本文件 — 使用 aider 编辑配置文件、文档和其他基于文本的格式。\n连接大型语言模型 — Aider 可以连接大多数大型语言模型进行 AI 结对编程。\nOpenAI Gemini xAI 集成 Azure Cohere DeepSeek Ollama 兼容 OpenAI 的 API OpenRouter GitHub Copilot Vertex AI Amazon Bedrock 其他大型语言模型 模型警告\n配置 — 关于 aider 所有设置及其使用方法的说明。\nAPI 密钥 — 为API提供商设置API密钥。 选项参考 — 关于 aider 所有设置的详细说明。 YAML 配置文件 — 如何使用 YAML 配置文件配置 aider。 使用 .env 文件配置 — 使用 .env 文件存储 LLM API 密钥以供 aider 使用。 编辑器配置 — 如何为 aider 的 /editor 命令配置自定义编辑器 推理模型 — 如何配置来自次级提供商的推理模型设置。 高级模型设置 — 配置LLM的高级设置。 模型别名 — 为模型分配便捷的短名称。\n问题排查 — 如何排查 aider 使用中的问题并获取帮助。 屏幕录制 — 展示 aider 开发 aider 过程的屏幕录制\n通过 tree-sitter-language-pack 添加语言支持 — 观看 aider 如何通过与 tree-sitter-language-pack 集成来添加对大量新编程语言的支持。演示了使用 aider 编写脚本下载文件集合，以及使用临时 bash 脚本让 aider 修改文件集合的过程。 添加 –auto-accept-architect 功能 — 观看如何通过实现添加新的命令行选项来自动接受架构模型提出的编辑。Aider 还会更新项目的 HISTORY 文件。 不要删除启动时添加的只读文件 — 观看如何修改 aider，使其在使用 /drop 命令"
+    },
+    {
+      "url": "https://www.cnblogs.com/xgss/articles/18155705",
+      "position": 8,
+      "title": "idea-ai辅助开发",
+      "time": "2025-10-21T00:00:00",
+      "snippet": "主流的ai工具 国外： GitHub Copilot openai Bito 亚马逊CodeWhisperer 国内： 百度的Comate 讯飞的iFlyCode 阿里的通义灵码 CodeGeeX Fitten Code GitHub Copilot 官网：https://github.com/features/copilot 支持语言 支持Python、JavaScript、TypeScript、Ruby、Go、C# 和 C++等多种语言。支持工具 Visual Stu...",
+      "content": "主流的ai工具\n国外：\nGitHub Copilot\nopenai Bito\n亚马逊CodeWhisperer\n国内：\n百度的Comate\n讯飞的iFlyCode\n阿里的通义灵码\nCodeGeeX\nFitten Code\nGitHub Copilot\n官网：https://github.com/features/copilot\n支持语言\n支持Python、JavaScript、TypeScript、Ruby、Go、C# 和 C++等多种语言。\n支持工具\nVisual Studio、Visual Studio Code、Azure Data Studio、JetBrains IDEs、Vim/Neovim。\n缺点：付费\nCodeWhisperer\n官网：https://aws.amazon.com/cn/codewhisperer/\n支持语言\n支持Python、Java、C#、JavaScript、Typescript等15种编程语言。\n支持工具\nVS Code、IntelliJ IDEA、Visual Studio（预览版）、AWS Cloud9、AWS Lambda 控制台、JupyterLab 和 Amazon SageMaker Studio\n优点：免费\n安装：\n从插件市场安装，搜索aws，找到aws toolkit后点击安装。重启IDEA然后登录aws账号即可。\nBito\nChatGPT团队开发\n官网：https://bito.ai/\n功能：自动补全、解释代码、生成注释、生成测试用例、代码质量分析、智能重构、问答\n支持语言：\n支持Python、Java、C++/C、JavaScript、Go等多种语言。\n下载安装：可以进入 Settings -> Plugins 插件市场，然后搜索「bito」进行安装\n优点：不需要魔法、免费\n通义灵码\n官网：https://tongyi.aliyun.com/lingma/\n优点：个人免费\n快捷键：tab键自动补全，Alt+P触发提示，Alt+[ 或 Alt - ]前后切换提示\n支持语言：\n支持 Java、Python、Go、C/C++、JavaScript、TypeScript、PHP、Ruby、Rust、Scala 等主流编程语言\n功能：代码补全，生成代码，生成单元测试，代码注释生成，代码解释，智能问答，异常报错排查\n安装：可以进入 Settings -> Plugins 插件市场，然后搜索TONGYI Lingma进行安装，需要阿里云账号登录\n配置：\nfile-settings,找到下面写着的通义灵码，可以做一些配置\n行/函数级实时续写: 编写方法过程中，会自动提示生产代码，按tab键进行使用生成的代码\n自然语言生产代码：写好注释，回车到下一行，就会自动生成代码，按tab键进行使用生成的代码\n单元测试生成：点击方法开头的通义的突变的下三角拉出菜单即可选择生成单元测试等信息，在右侧会生成各种测试用例\n生成注释：点击菜单中的生成代码注释，就会在右侧展示出带有注释的代码信息，点击第一个按钮会替换掉原来的代码。\n代码优化：会生成优化的建议,并生成优化的代码，生成的代码也有直接替换的按钮\nCodeGeeX\n官网：https://codegeex.cn/\n支持语言\n支持Python、Java、C#、C++/C、JavaScript、Go等多种语言。\n支持工具\nVisual Studio Code、JetBrains IDEs、Visual Studio、HBuilderX、DeepIn-IDE等。\n功能：代码补"
+    },
+    {
+      "url": "https://juejin.cn/post/7599850148055040009",
+      "position": 9,
+      "title": "Claude, Cursor, Aider, Copilot，AI编程助手该选哪个？",
+      "time": "2026-01-27T00:00:00",
+      "snippet": "Aider 修改代码后会自动进行 Git 提交，并生成清晰的 Commit Message。它支持连接几乎所有主流大模型（OpenAI,Anthropic,DeepSeek 等）。优势： Git 深度集成：能清晰地管理代码变更历史，方便回滚。模型灵活：可以使用 DeepSeek 等高性价比模型，大幅降低使用成本。文件操作精准：专门针对代码修改进行了优化，很少出现“改错位置”的情况。劣势： 无图形界面：必须习惯在...",
+      "content": "2026年，AI编程工具已经非常成熟了。市面上这么多AI编程工具，哪个最好用？\n本文选取了当前最具代表性的六款工具： Claude Code 、 Aider 、 Cursor 、 GitHub Copilot 、 MetaGPT  以及  OpenHands ，从技术特性、优缺点及部署门槛进行客观对比。\nClaude Code\nAnthropic 于2025年推出了  Claude Code ，这是一款基于命令行的编程智能体工具。它不同于网页版的对话框，而是直接运行在终端中，能够深度理解本地项目结构。最出名的 AI 编程助手，很贵，但一分钱一分货，不得不说它很好用。\n通过终端直接通过自然语言操作。它不仅能写代码，还能自主运行测试、解释复杂的架构、甚至执行终端命令来修复错误。其背后依托的是推理能力极强的 Claude 3.5/3.7 Sonnet 模型。\n优势 ：\n推理能力极强 ：在处理复杂的逻辑重构和长代码理解上，目前处于行业顶尖水平。 自主性 ：可以代理执行  git commit 、运行 shell 命令，具备初级的“无人值守”能力。 大上下文 ：能够一次性读取成百上千个文件，对大型遗留项目的理解力优于竞品。\n劣势 ：\n成本高昂 ：按 Token 消耗计费，且 Claude 模型单价较高，深度使用时账单压力大。 交互门槛 ：纯命令行界面，对不熟悉终端的开发者不友好。\n需要环境 ： Node.js  (v18+)\n安装方法 ：\ncurl -fsSL https://claude.ai/install.sh  claude  # You'll be prompted to log in on first use   /login  # Follow the prompts to log in with your account\nCursor\nCursor 目前是体验最流畅的 AI 代码编辑器。它本质上是 VS Code 的一个分支（Fork），在底层深度集成了 AI 能力，而非仅仅作为一个插件存在。\n建立本地代码索引（RAG技术），让 AI 能够实时感知整个项目的上下文。提供 Tab 键多行补全（Copilot++）和 Composer（多文件编辑）功能。\n优势 ：\n开箱即用 ：界面与操作习惯与 VS Code 几乎一致，迁移成本极低。 体验流畅 ：代码补全速度极快，预测准确率高。 多模型选择 ：允许用户在 Claude 3.5、GPT-4o 等模型间切换。\n劣势 ：\n资源占用高 ：索引过程比较吃内存和 CPU，低配电脑运行大型项目会卡顿。 隐私顾虑 ：代码需要上传至 Cursor 服务器进行处理（虽有隐私模式，但企业合规部门通常较敏感）。\n安装方法 ：访问  Cursor 官网  下载对应系统的安装包，双击安装即可。\nAider\nAider 是目前开源界最受推崇的命令行 AI 编程助手，以其对 Git 的深度集成而闻名。\n作为一个命令行工具，它与 Git 仓库深度绑定。Aider 修改代码后会自动进行 Git 提交，并生成清晰的 Commit Message。它支持连接几乎所有主流大模型（OpenAI, Anthropic, DeepSeek 等）。\n优势 ：\nGit 深度集成 ：能清晰地管理代码变更历史，方便回滚。 模型灵活 ：可以使用 DeepSeek 等高性价比模型，大幅降低使用成本。 文件操作精准 ：专门针对代码修改进行了优化，很少出现“改错位置”的情况。\n劣势 ：\n无图形界面 ：必须习惯在终端与 AI 对话。 上下文管理 ：相比 Cl"
+    },
+    {
+      "url": "https://developer.aliyun.com/article/1542697",
+      "position": 10,
+      "title": "[AI aider] 打造终端AI搭档：Aider让编程更智能更有趣！",
+      "time": "2024-06-20T00:00:00",
+      "snippet": "简介：发现Aider，一个能在终端中与AI搭档编程的工具，让你的编程体验更智能、更有趣。今天给大家介绍一个超级酷炫的AI项目，叫做 Aider。介绍 Aider 是一个让你在终端里与AI搭档编程的工具。想象一下，你和一个超级智能的编程小伙伴在一起，Ai...",
+      "content": "简介： 发现Aider，一个能在终端中与AI搭档编程的工具，让你的编程体验更智能、更有趣。\n今天给大家介绍一个超级酷炫的AI项目，叫做  Aider 。\n介绍\nAider 是一个让你在终端里与AI搭档编程的工具。想象一下，你和一个超级智能的编程小伙伴在一起，Aider 让大型语言模型（LLMs）成为你的编程搭档，帮助你编辑本地 git 仓库中的代码。无论是从零开始的全新项目，还是现有的git仓库，Aider都能驾驭。最棒的是，它与 GPT-4o 和 Claude 3 Opus 配合简直天作之合，但几乎任何大型语言模型都能和它搭配使用。\n开始\n想要和你的AI搭档来一次愉快的编程之旅吗？那就来吧！\n$ pip  install  aider-chat   # 进入一个 git 仓库  $  cd  /to/your/git/repo   # 使用 GPT-4o 在你的仓库上工作  $  export  OPENAI_API_KEY = your-key-goes-here $ aider \n然后你就可以和大模型开始畅聊代码了，Aider 会帮你改代码、git 提交，一气呵成。\n特点，Repository map\n强烈推荐阅读这篇精彩的文章  Building a better repository map with tree sitter ，文章详细阐述了如何构建更好的仓库地图。\n在改代码的过程中，你需要解决三个问题：\n找到需要更改的代码。 理解那段代码与整个代码库其他部分的关系。 做出正确的代码更改以完成任务。\n对于第3个问题，GPT-4 简直是神器。而第2个问题，我们用 repo map 来解决。\nrepo map 可以传递给 LLM，让它了解代码的上下文。当 repo map 太大时，我们会用一个图排名算法来找到最相关的部分。\n那么，如何得到 repo map 呢？起初我们用的是 ctags，但因为文章中1，2，3，4的关系，最后切换成了 tree-sitter。\n至于第1个问题，目前还需要手工解决。\n试用结果\nAider 支持很多 LLM。我试用了 DeepSeek 这个模型，他们最近发布了 DeepSeek Coder V2 模型，号称代码能力超过 GPT4-Turbo。Aider 也说它在 aider 的代码编辑 benchmark 上获得了最高分。\n然而，我用后感觉效果并不理想。。。也许是我用的不对姿势吧。\n结论\n总结一下：继续努力工作，继续AI吧。生活需要一点点坚持，也许下一个代码大神就是你。\n官网 github Building a better repository map with tree sitter AI 博客 - 从零开始学AI 公众号 - 从零开始学AI"
+    }
+  ],
+  "source": "stepsearch-mcp"
+}

@@ -1,0 +1,108 @@
+# docs_sync/config.yaml
+# 文档同步模型配置
+#
+# 设计原则：
+# 1. 模型驱动：所有同步规则由本文件定义，不硬编码在脚本里
+# 2. 结构感知：支持目录职责约定，自动发现新增/删除/移动
+# 3. 可扩展：新增模块只需追加配置，无需修改引擎代码
+
+version: "1.0"
+
+# 项目结构模型
+# 定义每个目录/文件的职责和对应的文档义务
+structure:
+  # 目录职责约定
+  directories:
+    - path: "agent_core/core"
+      role: "core-engine"
+      description: "核心 ReAct 引擎"
+      doc_obligations:
+        - "docs/reference/api.md"
+        - "docs/report/ReAct智能体实现评估与改进路线图.md"
+      adr_required: true
+
+    - path: "agent_core/multi_agent"
+      role: "multi-agent-layer"
+      description: "多 Agent 协作层"
+      doc_obligations:
+        - "docs/reference/api.md"
+        - "docs/report/关系驱动多Agent协作架构实现方案.md"
+        - "docs/adr/006-relationship-engine.md"
+      adr_required: true
+
+    - path: "agent_core/server"
+      role: "server"
+      description: "FastAPI 后端服务"
+      doc_obligations:
+        - "docs/reference/api.md"
+      adr_required: false
+
+    - path: "agent_core/frontend"
+      role: "frontend-adapter"
+      description: "前端适配层"
+      doc_obligations:
+        - "docs/reference/api.md"
+      adr_required: false
+
+    - path: "agent_core/demos"
+      role: "demos"
+      description: "Demo 脚本"
+      doc_obligations: []
+      adr_required: false
+
+    - path: "config"
+      role: "configuration"
+      description: "YAML 配置文件"
+      doc_obligations:
+        - "docs/reference/configuration.md"
+      adr_required: false
+
+  # 单文件特殊规则（覆盖目录规则）
+  files:
+    - path: "agent_core/config.py"
+      role: "config"
+      description: "模型与 API 配置"
+      doc_obligations:
+        - "docs/reference/configuration.md"
+      adr_required: false
+
+# 检查策略
+policies:
+  # 代码-文档同步：代码修改时间 > 文档修改时间 + 阈值 -> 警告
+  code_doc_sync:
+    enabled: true
+    threshold_days: 7
+    severity: "warning"
+
+  # 文档引用有效性：Markdown 链接断链 -> 警告
+  reference_check:
+    enabled: true
+    severity: "warning"
+    external_link_prefixes:
+      - "http://"
+      - "https://"
+      - "ftp://"
+      - "mailto:"
+      - "#"
+
+  # ADR 触发：架构目录变更后 30 天内无 ADR 更新 -> 警告
+  adr_trigger:
+    enabled: true
+    window_days: 30
+    severity: "warning"
+
+  # 结构变更检测：发现未映射文件/目录 -> 错误
+  structure_change:
+    enabled: true
+    severity: "error"
+    auto_update_structure_md: true
+
+# 文档站点生成配置（可选）
+site:
+  generator: "mkdocs"
+  config: "mkdocs.yml"
+  build_command: "mkdocs build --strict"
+  deploy:
+    enabled: false
+    platform: "github-pages"
+    workflow: ".github/workflows/docs-deploy.yml"

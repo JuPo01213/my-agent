@@ -1,0 +1,74 @@
+fields:
+  - name: 基本信息
+    description: 工具/方案的基本信息
+    fields:
+      - name: name
+        description: 工具/方案名称
+      - name: category
+        description: 分类（传统方案/AI驱动/专业化/CI-CD等）
+      - name: release_year
+        description: 首次发布年份
+      - name: developer
+        description: 开发公司/组织
+      - name: license
+        description: 开源协议或商业许可
+      - name: homepage
+        description: 官网地址
+  - name: 核心能力
+    description: 工具的主要功能和能力
+    fields:
+      - name: core_features
+        description: 核心功能列表
+      - name: supported_languages
+        description: 支持的编程语言
+      - name: supported_formats
+        description: 支持的文档格式
+  - name: 同步机制
+    description: 如何实现文档与代码的同步
+    fields:
+      - name: trigger_mode
+        description: 触发方式（Git hooks/CI-CD/实时/手动）
+      - name: update_strategy
+        description: 更新策略（全量生成/差异分析/增量更新）
+      - name: automation_level
+        description: 自动化程度（全自动/半自动/人工确认）
+      - name: latency
+        description: 同步延迟（实时/<1秒/分钟级/小时级）
+  - name: 技术实现
+    description: 底层技术架构和实现方式
+    fields:
+      - name: architecture
+        description: 技术架构描述
+      - name: integration_points
+        description: 集成点（Git/CI/CD/IDE/MCP等）
+      - name: ai_capabilities
+        description: AI 能力（代码理解/注释分析/自动生成）
+  - name: 适用场景
+    description: 最佳适用场景和限制
+    fields:
+      - name: best_for
+        description: 最适合的场景
+      - name: not_suitable_for
+        description: 不适合的场景
+      - name: team_size
+        description: 推荐团队规模
+      - name: learning_curve
+        description: 学习曲线（低/中/高）
+  - name: 业界评价
+    description: 社区评价和采用情况
+    fields:
+      - name: github_stars
+        description: GitHub Stars 数（如适用）
+      - name: community_feedback
+        description: 社区反馈摘要
+      - name: adoption_cases
+        description: 知名采用案例
+  - name: 与项目匹配度
+    description: 对本项目的适用性分析
+    fields:
+      - name: fit_score
+        description: 匹配度评分（1-10）
+      - name: integration_effort
+        description: 集成工作量（低/中/高）
+      - name: recommended_usage
+        description: 在本项目中的推荐用法

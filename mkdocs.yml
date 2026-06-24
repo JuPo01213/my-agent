@@ -1,0 +1,63 @@
+site_name: my-agent
+site_url: https://<用户名>.github.io/<仓库名>/
+repo_url: https://github.com/<用户名>/my-agent
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+
+nav:
+  - 首页: overview/README.md
+  - 架构概览:
+      - 项目总览: overview/README.md
+      - 架构设计: overview/architecture.md
+      - 术语表: overview/glossary.md
+  - 开发指南:
+      - 开发规范: guides/development.md
+      - 运行指南: guides/running.md
+      - 前端探索期: guides/frontend-exploration.md
+  - 参考:
+      - 配置参考: reference/configuration.md
+      - API 速查: reference/api.md
+  - 架构决策: adr/
+  - 调研报告: report/
+  - 代码走读: explain/
+
+markdown_extensions:
+  - admonition
+  - codehilite
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.tabbed:
+      alternate_style: true
+  - toc:
+      permalink: true
+
+plugins:
+  - search:
+      lang: zh
+  - minify:
+      minify_html: true
+
+extra:
+  version: 1.0.0
+  generator: false
