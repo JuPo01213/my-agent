@@ -343,9 +343,6 @@ def main():
             print(f"  {issue}")
         sys.exit(1)
     else:
-        print("[通过] 所有检查通过")
-        sys.exit(0)
-    else:
         print("[通过] 所有检查通过，同步更新完整")
         sys.exit(0)
 
